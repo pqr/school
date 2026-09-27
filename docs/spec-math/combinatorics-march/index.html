@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Комбинаторика для 6 класса: правило деления и шесть задач с интерактивными пошаговыми решениями.">
+<title>Комбинаторика. Правило деления</title>
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+<main>
+  <p class="crumbs"><a href="../../">← Все материалы</a></p>
+  <h1>Комбинаторика. Правило деления</h1>
+  <p class="lead">Шесть задач из листка «Комбинаторика. Марш» (6 класс). У каждой задачи есть поле «Попробуй сам»: там можно поиграть с условием. Решение спрятано под кнопкой, и открывать его лучше после того, как подумаешь сам.</p>
+
+  <nav class="toc" aria-label="Задачи">
+    <a href="#rule">Правило</a>
+    <a href="#t1">1. Староста</a>
+    <a href="#t2">2. Слова</a>
+    <a href="#t3">3. Ряд</a>
+    <a href="#t4">4. Команда</a>
+    <a href="#t5">5. Монета</a>
+    <a href="#t6">6. Тарелки</a>
+  </nav>
+
+  <!-- ============ Правило деления ============ -->
+  <section id="rule" class="card rule">
+    <h2>Правило деления</h2>
+    <blockquote class="statement">Если все варианты при подсчёте посчитались <b>одинаковое</b> количество раз, то нужно <b>поделить</b> число подсчитанных вариантов на количество их повторений.</blockquote>
+    <p>Разберём на маленьком примере. В группе четверо: Аня, Боря, Вика и Гоша. Нужно выбрать <b>двух дежурных</b>. Сколько есть способов?</p>
+    <div class="stepper" data-stepper="rule"></div>
+    <div class="questions">
+      <p class="q-title">В каждой задаче задавай себе два вопроса:</p>
+      <ol>
+        <li><b>Что здесь считается одним и тем же вариантом?</b></li>
+        <li><b>Сколько раз я посчитал каждый вариант?</b> Если <em>каждый</em> посчитан одинаковое число раз, делим на это число.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ Задача 1 ============ -->
+  <section id="t1" class="card task">
+    <h2><span class="num">1</span> Староста и заместители</h2>
+    <blockquote class="statement">Сколькими способами можно выбрать из 30 учеников старосту класса и двух его заместителей?</blockquote>
+    <div class="try">
+      <h3>Попробуй сам</h3>
+      <p class="small">Нажми на ученика: первый выбранный станет старостой 👑, следующие двое будут заместителями ⭐. Повторное нажатие снимает выбор.</p>
+      <div id="t1-class" class="class-grid" role="group" aria-label="Ученики класса"></div>
+      <p id="t1-result" class="result" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" id="t1-swap" type="button">Поменять замов местами</button>
+        <button class="btn" id="t1-reset" type="button">Сбросить</button>
+      </div>
+    </div>
+    <div class="check" data-check="t1"></div>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <div class="stepper" data-stepper="t1"></div>
+    </details>
+  </section>
+
+  <!-- ============ Задача 2 ============ -->
+  <section id="t2" class="card task">
+    <h2><span class="num">2</span> Слова из букв</h2>
+    <blockquote class="statement">Рома написал на доске слово <b>(а)</b> ПЛЮС, <b>(б)</b> МАМА, <b>(в)</b> МАТЕМАТИКА. Сколько всего различных буквенных последовательностей он сможет получить из своего слова переставлением его букв?</blockquote>
+    <div class="try">
+      <h3>Попробуй сам</h3>
+      <div class="seg" id="t2-word" role="group" aria-label="Слово">
+        <button type="button" aria-pressed="true" data-word="ПЛЮС">ПЛЮС</button>
+        <button type="button" aria-pressed="false" data-word="МАМА">МАМА</button>
+        <button type="button" aria-pressed="false" data-word="МАТЕМАТИКА">МАТЕМАТИКА</button>
+      </div>
+      <p class="small">Нажми на две буквы, и они поменяются местами. Ниже собираются все разные «слова», которые у тебя получились. Словом здесь считается любая последовательность букв, даже бессмысленная, например ЮСПЛ.</p>
+      <div id="t2-tiles" class="tiles big" role="group" aria-label="Буквы"></div>
+      <p id="t2-count" class="result" aria-live="polite"></p>
+      <div id="t2-found" class="found"></div>
+      <div class="row-btns">
+        <button class="btn" id="t2-shuffle" type="button">Перемешать</button>
+        <button class="btn" id="t2-reset" type="button">Начать заново</button>
+      </div>
+    </div>
+    <div class="check" data-check="t2"></div>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <h3 class="sub">(а) ПЛЮС: все буквы разные</h3>
+      <div class="stepper" data-stepper="t2a"></div>
+      <h3 class="sub">(б) МАМА: есть одинаковые буквы</h3>
+      <div class="stepper" data-stepper="t2b"></div>
+      <h3 class="sub">(в) МАТЕМАТИКА</h3>
+      <div class="stepper" data-stepper="t2c"></div>
+    </details>
+  </section>
+
+  <!-- ============ Задача 3 ============ -->
+  <section id="t3" class="card task">
+    <h2><span class="num">3</span> Двадцать учеников в ряд</h2>
+    <blockquote class="statement">Сколькими способами можно расставить в ряд 20 учеников группы, чтобы <b>(а)</b> Андрей и Борис стояли рядом? <b>(б)</b> Борис стоял левее Андрея (не обязательно рядом)?</blockquote>
+    <div class="try">
+      <h3>Попробуй сам</h3>
+      <p class="small">Нажми на двух учеников, чтобы поменять их местами, или перемешай весь ряд. <b class="c-a">А</b> — Андрей, <b class="c-b">Б</b> — Борис.</p>
+      <div id="t3-row" class="line20" role="group" aria-label="Ряд учеников"></div>
+      <ul id="t3-flags" class="flags" aria-live="polite"></ul>
+      <div class="row-btns">
+        <button class="btn" id="t3-shuffle" type="button">Перемешать</button>
+      </div>
+    </div>
+    <div class="check" data-check="t3"></div>
+    <p class="small hint-inline">Ответы тут огромные, поэтому в поле можно писать с восклицательным знаком: например, <code>5*7!</code> или <code>9!/3</code>.</p>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <h3 class="sub">(а) Андрей и Борис рядом</h3>
+      <div class="stepper" data-stepper="t3a"></div>
+      <h3 class="sub">(б) Борис левее Андрея</h3>
+      <div class="stepper" data-stepper="t3b"></div>
+    </details>
+  </section>
+
+  <!-- ============ Задача 4 ============ -->
+  <section id="t4" class="card task">
+    <h2><span class="num">4</span> Собираем команду</h2>
+    <blockquote class="statement">Сколькими способами можно собрать команду из 3 стратегов, 4 разведчиков и 2 изобретателей, если всего есть 10 стратегов, 8 разведчиков и 7 изобретателей?</blockquote>
+    <div class="try">
+      <h3>Попробуй сам</h3>
+      <p class="small">Нажимай на кандидатов, чтобы взять их в команду.</p>
+      <div id="t4-pools" class="pools"></div>
+      <p id="t4-result" class="result" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" id="t4-random" type="button">Случайная команда</button>
+        <button class="btn" id="t4-reset" type="button">Сбросить</button>
+      </div>
+    </div>
+    <div class="check" data-check="t4"></div>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <div class="stepper" data-stepper="t4"></div>
+    </details>
+  </section>
+
+  <!-- ============ Задача 5 ============ -->
+  <section id="t5" class="card task">
+    <h2><span class="num">5</span> Восемь бросков монеты</h2>
+    <blockquote class="statement">Монету подбрасывают 8 раз. При этом получается некоторая последовательность «орлов» и «решек» (длины 8). Сколько всего существует таких последовательностей, в которых «орёл» выпал ровно три раза?</blockquote>
+    <div class="try">
+      <h3>Попробуй сам</h3>
+      <p class="small">Нажимай на монеты, чтобы перевернуть их. Собери последовательность ровно с тремя орлами (О). Р — это решка.</p>
+      <div id="t5-coins" class="coins big" role="group" aria-label="Броски монеты"></div>
+      <p id="t5-result" class="result" aria-live="polite"></p>
+      <div id="t5-found" class="found"></div>
+      <div class="row-btns">
+        <button class="btn" id="t5-random" type="button">Случайная с тремя орлами</button>
+        <button class="btn" id="t5-reset" type="button">Начать заново</button>
+      </div>
+    </div>
+    <div class="check" data-check="t5"></div>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <div class="stepper" data-stepper="t5"></div>
+      <details class="gallery">
+        <summary>Все 56 последовательностей</summary>
+        <div id="t5-all" class="all56"></div>
+      </details>
+    </details>
+  </section>
+
+  <!-- ============ Задача 6 ============ -->
+  <section id="t6" class="card task">
+    <h2><span class="num">6</span> Инопланетяне и летающие тарелки</h2>
+    <blockquote class="statement">Двенадцать инопланетян решили навестить знакомых с Земли. У них есть 4 летающих тарелки разных цветов, в каждую из которых входит ровно трое. Сколько у инопланетян способов разместиться в этих тарелках, если нам не важно, как именно инопланетяне разместились внутри тарелки?</blockquote>
+    <div class="try">
+      <h3>Попробуй сам</h3>
+      <p class="small">Выбери тарелку, затем нажимай на пришельцев, чтобы посадить их в неё. Нажатие на пришельца в тарелке возвращает его на Землю.</p>
+      <div class="seg" id="t6-pick" role="group" aria-label="Тарелка"></div>
+      <div id="t6-ground" class="ground" role="group" aria-label="Пришельцы на Земле"></div>
+      <div id="t6-ships" class="ships"></div>
+      <p id="t6-result" class="result" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" id="t6-random" type="button">Рассадить случайно</button>
+        <button class="btn" id="t6-reset" type="button">Все на Землю</button>
+      </div>
+    </div>
+    <div class="check" data-check="t6"></div>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <div class="stepper" data-stepper="t6"></div>
+    </details>
+  </section>
+
+  <footer>
+    <p class="small">По листку «Комбинаторика. Марш», 6 класс. Решения пошаговые: кнопки «Назад» и «Дальше» или стрелки ← → на клавиатуре, когда фокус на решении.</p>
+  </footer>
+</main>
+<script src="app.js?v=5"></script>
+</body>
+</html>
