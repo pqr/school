@@ -3,10 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Интерактивные школьные материалы: модели и наглядные объяснения.">
   <title>Школьные материалы</title>
+  <style>
+    :root {color-scheme: light dark; background: light-dark(#fff, #181818); color: light-dark(#202124, #e7e9ec);}
+    body {max-width: 900px; margin: 0 auto; padding: 40px 20px; font: 16px/1.6 system-ui, sans-serif;}
+    h1 {margin: 0 0 8px; font-size: 2rem; line-height: 1.2;}
+    h2 {margin-top: 36px; font-size: 1.25rem;}
+    a {color: light-dark(#185abc, #9bc1ff); text-underline-offset: 3px;}
+    ul {padding-left: 24px;}
+    li {padding: 8px 0;}
+    li p {margin: 4px 0 0;}
+    @media (max-width: 480px) {body {padding: 24px 16px;}}
+  </style>
 </head>
 <body>
-  <h1>Школьные материалы</h1>
-  <p>GitHub Pages работает.</p>
+  <main>
+    <h1>Школьные материалы</h1>
+    <p>Интерактивные модели и наглядные объяснения.</p>
+    <section aria-labelledby="geo">
+      <h2 id="geo">География</h2>
+      <ul>
+        <li>
+          <a href="geo/solar-declination/">Склонение Солнца — интерактивная 3D-модель</a>
+          <p>Земля, плоскости экватора и эклиптики, направление на Солнце. Вращайте модель и выбирайте дату, чтобы увидеть, как меняется склонение в течение года.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>
