@@ -1,2048 +1,211 @@
 <!doctype html>
-<html lang="ru" data-visualize-standalone>
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src 'self' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Склонение Солнца — интерактивная 3D-модель</title>
-<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+<meta name="description" content="Интерактивная модель склонения Солнца: Земля в центре или Солнце в центре, разрез с углом δ и график за год.">
+<title>Склонение Солнца — интерактивная модель</title>
 <style>
-body {max-width: 1000px; margin: 0 auto; color: light-dark(#202124, #e7e9ec); font: 16px/1.6 system-ui, sans-serif;}
-nav {margin: 0 0 16px;}
-a {color: light-dark(#185abc, #9bc1ff); text-underline-offset: 3px;}
-p {margin: 12px 0;}
-.source-table {margin: 32px 0 0;}
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #5f6670;
+  --line: #d9dde3;
+  --card: #f4f6f9;
+  --link: #185abc;
+  --earth: #5fa8e3;
+  --earth-light: #a9d4f5;
+  --earth-edge: #2b6aa3;
+  --night: rgba(8, 16, 40, 0.6);
+  --equator: #1a56c9;
+  --orbit: #e07b00;
+  --tropic: #2b8a3e;
+  --polar: #7048e8;
+  --sun: #ffc21a;
+  --sun-glow: rgba(255, 194, 26, 0.35);
+  --ray: #d49a00;
+  --light-ray: rgba(230, 170, 0, 0.55);
+  --delta: #e03131;
+  --zenith: #ffd43b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181c;
+    --fg: #e8eaed;
+    --muted: #9aa3ad;
+    --line: #353a42;
+    --card: #1f2329;
+    --link: #8ab4f8;
+    --earth: #3d7fbd;
+    --earth-light: #74b3e8;
+    --earth-edge: #9ccaf2;
+    --night: rgba(0, 0, 0, 0.62);
+    --equator: #74a9ff;
+    --orbit: #ffa94d;
+    --tropic: #69db7c;
+    --polar: #b197fc;
+    --sun: #ffd43b;
+    --sun-glow: rgba(255, 212, 59, 0.3);
+    --ray: #ffd43b;
+    --light-ray: rgba(255, 212, 59, 0.45);
+    --delta: #ff6b6b;
+    --zenith: #ffe066;
+  }
+}
+* {box-sizing: border-box;}
+html, body {margin: 0; background: var(--bg); color: var(--fg);}
+body {font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;}
+main {max-width: 1100px; margin: 0 auto; padding: 16px 16px 40px;}
+a {color: var(--link); text-underline-offset: 3px;}
+h1 {margin: 12px 0 4px; font-size: 1.75rem; line-height: 1.2;}
+h2 {margin: 32px 0 8px; font-size: 1.3rem;}
+h3 {margin: 0 0 2px; font-size: 1.05rem;}
+p {margin: 8px 0;}
+.lead {max-width: 70ch; margin-bottom: 16px;}
+.small {font-size: 0.875rem; color: var(--muted);}
+button {font: inherit; color: inherit;}
+.btn {min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); cursor: pointer;}
+.btn:hover {background: var(--card);}
+.btn:focus-visible, .seg button:focus-visible, input:focus-visible {outline: 2px solid var(--link); outline-offset: 2px;}
+.seg {display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--card);}
+.seg button {min-height: 40px; padding: 0 14px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-weight: 500;}
+.seg button[aria-pressed="true"] {background: var(--fg); color: var(--bg);}
+.readout {margin: 12px 0; padding: 12px 16px; border-radius: 14px; background: var(--card);}
+.readout-top {display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px;}
+.readout-date {font-size: 1.35rem; font-weight: 600;}
+.readout-delta {font-size: 1.35rem; font-variant-numeric: tabular-nums;}
+.readout-delta b {color: var(--delta);}
+.badge {display: inline-block; padding: 1px 10px; border-radius: 999px; background: var(--sun-glow); font-size: 0.875rem; font-weight: 500;}
+.readout p {margin: 6px 0 0;}
+.stage {display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 12px; align-items: start;}
+.panel {min-width: 0; padding: 10px; border-radius: 14px; background: var(--card);}
+#scene {display: block; width: 100%; height: 440px; touch-action: none; cursor: grab;}
+#scene:active {cursor: grabbing;}
+.toolbar {display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;}
+.toolbar .btn {min-width: 40px;}
+.legend {display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.85rem;}
+.legend li {display: flex; align-items: center; gap: 6px;}
+.sw {display: inline-block; width: 18px; height: 0; border-top: 3px solid;}
+.sw.dash {border-top-style: dashed;}
+.sw.dot {width: 12px; height: 12px; border: 2px solid var(--fg); border-radius: 50%; background: var(--zenith);}
+#section {display: block; width: 100%; height: auto; margin-top: 6px;}
+.controls {margin-top: 16px;}
+.play {width: 100%; min-height: 52px; border: 0; border-radius: 12px; background: var(--fg); color: var(--bg); font-size: 1.1rem; font-weight: 600; cursor: pointer;}
+.slider-wrap {margin-top: 14px;}
+.slider-wrap label {font-weight: 500;}
+#day {width: 100%; margin: 6px 0 0; accent-color: var(--delta);}
+.months {position: relative; height: 18px; font-size: 0.75rem; color: var(--muted);}
+.months span {position: absolute; transform: translateX(-50%); white-space: nowrap;}
+.keydays {display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px;}
+.layers {display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 12px;}
+.layers label {display: inline-flex; align-items: center; gap: 6px; min-height: 36px; cursor: pointer;}
+.layers input {width: 18px; height: 18px; accent-color: var(--link);}
+.hint {margin-top: 12px; padding: 10px 14px; border: 1px dashed var(--line); border-radius: 12px;}
+#chart {display: block; width: 100%; touch-action: pan-y; cursor: pointer; user-select: none;}
+footer {margin-top: 28px; padding-top: 8px; border-top: 1px solid var(--line);}
+footer p {max-width: 75ch;}
 .source-table img {display: block; width: 100%; max-width: 889px; height: auto; margin: 16px 0;}
-footer {border-top: 1px solid light-dark(#dadce0, #44474d); margin-top: 20px; padding-top: 8px;}
+@media (max-width: 800px) {
+  .stage {grid-template-columns: minmax(0, 1fr);}
+}
+@media (max-width: 480px) {
+  main {padding: 12px 16px 32px;}
+  h1 {font-size: 1.45rem;}
+  #scene {height: 300px;}
+  .readout-date, .readout-delta {font-size: 1.2rem;}
+  .seg {display: flex;}
+  .seg button {flex: 1 1 0; padding: 0 8px;}
+}
 </style>
 </head>
 <body>
+<main>
 <nav aria-label="Навигация"><a href="../../index.html">← Все школьные материалы</a></nav>
-<p>Вращайте модель мышью или пальцем. Масштаб — кнопками −/+. Анимация запускается автоматически; управляйте ею кнопкой над моделью.</p>
-<iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Склонение Солнца — интерактивная 3D-модель" data-srcdoc="&lt;!doctype html&gt;
-&lt;html lang=&quot;ru&quot; data-visualize-standalone&gt;
-&lt;head&gt;
-&lt;meta charset=&quot;utf-8&quot;&gt;
-&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
-&lt;title&gt;Склонение Солнца — интерактивная 3D-модель&lt;/title&gt;
-&lt;style&gt;:root {
-  color-scheme: light dark;
-  background-color: var(
-    --background,
-    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
-  ) !important;
+<h1>Склонение Солнца</h1>
+<p class="lead"><strong>Склонение δ</strong> — угол между направлением на Солнце и плоскостью земного экватора. За год оно меняется от −23°27′ до +23°27′: Солнце бывает то к северу, то к югу от экватора.</p>
+
+<div class="seg" role="group" aria-label="Что зафиксировать">
+  <button type="button" data-mode="sun" aria-pressed="true">Зафиксировать Солнце</button>
+  <button type="button" data-mode="earth" aria-pressed="false">Зафиксировать Землю</button>
+</div>
+
+<section class="readout" aria-live="polite" id="readout">
+  <div class="readout-top">
+    <span class="readout-date" id="r-date"></span>
+    <span class="readout-delta">δ = <b id="r-delta"></b></span>
+    <span class="badge" id="r-event" hidden></span>
+  </div>
+  <p id="r-explain"></p>
+</section>
+
+<div class="stage">
+  <div class="panel">
+    <h3 id="scene-title">Солнце в центре</h3>
+    <p class="small" id="scene-sub"></p>
+    <canvas id="scene" aria-label="Трёхмерная модель"></canvas>
+    <div class="toolbar" role="group" aria-label="Управление видом">
+      <button class="btn" type="button" data-view="left" aria-label="Повернуть влево">↶</button>
+      <button class="btn" type="button" data-view="right" aria-label="Повернуть вправо">↷</button>
+      <button class="btn" type="button" data-view="top">Сверху</button>
+      <button class="btn" type="button" data-view="side">Сбоку</button>
+      <button class="btn" type="button" data-view="reset">Исходный вид</button>
+      <button class="btn" type="button" data-view="minus" aria-label="Отдалить">−</button>
+      <button class="btn" type="button" data-view="plus" aria-label="Приблизить">+</button>
+    </div>
+    <ul class="legend">
+      <li><span class="sw" style="border-color:var(--equator)"></span>Экватор</li>
+      <li><span class="sw dash" style="border-color:var(--tropic)"></span>Тропики</li>
+      <li><span class="sw" style="border-color:var(--orbit)"></span><span id="legend-orbit">Орбита Земли (плоскость эклиптики)</span></li>
+      <li><span class="sw" style="border-color:var(--ray)"></span>Направление на Солнце</li>
+      <li><span class="sw" style="border-color:var(--delta)"></span>Угол δ</li>
+      <li><span class="sw dot"></span>Солнце в зените</li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h3>Как измеряется δ</h3>
+    <p class="small">Разрез Земли через её ось и направление на Солнце. Угол измеряем у Земли.</p>
+    <svg id="section" viewBox="0 0 360 330" role="img" aria-label="Разрез Земли с углом склонения"></svg>
+    <p class="small">В полдень Солнце стоит в зените там, где его лучи падают отвесно. Угол δ у центра Земли равен широте этого места.</p>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="play" type="button" id="play" aria-pressed="false">▶ Показать движение за год</button>
+  <div class="slider-wrap">
+    <label for="day">Дата</label>
+    <input type="range" id="day" min="0" max="365" step="1" value="173">
+    <div class="months" id="months" aria-hidden="true"></div>
+  </div>
+  <div class="keydays">
+    <span class="small">Особые дни:</span>
+    <button class="btn" type="button" data-day="80">21 марта</button>
+    <button class="btn" type="button" data-day="173">22 июня</button>
+    <button class="btn" type="button" data-day="266">23 сентября</button>
+    <button class="btn" type="button" data-day="356">22 декабря</button>
+  </div>
+  <div class="layers">
+    <label><input type="checkbox" id="l-eq" checked>Плоскость экватора</label>
+    <label><input type="checkbox" id="l-ec" checked><span id="l-ec-text">Плоскость орбиты</span></label>
+    <label><input type="checkbox" id="l-tr" checked>Тропики</label>
+    <label><input type="checkbox" id="l-pc">Полярные круги</label>
+  </div>
+</div>
+
+<p class="hint small">Вращайте модель мышью или пальцем. Масштаб — кнопками −/+ (или Ctrl + колёсико). Дату можно выбрать ползунком, кнопками особых дней или щелчком по графику ниже.</p>
+
+<section aria-labelledby="chart-heading">
+  <h2 id="chart-heading">Склонение Солнца за год</h2>
+  <svg id="chart" role="img" aria-label="График склонения Солнца по дням года"></svg>
+  <p class="small">Пунктирные вертикали — дни равноденствий и солнцестояний.</p>
+</section>
 
-  /* Agent-facing contract; keep in sync with SKILL.md. */
-  --background: var(
-    --color-background-primary,
-    light-dark(rgb(255 255 255), rgb(24 24 24))
-  );
-  --foreground: var(
-    --color-text-primary,
-    light-dark(rgb(26 28 31), rgb(255 255 255))
-  );
-  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
-  --card-foreground: var(
-    --color-text-primary,
-    light-dark(rgb(26 28 31), rgb(255 255 255))
-  );
-  --popover: var(
-    --color-background-secondary,
-    light-dark(rgb(255 255 255), rgb(45 45 45))
-  );
-  --popover-foreground: var(
-    --color-text-primary,
-    light-dark(rgb(26 28 31), rgb(255 255 255))
-  );
-  --primary: var(
-    --color-text-info,
-    light-dark(rgb(51 156 255), rgb(131 195 255))
-  );
-  --primary-foreground: var(
-    --color-text-inverse,
-    light-dark(rgb(255 255 255), rgb(13 13 13))
-  );
-  --secondary: var(
-    --color-background-secondary,
-    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
-  );
-  --secondary-foreground: var(
-    --color-text-primary,
-    light-dark(rgb(26 28 31), rgb(255 255 255))
-  );
-  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
-  --muted-foreground: var(
-    --color-text-secondary,
-    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
-  );
-  --accent: var(
-    --color-background-info,
-    light-dark(rgb(229 242 255), rgb(13 39 63))
-  );
-  --accent-foreground: var(
-    --color-text-info,
-    light-dark(rgb(51 156 255), rgb(131 195 255))
-  );
-  --destructive: var(
-    --color-text-warning,
-    light-dark(rgb(226 85 7), rgb(255 133 73))
-  );
-  --border: var(
-    --color-border-secondary,
-    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
-  );
-  --input: var(
-    --color-border-primary,
-    light-dark(
-      rgb(26 28 31 / 11.8%),
-      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
-    )
-  );
-  --ring: var(
-    --color-ring-primary,
-    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
-  );
-  --font-size-base: var(--font-text-md-size, 14px);
-  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
-  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
-  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
-  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
-  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
-  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
-  --viz-series-1: var(--primary);
-  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
-  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
-  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
-  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
-  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
-
-  /* Internal implementation variables; not part of the agent contract. */
-  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
-  --font-mono:
-    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
-    monospace;
-  --font-size-normal: max(11px, var(--font-size-base));
-  --font-size-tooltip: calc(var(--font-size-base) - 1px);
-  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
-  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
-  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
-  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
-  --font-weight-normal: 430;
-  --font-weight-medium: 500;
-  --icon-size: 16px;
-  --line-height-normal: calc(var(--font-size-normal) * 1.5);
-  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
-  --line-height-small: calc(var(--font-size-small) + 4px);
-  --corner-shape: round;
-  --radius: var(--border-radius-lg, 10px);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-2xl: calc(var(--radius) * 1.6);
-  --radius-full: 9999px;
-  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
-  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
-
-  /* Legacy aliases; not part of the current agent contract. */
-  --viz-bg: transparent;
-  --viz-panel: var(--card);
-  --viz-border: var(--border);
-  --viz-text: var(--foreground);
-  --viz-muted: var(--muted-foreground);
-  --viz-accent: var(--primary);
-  --viz-accent-text: var(--primary-foreground);
-  --viz-accent-bg: var(--accent);
-  --viz-font-size: var(--font-size-base);
-  --viz-warning: var(--destructive);
-}
-
-:root[data-theme=&quot;light&quot;] {
-  color-scheme: light;
-}
-
-:root[data-theme=&quot;dark&quot;] {
-  color-scheme: dark;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html &gt; body {
-  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
-  --color-background-primary: var(
-    --background,
-    light-dark(rgb(255 255 255), rgb(24 24 24))
-  );
-  --color-text-primary: var(
-    --foreground,
-    light-dark(rgb(26 28 31), rgb(255 255 255))
-  );
-  --color-border-secondary: var(
-    --border,
-    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
-  );
-
-  margin: 0;
-  padding: var(--visualize-paint-gutter, 0px);
-  color: var(--foreground);
-  background: transparent !important;
-  font-family: var(--font-sans) !important;
-  font-size: var(--font-size-normal);
-  font-weight: var(--font-weight-normal);
-  line-height: var(--line-height-normal);
-}
-
-a {
-  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
-  cursor: pointer;
-  font-weight: var(--font-weight-medium, 500);
-  text-decoration: none;
-  text-underline-offset: 2px;
-}
-
-a:is(:hover, :focus-visible) {
-  text-decoration-line: underline;
-  text-decoration-style: dashed;
-  text-decoration-thickness: 0.5px;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-  margin-block: 0;
-}
-
-h1 {
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.25;
-}
-
-h2 {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.25;
-}
-
-h3,
-h4,
-h5,
-h6 {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.3;
-}
-
-b,
-strong,
-th {
-  font-weight: var(--font-weight-medium);
-}
-
-code:not(pre code) {
-  display: inline;
-  padding: 1px 6px;
-  border-radius: var(--radius-sm);
-  corner-shape: var(--corner-shape);
-  background: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.92em;
-  overflow-wrap: anywhere;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  word-break: break-word;
-}
-
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  color: var(--foreground);
-  font: inherit;
-  text-align: start;
-}
-
-.table :is(th, td) {
-  padding-block: 10px;
-  padding-inline: 0 24px;
-  overflow-wrap: anywhere;
-  border-bottom: 1px solid var(--border);
-  text-align: start;
-  vertical-align: top;
-}
-
-.table-responsive &gt; .table :is(th, td) {
-  overflow-wrap: break-word;
-}
-
-.table :is(th, td):last-child {
-  padding-inline-end: 0;
-}
-
-.table :is(caption, thead th) {
-  font-weight: 600;
-}
-
-.table thead th {
-  padding-block: 8px;
-  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
-}
-
-.table tbody tr:last-child :is(th, td) {
-  border-bottom: 0;
-}
-
-.table.table-sm :is(th, td) {
-  padding-block: 6px;
-}
-
-.table.table-sm :is(th, td):not(:last-child) {
-  padding-inline-end: 16px;
-}
-
-.table :is(.text-end, [align=&quot;right&quot;]) {
-  text-align: end;
-  font-variant-numeric: tabular-nums;
-}
-
-.table :is(.text-center, [align=&quot;center&quot;]) {
-  text-align: center;
-}
-
-.table .text-nowrap {
-  white-space: nowrap;
-}
-
-#widget {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  padding: 0;
-  background: transparent !important;
-}
-
-.card {
-  min-width: 0;
-  padding: 12px;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  border-radius: var(--radius-2xl);
-  corner-shape: var(--corner-shape);
-  color: var(--card-foreground);
-  background: var(--card);
-}
-
-#widget &gt; :not(.card, .progress) {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.tooltip {
-  position: fixed;
-  z-index: 50;
-  top: 0;
-  left: 0;
-  width: max-content;
-  max-width: min(
-    20rem,
-    var(--tooltip-available-width, calc(100vw - 10px)),
-    calc(100vw - 10px)
-  );
-  max-height: min(
-    var(--tooltip-available-height, calc(100vh - 10px)),
-    calc(100vh - 10px)
-  );
-  padding: 4px 8px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  corner-shape: var(--corner-shape);
-  color: var(--popover-foreground);
-  background: var(--popover);
-  box-shadow: none;
-  font-size: var(--font-size-tooltip);
-  line-height: var(--line-height-tooltip);
-  overflow-wrap: break-word;
-  white-space: normal;
-  pointer-events: none;
-  user-select: none;
-}
-
-.viz-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
-  gap: 10px;
-}
-
-.viz-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.viz-stat-value {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.25;
-}
-
-.viz-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-
-hr {
-  width: 100%;
-  height: 1px;
-  margin-block: 6px;
-  border: 0;
-  background: var(--border);
-}
-
-.nav {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 4px;
-}
-
-.progress {
-  display: flex;
-  height: 8px;
-  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
-  overflow: hidden;
-  border: 0;
-  border-radius: var(--radius-full);
-  background: var(--muted);
-}
-
-.progress-bar:only-child {
-  border-radius: var(--radius-full);
-}
-
-.progress-bar {
-  height: 100%;
-  flex-shrink: 0;
-  border: 0;
-  background: var(--viz-series-1);
-}
-
-.viz-badge {
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-  color: var(--accent-foreground);
-  background: var(--accent);
-  font-weight: var(--font-weight-medium);
-}
-
-small,
-.text-small,
-.viz-badge {
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
-}
-
-.text-muted {
-  color: var(--muted-foreground);
-}
-
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.viz-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.viz-controls &gt; .form-label {
-  display: grid;
-  min-width: min(100%, 260px);
-  flex: 1 1 280px;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 2px 12px;
-  margin-bottom: 0;
-}
-
-.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
-  grid-column: 1 / -1;
-}
-
-.btn,
-.nav-link,
-.form-check-input,
-.form-control,
-.form-range,
-.form-select {
-  font: inherit;
-}
-
-.btn,
-.nav-link {
-  appearance: button;
-  display: inline-flex;
-  inline-size: fit-content;
-  max-inline-size: 100%;
-  min-height: 28px;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin: 0;
-  padding: 0 8px;
-  -webkit-app-region: no-drag;
-  border: 1px solid var(--input);
-  border-radius: var(--radius-lg);
-  corner-shape: var(--corner-shape);
-  color: var(--secondary-foreground);
-  background: var(--secondary);
-  cursor: var(--cursor-interaction, pointer);
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-  user-select: none;
-  -webkit-font-smoothing: antialiased;
-}
-
-.btn:is(.btn-block, .viz-tile) {
-  inline-size: 100%;
-}
-
-.btn.viz-tile {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-a.btn {
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn:not(:disabled):hover,
-.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
-  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
-}
-
-.btn-primary {
-  border-color: transparent;
-  color: var(--primary-foreground);
-  background: var(--foreground);
-  background-clip: padding-box;
-}
-
-.btn-primary .text-muted {
-  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
-}
-
-.btn-primary:not(:disabled):hover {
-  background: color-mix(in srgb, var(--foreground) 80%, transparent);
-  background-clip: padding-box;
-}
-
-.btn-ghost {
-  border-color: transparent;
-  color: var(--muted-foreground);
-  background: transparent;
-}
-
-.btn-ghost:not(:disabled):hover {
-  color: var(--foreground);
-  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
-}
-
-.nav-pills .nav-link {
-  min-width: 0;
-  border-color: transparent;
-  color: var(--muted-foreground);
-  background: transparent;
-}
-
-.nav-justified .nav-link {
-  flex: 1 1 0;
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-.nav-pills .nav-link.active {
-  color: var(--foreground);
-  background: var(--muted);
-}
-
-.btn:disabled,
-.nav-link:disabled,
-.nav-link[aria-disabled=&quot;true&quot;] {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-[data-lucide] {
-  stroke-width: 1.6;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--foreground);
-}
-
-.form-control {
-  display: block;
-  width: 100%;
-  min-height: 28px;
-  padding: 0 8px;
-  outline: none;
-  border: 1px solid var(--input);
-  border-radius: var(--radius-lg);
-  corner-shape: var(--corner-shape);
-  color: var(--foreground);
-  background: var(--secondary);
-}
-
-.form-control::placeholder {
-  color: var(--muted-foreground);
-}
-
-.form-control[type=&quot;file&quot;] {
-  padding: 0;
-  overflow: hidden;
-  cursor: var(--cursor-interaction, pointer);
-}
-
-.form-control[type=&quot;file&quot;]::file-selector-button {
-  min-height: 26px;
-  margin-right: 8px;
-  padding: 0 8px;
-  border: 0;
-  border-right: 1px solid var(--input);
-  color: var(--secondary-foreground);
-  background: var(--secondary);
-  cursor: inherit;
-  font: inherit;
-}
-
-.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
-  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
-}
-
-.form-control-color[type=&quot;color&quot;] {
-  width: 40px;
-  height: 28px;
-  padding: 3px;
-  cursor: var(--cursor-interaction, pointer);
-}
-
-.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
-  border: 0;
-  border-radius: calc(var(--radius-lg) - 4px);
-  corner-shape: var(--corner-shape);
-}
-
-textarea.form-control {
-  height: auto;
-  min-height: 72px;
-  padding: 8px 10px;
-  resize: vertical;
-}
-
-.form-control:focus-visible {
-  border-color: var(--ring);
-  box-shadow: inset 0 0 0 1px var(--ring);
-}
-
-.form-control:disabled,
-.form-select:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-.form-select {
-  appearance: none;
-  display: block;
-  width: 100%;
-  min-height: 28px;
-  margin: 0;
-  padding: 0 32px 0 8px;
-  outline: none;
-  border: 1px solid var(--input);
-  border-radius: var(--radius-lg);
-  corner-shape: var(--corner-shape);
-  color: var(--foreground);
-  background-color: var(--secondary);
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
-    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
-  background-position:
-    calc(100% - 14px) 50%,
-    calc(100% - 10px) 50%;
-  background-repeat: no-repeat;
-  background-size: 4px 4px;
-  cursor: var(--cursor-interaction, default);
-}
-
-.form-select:not(:disabled):hover {
-  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
-}
-
-.form-select:focus-visible {
-  border-color: var(--ring);
-  box-shadow: inset 0 0 0 1px var(--ring);
-}
-
-.form-check {
-  display: flex;
-  min-height: 20px;
-  align-items: center;
-  gap: 6px;
-}
-
-.form-check-input {
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  flex: 0 0 auto;
-  margin: 0;
-  border: 1px solid var(--input);
-  color: var(--primary-foreground);
-  background-color: transparent;
-  cursor: var(--cursor-interaction, default);
-  transition:
-    background-color 150ms,
-    border-color 150ms,
-    box-shadow 150ms;
-}
-
-.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
-  border-color: var(--input);
-  border-radius: var(--radius-sm);
-  corner-shape: var(--corner-shape);
-  background-color: var(--secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-.form-check:not(.form-switch)
-  .form-check-input:not(:disabled):not(:checked):hover {
-  background-color: var(--card);
-}
-
-.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
-  border-color: var(--primary);
-  background-color: var(--primary);
-}
-
-.form-check:not(.form-switch)
-  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--primary-foreground);
-  content: &quot;&quot;;
-  mask: var(--checkmark-image) center / 12px 12px no-repeat;
-}
-
-.form-check-input[type=&quot;radio&quot;] {
-  width: 14px;
-  height: 14px;
-  border-radius: var(--radius-full);
-}
-
-.form-check-input[type=&quot;radio&quot;]:checked {
-  border: 2px solid var(--primary);
-  background:
-    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
-    var(--primary);
-}
-
-.form-check:not(.form-switch) .form-check-input:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-.form-check:not(.form-switch) .form-check-input:disabled {
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
-  cursor: not-allowed;
-}
-
-.form-switch .form-check-input:disabled,
-.form-switch .form-check-input:disabled + .form-check-label {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.form-check-label {
-  color: var(--foreground);
-  cursor: var(--cursor-interaction, default);
-}
-
-.form-switch .form-check-input {
-  position: relative;
-  width: 32px;
-  height: 20px;
-  border: 0;
-  border-radius: var(--radius-full);
-  background: var(--muted);
-  box-shadow: none;
-  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.form-switch .form-check-input::before {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 16px;
-  height: 16px;
-  box-sizing: border-box;
-  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
-  border-radius: var(--radius-full);
-  background: light-dark(var(--primary-foreground), var(--foreground));
-  box-shadow: var(--shadow-sm);
-  content: &quot;&quot;;
-  transform: translate(2px, -50%);
-  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.form-switch .form-check-input:checked {
-  background: var(--primary);
-}
-
-.form-switch .form-check-input:checked::before {
-  transform: translate(14px, -50%);
-}
-
-.form-switch .form-check-input:focus-visible {
-  box-shadow: 0 0 0 2px var(--ring);
-}
-
-.form-range {
-  appearance: none;
-  display: block;
-  width: 100%;
-  height: 28px;
-  flex: 1;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  border: 0;
-  accent-color: var(--primary);
-  background: linear-gradient(
-      color-mix(in srgb, var(--foreground) 7%, transparent),
-      color-mix(in srgb, var(--foreground) 7%, transparent)
-    )
-    center / 100% 2px no-repeat;
-}
-
-.form-range::-webkit-slider-runnable-track {
-  height: 28px;
-  background: transparent;
-}
-
-.form-range::-webkit-slider-thumb {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  margin-top: 4px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  background: light-dark(var(--primary-foreground), var(--foreground));
-}
-
-.form-range:focus-visible::-webkit-slider-thumb {
-  border-color: var(--ring);
-  box-shadow: inset 0 0 0 1px var(--ring);
-}
-
-.form-range::-moz-range-track {
-  height: 28px;
-  background: transparent;
-}
-
-.form-range::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  background: light-dark(var(--primary-foreground), var(--foreground));
-}
-
-.form-range:focus-visible::-moz-range-thumb {
-  border-color: var(--ring);
-  box-shadow: inset 0 0 0 1px var(--ring);
-}
-
-.form-range:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-.btn:not(.btn-primary, .viz-tile):is(
-  [aria-pressed=&quot;true&quot;],
-  [aria-selected=&quot;true&quot;],
-  .is-selected
-) {
-  border-color: var(--primary);
-  color: var(--primary-foreground);
-  background: var(--primary);
-}
-
-.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
-  border-color: var(--primary);
-  box-shadow: inset 0 0 0 1px var(--primary);
-}
-
-.btn:focus-visible,
-.nav-link:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-@media (pointer: coarse) {
-  .btn,
-  .nav-link,
-  .form-control,
-  .form-select {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  /* Keep small-screen WebKit from zooming when a text field receives focus. */
-  .form-control,
-  .form-select {
-    font-size: max(16px, var(--font-size-normal));
-  }
-
-  .form-control[type=&quot;file&quot;]::file-selector-button {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  .form-control-color[type=&quot;color&quot;] {
-    width: 44px;
-    height: 44px;
-  }
-
-  .form-control:is(
-    [type=&quot;date&quot;],
-    [type=&quot;datetime-local&quot;],
-    [type=&quot;month&quot;],
-    [type=&quot;time&quot;],
-    [type=&quot;week&quot;]
-  ) {
-    min-width: 0;
-    max-width: 100%;
-    padding-block: 8px;
-  }
-
-  .form-check {
-    min-height: 44px;
-    padding-inline: 15px;
-  }
-
-  .form-check-input {
-    position: relative;
-  }
-
-  .form-check-input::after {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 44px;
-    height: 44px;
-    content: &quot;&quot;;
-    transform: translate(-50%, -50%);
-  }
-
-  .form-check-label {
-    display: inline-flex;
-    min-width: 44px;
-    min-height: 44px;
-    align-items: center;
-  }
-
-  .form-range {
-    height: 44px;
-    touch-action: pan-y;
-  }
-
-  .form-range::-webkit-slider-runnable-track {
-    height: 44px;
-  }
-
-  .form-range::-moz-range-track {
-    height: 44px;
-  }
-
-  .form-range::-webkit-slider-thumb {
-    margin-top: 12px;
-  }
-}
-
-svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-#widget &gt; svg {
-  width: 100%;
-}
-
-/* Model-authored chart rules can otherwise stretch icons after these styles load. */
-svg.lucide {
-  display: block;
-  width: var(--icon-size) !important;
-  height: var(--icon-size) !important;
-  flex: none;
-  margin: 0 !important;
-  stroke-width: 1.6;
-}
-
-.text-warning,
-.text-destructive {
-  color: var(--destructive);
-}
-
-html&gt;body{padding:0}&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
-&lt;script&gt;(() =&gt; {
-  const root = document.documentElement;
-  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
-  const apply = Reflect.apply;
-  const isArray = Array.isArray;
-  const hasOwn = Object.hasOwn;
-  const parentWindow = globalThis.parent;
-  const stringify = JSON.stringify;
-  const parse = JSON.parse;
-  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
-  const initialStateElement = document.getElementById(
-    &quot;codex-visualization-widget-state&quot;,
-  );
-  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
-  initialStateElement?.remove();
-  /** @type {Record&lt;string, unknown&gt; | null} */
-  let state = initialGlobals.widgetState ?? null;
-  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
-  let nextStateRequestId = 0;
-  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
-  const pendingStateWrites = new Map();
-  const persistenceError = () =&gt;
-    Object.assign(
-      new Error(&quot;The host could not persist the widget state update&quot;),
-      {
-        code: -32000,
-        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
-      },
-    );
-  /**
-   * @param {object} prototype
-   * @param {string} property
-   */
-  const getPrototypeGetter = (prototype, property) =&gt; {
-    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
-    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
-    if (getter == null) {
-      throw new Error(`Missing ${property} getter`);
-    }
-    return getter;
-  };
-  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
-  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
-  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
-  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
-  const addHostMessageListener = MessagePort.prototype.addEventListener;
-  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
-  const postHostMessage = MessagePort.prototype.postMessage;
-  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
-  const startHostPort = MessagePort.prototype.start;
-  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
-  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
-  /** @type {MessagePort | null} */
-  let hostPort = null;
-  const postToHost = (type, payload) =&gt; {
-    if (hostPort != null) {
-      apply(postHostMessage, hostPort, [{ type, ...payload }]);
-    }
-  };
-  const openExternal = ({ href }) =&gt; {
-    if (globalThis.navigator.userActivation?.isActive === true) {
-      postToHost(&quot;open-external&quot;, { href });
-    }
-  };
-  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
-    if (globalThis.navigator.userActivation?.isActive === true) {
-      postToHost(&quot;follow-up&quot;, { context, prompt, title });
-    }
-    return Promise.resolve();
-  };
-  /**
-   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
-   * @returns {Promise&lt;void&gt;}
-   */
-  const setWidgetState = async (next) =&gt; {
-    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
-    if (
-      nextState == null ||
-      typeof nextState !== &quot;object&quot; ||
-      isArray(nextState)
-    ) {
-      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
-    }
-    const inputState = stringify(
-      nextState,
-      (_key, /** @type {unknown} */ value) =&gt; {
-        if (
-          typeof value === &quot;undefined&quot; ||
-          typeof value === &quot;function&quot; ||
-          typeof value === &quot;symbol&quot; ||
-          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
-        ) {
-          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
-        }
-        return value;
-      },
-    );
-    const parsedState = parse(inputState);
-    if (
-      parsedState == null ||
-      typeof parsedState !== &quot;object&quot; ||
-      isArray(parsedState)
-    ) {
-      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
-    }
-    const storedState = {
-      modelContent: null,
-      privateContent: null,
-      ...parsedState,
-    };
-    const serializedState = stringify(storedState);
-    if (encode(serializedState).length &gt; 16 * 1024) {
-      throw new TypeError(
-        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
-      );
-    }
-    if (
-      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
-      (!isArray(storedState.imageIds) ||
-        storedState.imageIds.some(
-          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
-        ))
-    ) {
-      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
-    }
-    if (storedState.imageIds?.length &gt; 0) {
-      throw Object.assign(
-        new TypeError(&quot;Visualization state does not support image attachments&quot;),
-        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
-      );
-    }
-    state = storedState;
-    globalThis.openai.widgetState = state;
-    globalThis.dispatchEvent(
-      new CustomEvent(&quot;openai:set_globals&quot;, {
-        detail: { globals: { widgetState: state } },
-      }),
-    );
-    if (statePersistence === &quot;none&quot;) {
-      throw persistenceError();
-    }
-    const id = ++nextStateRequestId;
-    return new Promise((resolve, reject) =&gt; {
-      const timeout = globalThis.setTimeout(() =&gt; {
-        pendingStateWrites.delete(id);
-        reject(persistenceError());
-      }, 30_000);
-      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
-      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
-    });
-  };
-  const syncTheme = () =&gt; {
-    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
-    root.dataset.theme = theme;
-    globalThis.openai = {
-      ...globalThis.openai,
-      openExternal,
-      sendFollowUpMessage,
-      setWidgetState,
-      theme,
-      visualizationStyleVariables: {},
-      visualizationTheme: theme,
-      widgetState: state,
-      statePersistence,
-      stateModelContext: &quot;none&quot;,
-    };
-    globalThis.dispatchEvent(
-      new CustomEvent(&quot;openai:set_globals&quot;, {
-        detail: { globals: globalThis.openai },
-      }),
-    );
-  };
-  const sendHeight = () =&gt; {
-    postToHost(&quot;height&quot;, {
-      height: Math.ceil(
-        Math.max(
-          document.body.scrollHeight,
-          document.body.getBoundingClientRect().height,
-        ),
-      ),
-    });
-  };
-
-  globalThis.addEventListener(
-    &quot;message&quot;,
-    (event) =&gt; {
-      const data = apply(getMessageData, event, []);
-      const ports = apply(getMessagePorts, event, []);
-      const source = apply(getMessageSource, event, []);
-      if (
-        hostPort != null ||
-        source !== parentWindow ||
-        typeof data !== &quot;object&quot; ||
-        data?.type !== &quot;codex-visualization-initialize&quot; ||
-        !isArray(ports) ||
-        ports.length !== 1
-      ) {
-        return;
-      }
-      apply(stopMessagePropagation, event, []);
-      const nextHostPort = ports[0];
-      try {
-        apply(addHostMessageListener, nextHostPort, [
-          &quot;message&quot;,
-          (event) =&gt; {
-            const data = apply(getMessageData, event, []);
-            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
-              sendHeight();
-            } else if (
-              typeof data === &quot;object&quot; &amp;&amp;
-              data?.type === &quot;widget-state-result&quot;
-            ) {
-              /** @type {unknown} */
-              const id = data.id;
-              if (typeof id !== &quot;number&quot;) {
-                return;
-              }
-              const pending = pendingStateWrites.get(id);
-              if (pending != null) {
-                pendingStateWrites.delete(id);
-                globalThis.clearTimeout(pending.timeout);
-                if (data.ok === true) {
-                  pending.resolve();
-                } else {
-                  pending.reject(persistenceError());
-                }
-              }
-            }
-          },
-        ]);
-        apply(startHostPort, nextHostPort, []);
-      } catch {
-        return;
-      }
-      hostPort = nextHostPort;
-      for (const [id, { serializedState }] of pendingStateWrites) {
-        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
-      }
-      sendHeight();
-    },
-    { capture: true },
-  );
-  document.currentScript?.remove();
-  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
-  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
-    if (event.defaultPrevented) {
-      return;
-    }
-    let element = null;
-    if (event.target instanceof globalThis.Element) {
-      element = event.target;
-    } else if (event.target instanceof globalThis.Node) {
-      element = event.target.parentElement;
-    }
-    const link = element?.closest(&quot;a[href]&quot;);
-    const href = link?.getAttribute(&quot;href&quot;);
-    if (href == null) {
-      return;
-    }
-    if (href.startsWith(&quot;#&quot;)) {
-      let id;
-      try {
-        id = decodeURIComponent(href.slice(1));
-      } catch {
-        return;
-      }
-      const target = id.length === 0 ? root : document.getElementById(id);
-      if (
-        target == null ||
-        globalThis.navigator.userActivation?.isActive !== true
-      ) {
-        return;
-      }
-      event.preventDefault();
-      postToHost(&quot;scroll-to&quot;, {
-        top: target.getBoundingClientRect().top + globalThis.scrollY,
-      });
-      return;
-    }
-    event.preventDefault();
-    openExternal({ href });
-  });
-  new ResizeObserver(sendHeight).observe(document.body);
-  syncTheme();
-})();
-&lt;/script&gt;
-&lt;div id=&quot;sun3d&quot;&gt;
-&lt;style&gt;
-#sun3d {color:var(--foreground)}
-#sun3d canvas {display:block;width:100%;height:440px;touch-action:none;cursor:grab}
-#sun3d canvas:active {cursor:grabbing}
-#sun3d #sun3d-play {width:100%;min-height:56px;font-size:20px;font-weight:500;margin-top:12px}
-#sun3d .readout {margin:12px 0}
-#sun3d .legend {margin:8px 0}
-#sun3d .swatch {display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:5px}
-@media(max-width:460px){#sun3d canvas{height:280px}}
-&lt;/style&gt;
-&lt;h2&gt;Склонение Солнца · 3D&lt;/h2&gt;
-&lt;div class=&quot;viz-row legend text-small&quot;&gt;&lt;span&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:var(--viz-series-1)&quot;&gt;&lt;/span&gt;Экватор&lt;/span&gt;&lt;span&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:var(--viz-series-2)&quot;&gt;&lt;/span&gt;Эклиптика&lt;/span&gt;&lt;span&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:var(--viz-series-3)&quot;&gt;&lt;/span&gt;Направление на Солнце&lt;/span&gt;&lt;/div&gt;
-&lt;button class=&quot;btn btn-primary btn-block&quot; type=&quot;button&quot; id=&quot;sun3d-play&quot; aria-pressed=&quot;true&quot;&gt;Остановить&lt;/button&gt;
-&lt;div class=&quot;readout tabular-nums&quot; aria-live=&quot;polite&quot;&gt;&lt;span id=&quot;sun3d-value&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span id=&quot;sun3d-location&quot; class=&quot;text-small&quot;&gt;&lt;/span&gt;&lt;/div&gt;
-&lt;canvas aria-label=&quot;Вращаемая трёхмерная модель Земли, экватора, эклиптики и направления на Солнце&quot;&gt;&lt;/canvas&gt;
-&lt;div class=&quot;viz-row&quot;&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;sun3d-left&quot; aria-label=&quot;Повернуть влево&quot;&gt;↶&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;sun3d-right&quot; aria-label=&quot;Повернуть вправо&quot;&gt;↷&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;sun3d-up&quot;&gt;Вид сверху&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;sun3d-reset&quot;&gt;Исходный вид&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;sun3d-minus&quot; aria-label=&quot;Отдалить&quot;&gt;−&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;sun3d-plus&quot; aria-label=&quot;Приблизить&quot;&gt;+&lt;/button&gt;&lt;/div&gt;
-&lt;div class=&quot;text-small&quot;&gt;1 день за 0,18 с · плавный переход между значениями&lt;/div&gt;
-&lt;label class=&quot;form-label&quot; for=&quot;sun3d-day&quot;&gt;Дата в таблице&lt;/label&gt;&lt;input class=&quot;form-range&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;365&quot; value=&quot;172&quot; id=&quot;sun3d-day&quot;&gt;
-&lt;div class=&quot;viz-row&quot;&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; data-day=&quot;80&quot;&gt;Март&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; data-day=&quot;172&quot;&gt;Июнь&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; data-day=&quot;266&quot;&gt;Сентябрь&lt;/button&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; data-day=&quot;355&quot;&gt;Декабрь&lt;/button&gt;&lt;/div&gt;
-&lt;div class=&quot;viz-row legend&quot;&gt;&lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sun3d-eq&quot; checked&gt;&lt;span class=&quot;form-check-label&quot;&gt;Плоскость экватора&lt;/span&gt;&lt;/label&gt;&lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sun3d-ec&quot; checked&gt;&lt;span class=&quot;form-check-label&quot;&gt;Плоскость эклиптики&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;
-&lt;div class=&quot;text-small&quot; id=&quot;sun3d-warning&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;script&gt;
-(()=&gt;{
-const root=document.getElementById(&#x27;sun3d&#x27;),canvas=root.querySelector(&#x27;canvas&#x27;),ctx=canvas.getContext(&#x27;2d&#x27;);
-const rows=[
-&#x27;-23:7 -23:2 -22:57 -22:52 -22:46 -22:40 -22:33 -22:25 -22:18 -22:10 -22:1 -21:52 -21:43 -21:33 -21:22 -21:12 -20:1 -20:49 -20:37 -20:25 -20:12 -19:59 -19:46 -19:32 -19:18 -19:3 -18:48 -18:33 -18:18 -18:2 -17:46&#x27;,
-&#x27;-17:29 -17:12 -16:55 -16:38 -16:20 -16:2 -15:44 -15:25 -15:7 -14:48 -14:28 -14:9 -13:49 -13:29 -13:9 -12:48 -12:28 -12:7 -11:46 -11:25 -11:3 -10:42 -10:20 -9:58 -9:36 -9:14 -8:51 -8:29 -8:6&#x27;,
-&#x27;-7:44 -7:21 -6:58 -6:35 -6:12 -5:49 -5:25 -5:2 -4:39 -4:15 -3:52 -3:28 -3:5 -2:41 -2:17 -1:54 -1:30 -1:6 -0:24 -0:19 0:5 0:29 0:52 1:16 1:40 2:3 2:27 2:50 3:14 3:37 4:0&#x27;,
-&#x27;4:24 4:47 5:10 5:33 5:56 6:18 6:41 7:3 7:26 7:49 8:10 8:32 8:54 9:16 9:38 9:59 10:20 10:41 11:2 11:23 11:44 12:4 12:24 12:44 13:4 13:23 13:43 14:2 14:20 14:39&#x27;,
-&#x27;14:57 15:16 15:33 15:51 16:8 16:26 16:42 16:59 17:15 17:31 17:47 18:2 18:17 18:32 18:46 19:1 19:14 19:28 19:41 19:54 20:6 20:18 20:30 20:42 20:53 21:4 21:14 21:24 21:34 21:43 21:52&#x27;,
-&#x27;22:0 22:8 22:16 22:23 22:30 22:37 22:43 22:49 22:54 22:59 23:4 23:8 23:12 23:15 23:18 23:20 23:22 23:24 23:25 23:26 23:27 23:27 23:26 23:26 23:25 23:23 23:21 23:18 23:16 23:12&#x27;,
-&#x27;23:9 23:5 23:0 22:55 22:50 22:44 22:38 22:32 22:25 22:18 22:10 22:2 21:54 21:45 21:36 21:26 21:17 21:6 20:56 20:45 20:33 20:22 20:10 19:58 19:45 19:32 19:19 19:5 18:51 18:37 18:23&#x27;,
-&#x27;18:8 17:53 17:27 17:22 17:6 16:49 16:33 16:16 15:59 15:42 15:25 15:6 14:48 14:30 14:11 13:53 13:34 13:14 12:55 12:35 12:16 11:56 11:35 11:15 10:55 10:34 10:13 9:52 9:31 9:9 8:48&#x27;,
-&#x27;8:26 8:4 7:43 7:21 6:58 6:36 6:14 5:51 5:29 5:6 4:43 4:20 3:58 3:34 3:11 2:48 2:25 2:2 1:39 1:15 0:52 0:29 0:5 -0:18 -0:41 -1:5 -1:28 -1:52 -2:15 -2:38&#x27;,
-&#x27;-3:2 -3:25 -3:48 -4:11 -4:35 -4:58 -5:21 -5:44 -6:7 -6:29 -6:52 -7:15 -7:37 -8:0 -8:22 -8:44 -9:6 -9:28 -9:50 -10:12 -10:33 -10:55 -11:16 -11:37 -11:58 -12:19 -12:39 -12:59 -13:19 -13:39 -13:59&#x27;,
-&#x27;-14:18 -14:38 -14:57 -15:15 -15:34 -15:52 -16:10 -16:28 -16:45 -17:2 -17:19 -17:36 -17:52 -18:8 -18:23 -18:39 -18:54 -19:8 -19:23 -19:36 -19:50 -20:3 -20:16 -20:29 -20:41 -20:52 -21:4 -21:15 -21:26 -21:35&#x27;,
-&#x27;-21:45 -21:54 -22:3 -22:12 -22:20 -22:27 -22:34 -22:41 -22:47 -22:53 -22:58 -23:3 -23:8 -23:12 -23:15 -23:18 -23:21 -23:23 -23:25 -23:26 -23:27 -23:27 -23:27 -23:26 -23:25 -23:23 -23:21 -23:18 -23:15 -23:12 -23:8&#x27;
-];
-const names=[&#x27;января&#x27;,&#x27;февраля&#x27;,&#x27;марта&#x27;,&#x27;апреля&#x27;,&#x27;мая&#x27;,&#x27;июня&#x27;,&#x27;июля&#x27;,&#x27;августа&#x27;,&#x27;сентября&#x27;,&#x27;октября&#x27;,&#x27;ноября&#x27;,&#x27;декабря&#x27;];
-const data=[];rows.forEach((row,m)=&gt;row.split(&#x27; &#x27;).forEach((s,d)=&gt;{const [a,b]=s.replace(&#x27;-&#x27;,&#x27;&#x27;).split(&#x27;:&#x27;).map(Number);data.push({m,d:d+1,delta:(s.startsWith(&#x27;-&#x27;)?-1:1)*(a+b/60)});}));
-console.assert(data.length===366,&#x27;366 daily values&#x27;);
-const rad=Math.PI/180,eps=23.45*rad;
-let playing=false,animationId=null,lastFrame=null,fraction=0,currentDelta=0;
-let index=172,yaw=.95,pitch=.34,zoom=1,W=640,H=440,drag=null,colors={},sun=[0,0,1],labelBoxes=[];
-const play=root.querySelector(&#x27;#sun3d-play&#x27;),readout=root.querySelector(&#x27;.readout&#x27;);
-const day=root.querySelector(&#x27;#sun3d-day&#x27;),eq=root.querySelector(&#x27;#sun3d-eq&#x27;),ec=root.querySelector(&#x27;#sun3d-ec&#x27;);
-const add=(a,b)=&gt;a.map((v,i)=&gt;v+b[i]),scale=(a,s)=&gt;a.map(v=&gt;v*s),dot=(a,b)=&gt;a.reduce((s,v,i)=&gt;s+v*b[i],0);
-function rotate(p){const x=p[0]*Math.cos(yaw)+p[2]*Math.sin(yaw),z=-p[0]*Math.sin(yaw)+p[2]*Math.cos(yaw);return [x,p[1]*Math.cos(pitch)-z*Math.sin(pitch),p[1]*Math.sin(pitch)+z*Math.cos(pitch)];}
-function project(p){const q=rotate(p),s=Math.min(W/(W&lt;460?7.3:8.5),H/6.8)*zoom;return [W/2+q[0]*s,H/2-q[1]*s,q[2]];}
-function css(name){const probe=document.createElement(&#x27;span&#x27;);probe.style.color=`var(${name})`;root.append(probe);const color=getComputedStyle(probe).color;probe.remove();return color;}
-function theme(){colors={fg:css(&#x27;--foreground&#x27;),border:css(&#x27;--border&#x27;),bg:css(&#x27;--background&#x27;),earth:css(&#x27;--viz-series-1&#x27;),eq:css(&#x27;--viz-series-1&#x27;),ec:css(&#x27;--viz-series-2&#x27;),sun:css(&#x27;--viz-series-3&#x27;)};}
-function line(points,color,width=1,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;{const q=project(p);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
-function label(p,text,color=colors.fg,dx=0,dy=0){
-const q=project(p);ctx.fillStyle=color;ctx.font=(W&lt;460?&#x27;13&#x27;:&#x27;12&#x27;)+&#x27;px system-ui&#x27;;ctx.textAlign=&#x27;center&#x27;;
-const tw=ctx.measureText(text).width;
-for(const [ox,oy] of [[0,0],[0,-20],[0,20],[-24,-20],[24,20],[0,-40],[0,40]]){
-const x=Math.max(tw/2+5,Math.min(W-tw/2-5,q[0]+dx+ox)),y=Math.max(16,Math.min(H-6,q[1]+dy+oy));
-const box={left:x-tw/2-3,right:x+tw/2+3,top:y-14,bottom:y+5};
-if(labelBoxes.some(b=&gt;box.left&lt;b.right&amp;&amp;box.right&gt;b.left&amp;&amp;box.top&lt;b.bottom&amp;&amp;box.bottom&gt;b.top))continue;
-labelBoxes.push(box);ctx.strokeStyle=colors.bg;ctx.lineWidth=3;ctx.lineJoin=&quot;round&quot;;ctx.strokeText(text,x,y);ctx.fillText(text,x,y);return;
-}
-}
-function ring(r,tilted=false){return Array.from({length:97},(_,i)=&gt;{const a=i*Math.PI/48;return [r*Math.cos(a),tilted?r*Math.sin(a)*Math.sin(eps):0,r*Math.sin(a)*(tilted?Math.cos(eps):1)];});}
-const faces=[];
-for(let j=0;j&lt;24;j++)for(let i=0;i&lt;48;i++){
-const point=(u,v)=&gt;[Math.cos(v)*Math.cos(u),Math.sin(v),Math.cos(v)*Math.sin(u)];
-const u=i*Math.PI/24,v=-Math.PI/2+j*Math.PI/24;
-faces.push({points:[point(u,v),point(u+Math.PI/24,v),point(u+Math.PI/24,v+Math.PI/24),point(u,v+Math.PI/24)],normal:point(u+Math.PI/48,v+Math.PI/48)});
-}
-function draw(){
-ctx.clearRect(0,0,W,H);const objects=[];
-const sunPoint=project(scale(sun,3.25));
-labelBoxes=[{left:sunPoint[0]-12,right:sunPoint[0]+12,top:sunPoint[1]-12,bottom:sunPoint[1]+12}];
-function plane(tilt,color){const circle=ring(2.55,tilt);for(let i=0;i&lt;96;i++){const points=[[0,0,0],circle[i],circle[i+1]];objects.push({points,color,alpha:.07,z:points.reduce((s,p)=&gt;s+rotate(p)[2],0)/3});}}
-if(eq.checked)plane(false,colors.eq);if(ec.checked)plane(true,colors.ec);
-faces.forEach(f=&gt;{const n=rotate(f.normal);if(n[2]&gt;0){objects.push({points:f.points,color:colors.earth,alpha:1,light:.17+.83*Math.max(0,dot(f.normal,sun)),z:n[2]});}});
-objects.sort((a,b)=&gt;a.z-b.z).forEach(o=&gt;{ctx.beginPath();o.points.forEach((p,i)=&gt;{const q=project(p);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.closePath();ctx.globalAlpha=o.alpha;ctx.fillStyle=o.color;ctx.fill();if(o.light!==undefined){ctx.globalAlpha=.75*(1-o.light);ctx.fillStyle=colors.fg;ctx.fill();}ctx.globalAlpha=1;});
-// Render sphere meridians only on the hemisphere facing the camera.
-function surfaceLine(points,color,width=1){let run=[];points.forEach(p=&gt;{if(rotate(p)[2]&gt;=-.015){run.push(p);}else if(run.length){line(run,color,width);run=[];}});if(run.length)line(run,color,width);}
-for(let k=0;k&lt;12;k++){const lon=k*Math.PI/6;surfaceLine(Array.from({length:65},(_,i)=&gt;{const a=-Math.PI/2+i*Math.PI/64;return [Math.cos(a)*Math.cos(lon),Math.sin(a),Math.cos(a)*Math.sin(lon)];}),colors.border);}
-[-60,-30,0,30,60].forEach(lat=&gt;surfaceLine(Array.from({length:97},(_,i)=&gt;{const a=i*Math.PI/48;return [Math.cos(lat*rad)*Math.cos(a),Math.sin(lat*rad),Math.cos(lat*rad)*Math.sin(a)];}),lat===0?colors.eq:colors.border,lat===0?2.5:1));
-// Depth cues: far plane edges dashed, near edges solid.
-function splitRing(tilt,color){const points=ring(2.55,tilt);for(let i=0;i&lt;96;i++)line([points[i],points[i+1]],color,1,rotate(points[i])[2]&lt;0?[3,4]:[]);}
-if(eq.checked)splitRing(false,colors.eq);if(ec.checked)splitRing(true,colors.ec);
-line([[0,-1.55,0],[0,-1,0]],colors.fg,1.5);line([[0,1,0],[0,1.65,0]],colors.fg,1.5);label([0,1.9,0],&#x27;Северный полюс&#x27;);
-// Sun direction is a geocentric direction, not a to-scale orbit.
-const endpoint=scale(sun,3.25),foot=[endpoint[0],0,endpoint[2]];
-line([scale(sun,1.03),endpoint],colors.sun,2.5,rotate(sun)[2]&lt;0?[5,4]:[]);
-if(eq.checked){line([scale([sun[0],0,sun[2]],1.06),foot],colors.eq,1,[3,4]);line([foot,endpoint],colors.sun,1,[3,4]);}
-const delta=currentDelta*rad,norm=Math.hypot(sun[0],sun[2]),ux=sun[0]/norm,uz=sun[2]/norm;
-const arc=Array.from({length:33},(_,i)=&gt;{const a=delta*i/32;return [1.9*ux*Math.cos(a),1.9*Math.sin(a),1.9*uz*Math.cos(a)];});
-line(arc,colors.sun,3);label([2.17*ux*Math.cos(delta/2),2.17*Math.sin(delta/2),2.17*uz*Math.cos(delta/2)],&#x27;δ = &#x27;+format(currentDelta),colors.fg,0,delta&gt;=0?-12:19);
-const sp=project(endpoint);ctx.beginPath();ctx.arc(sp[0],sp[1],9,0,Math.PI*2);ctx.fillStyle=colors.sun;ctx.fill();label(endpoint,&#x27;Солнце&#x27;,colors.fg,0,-17);
-}
-function format(v){const n=Math.round(Math.abs(v)*60);return (v&lt;0?&#x27;−&#x27;:&#x27;+&#x27;)+Math.floor(n/60)+&#x27;°&#x27;+String(n%60).padStart(2,&#x27;0&#x27;)+&#x27;′&#x27;;}
-function longitudeFor(i){
-const sine=Math.max(-1,Math.min(1,Math.sin(data[i].delta*rad)/Math.sin(eps)));
-const angle=Math.asin(sine);
-return i&gt;=172&amp;&amp;i&lt;355?Math.PI-angle:angle;
-}
-function update(){
-const d=data[index],from=longitudeFor(index),to=longitudeFor((index+1)%data.length);
-const longitude=from+Math.atan2(Math.sin(to-from),Math.cos(to-from))*fraction;
-sun=[Math.cos(longitude),Math.sin(longitude)*Math.sin(eps),Math.sin(longitude)*Math.cos(eps)];
-currentDelta=Math.asin(sun[1])/rad;
-console.assert(fraction!==0||Math.abs(currentDelta-d.delta)&lt;1e-7,&#x27;Declination geometry matches table&#x27;);
-day.value=index;root.querySelector(&#x27;#sun3d-value&#x27;).textContent=d.d+&#x27; &#x27;+names[d.m]+&#x27; · δ = &#x27;+format(currentDelta);
-root.querySelector(&#x27;#sun3d-location&#x27;).textContent=currentDelta&gt;=0?&#x27;Солнце к северу от плоскости земного экватора&#x27;:&#x27;Солнце к югу от плоскости земного экватора&#x27;;
-root.querySelector(&#x27;#sun3d-warning&#x27;).textContent=[16,78,215].includes(index)?&#x27;⚠ Подозрительный скачок в таблице: значение сохранено с фотографии.&#x27;:&#x27;&#x27;;
-canvas.setAttribute(&#x27;aria-label&#x27;,d.d+&#x27; &#x27;+names[d.m]+&#x27;, склонение &#x27;+format(currentDelta)+&#x27;. Вращение доступно мышью и кнопками.&#x27;);draw();}
-function stopAnimation(){
-playing=false;cancelAnimationFrame(animationId);animationId=null;lastFrame=null;fraction=0;
-play.textContent=&#x27;Запустить&#x27;;play.setAttribute(&#x27;aria-pressed&#x27;,&#x27;false&#x27;);readout.setAttribute(&#x27;aria-live&#x27;,&#x27;polite&#x27;);
-}
-function animate(now){
-if(!playing)return;
-if(lastFrame!==null){
-const position=(index+fraction+Math.min(now-lastFrame,100)/180)%data.length;
-index=Math.floor(position);fraction=position-index;update();
-}
-lastFrame=now;animationId=requestAnimationFrame(animate);
-}
-function startAnimation(){
-if(playing)return;
-playing=true;lastFrame=null;play.textContent=&#x27;Остановить&#x27;;play.setAttribute(&#x27;aria-pressed&#x27;,&#x27;true&#x27;);
-readout.setAttribute(&#x27;aria-live&#x27;,&#x27;off&#x27;);animationId=requestAnimationFrame(animate);
-}
-play.addEventListener(&#x27;click&#x27;,()=&gt;{
-if(playing){stopAnimation();update();save();return;}
-startAnimation();
-});
-document.addEventListener(&#x27;visibilitychange&#x27;,()=&gt;{if(document.hidden&amp;&amp;playing){stopAnimation();update();save();}});
-window.addEventListener(&#x27;pagehide&#x27;,()=&gt;{if(playing){stopAnimation();save();}});
-function save(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{date:data[index].d+&#x27; &#x27;+names[data[index].m],declination:format(data[index].delta)},privateContent:{index,yaw,pitch,zoom,eq:eq.checked,ec:ec.checked}}).catch(()=&gt;{});}
-function restore(state){const s=state?.privateContent;if(!s)return;if(Number.isInteger(s.index)&amp;&amp;s.index&gt;=0&amp;&amp;s.index&lt;366)index=s.index;for(const key of [&#x27;yaw&#x27;,&#x27;pitch&#x27;,&#x27;zoom&#x27;])if(!Number.isFinite(s[key]))return;yaw=s.yaw;pitch=Math.max(-1.5,Math.min(1.5,s.pitch));zoom=Math.max(.6,Math.min(1.6,s.zoom));if(typeof s.eq===&#x27;boolean&#x27;)eq.checked=s.eq;if(typeof s.ec===&#x27;boolean&#x27;)ec.checked=s.ec;}
-day.addEventListener(&#x27;input&#x27;,()=&gt;{const selected=Number(day.value);stopAnimation();index=selected;update();});day.addEventListener(&#x27;change&#x27;,save);
-root.querySelectorAll(&#x27;[data-day]&#x27;).forEach(b=&gt;b.addEventListener(&#x27;click&#x27;,()=&gt;{stopAnimation();index=Number(b.dataset.day);update();save();}));
-[eq,ec].forEach(el=&gt;el.addEventListener(&#x27;change&#x27;,()=&gt;{draw();save();}));
-canvas.addEventListener(&#x27;pointerdown&#x27;,e=&gt;{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
-canvas.addEventListener(&#x27;pointermove&#x27;,e=&gt;{if(!drag)return;yaw+=(e.clientX-drag.x)*.008;pitch=Math.max(-1.5,Math.min(1.5,pitch+(e.clientY-drag.y)*.008));drag={x:e.clientX,y:e.clientY};draw();});
-canvas.addEventListener(&#x27;pointerup&#x27;,()=&gt;{drag=null;save();});canvas.addEventListener(&#x27;pointercancel&#x27;,()=&gt;{drag=null;});
-canvas.addEventListener(&#x27;wheel&#x27;,e=&gt;{e.preventDefault();zoom=Math.max(.6,Math.min(1.6,zoom*Math.exp(-e.deltaY*.001)));draw();save();},{passive:false});
-const actions={left:()=&gt;yaw-=.3,right:()=&gt;yaw+=.3,up:()=&gt;pitch=1.48,reset:()=&gt;{yaw=.95;pitch=.34;zoom=1;},minus:()=&gt;zoom=Math.max(.6,zoom-.15),plus:()=&gt;zoom=Math.min(1.6,zoom+.15)};
-Object.entries(actions).forEach(([id,fn])=&gt;root.querySelector(&#x27;#sun3d-&#x27;+id).addEventListener(&#x27;click&#x27;,()=&gt;{fn();draw();save();}));
-function resize(){W=canvas.clientWidth;H=canvas.clientHeight;const ratio=window.devicePixelRatio||1;canvas.width=W*ratio;canvas.height=H*ratio;ctx.setTransform(ratio,0,0,ratio,0,0);theme();draw();}
-restore(window.openai?.widgetState);theme();update();new ResizeObserver(resize).observe(canvas);startAnimation();
-window.addEventListener(&#x27;openai:set_globals&#x27;,e=&gt;{if(e.detail?.globals?.widgetState){restore(e.detail.globals.widgetState);update();}theme();draw();});
-window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).addEventListener(&#x27;change&#x27;,()=&gt;{theme();draw();});
-})();
-&lt;/script&gt;
-
-
-
-&lt;script&gt;
-(() =&gt; {
-  if (window.FloatingUIDOM == null) {
-    return;
-  }
-  const { autoUpdate, computePosition, flip, offset, shift, size } =
-    window.FloatingUIDOM;
-  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
-  const tooltipId = `codex-visualization-tooltip-${
-    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
-  }`;
-  const tooltipGap = 5;
-  const hoverDelay = 700;
-  const skipDelay = 300;
-  let activeTrigger = null;
-  let pendingTrigger = null;
-  let tooltip = null;
-  let openTimeout = null;
-  let autoUpdateCleanup = null;
-  let positionRequest = 0;
-  let skipDelayUntil = 0;
-  let lastPointerWasTouch = false;
-  let pinnedByTouch = false;
-
-  const getTrigger = (target) =&gt;
-    target?.nodeType === Node.ELEMENT_NODE
-      ? target.closest(&quot;[data-tooltip]&quot;)
-      : null;
-  const containsTarget = (trigger, target) =&gt;
-    target?.nodeType != null &amp;&amp; trigger.contains(target);
-  const getContent = (trigger) =&gt;
-    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
-  const getPlacement = (trigger) =&gt; {
-    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
-    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
-  };
-  const getTooltip = () =&gt; {
-    if (tooltip == null) {
-      tooltip = document.createElement(&quot;div&quot;);
-      tooltip.id = tooltipId;
-      tooltip.className = &quot;tooltip&quot;;
-      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
-    }
-    return tooltip;
-  };
-  const setDescribedBy = (trigger, described) =&gt; {
-    const ids = new Set(
-      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
-        .split(/\s+/)
-        .filter(Boolean),
-    );
-    if (described) {
-      ids.add(tooltipId);
-    } else {
-      ids.delete(tooltipId);
-    }
-    if (ids.size === 0) {
-      trigger.removeAttribute(&quot;aria-describedby&quot;);
-    } else {
-      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
-    }
-  };
-  const clearOpenTimeout = () =&gt; {
-    if (openTimeout != null) {
-      window.clearTimeout(openTimeout);
-      openTimeout = null;
-    }
-    pendingTrigger = null;
-  };
-  const closeTooltip = (activateSkipDelay = true) =&gt; {
-    clearOpenTimeout();
-    pinnedByTouch = false;
-    positionRequest += 1;
-    autoUpdateCleanup?.();
-    autoUpdateCleanup = null;
-    if (activeTrigger == null) {
-      return;
-    }
-    setDescribedBy(activeTrigger, false);
-    activeTrigger = null;
-    tooltip?.remove();
-    if (activateSkipDelay) {
-      skipDelayUntil = Date.now() + skipDelay;
-    }
-  };
-  const updatePosition = (trigger, floating) =&gt; {
-    const request = ++positionRequest;
-    void computePosition(trigger, floating, {
-      middleware: [
-        offset(tooltipGap),
-        flip({ padding: tooltipGap }),
-        shift({ padding: tooltipGap }),
-        size({
-          padding: tooltipGap,
-          apply({ availableHeight, availableWidth, elements }) {
-            elements.floating.style.setProperty(
-              &quot;--tooltip-available-width&quot;,
-              `${Math.max(0, availableWidth)}px`,
-            );
-            elements.floating.style.setProperty(
-              &quot;--tooltip-available-height&quot;,
-              `${Math.max(0, availableHeight)}px`,
-            );
-          },
-        }),
-      ],
-      placement: getPlacement(trigger),
-      strategy: &quot;fixed&quot;,
-    })
-      .then(({ x, y }) =&gt; {
-        if (activeTrigger !== trigger || request !== positionRequest) {
-          return;
-        }
-        const scale = window.devicePixelRatio || 1;
-        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
-        floating.style.visibility = &quot;visible&quot;;
-      })
-      .catch(() =&gt; {
-        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
-          closeTooltip(false);
-        }
-      });
-  };
-  const openTooltip = (trigger) =&gt; {
-    const content = getContent(trigger);
-    if (!trigger.isConnected || content.length === 0) {
-      return;
-    }
-    clearOpenTimeout();
-    if (activeTrigger === trigger) {
-      return;
-    }
-    closeTooltip();
-    const floating = getTooltip();
-    floating.textContent = content;
-    floating.style.visibility = &quot;hidden&quot;;
-    floating.style.transform = &quot;translate(0, 0)&quot;;
-    document.body.appendChild(floating);
-    activeTrigger = trigger;
-    setDescribedBy(trigger, true);
-    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
-      updatePosition(trigger, floating);
-    });
-  };
-  const requestOpen = (trigger, immediate = false) =&gt; {
-    if (
-      getContent(trigger).length === 0 ||
-      activeTrigger === trigger ||
-      pendingTrigger === trigger
-    ) {
-      return;
-    }
-    clearOpenTimeout();
-    pendingTrigger = trigger;
-    const delay =
-      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
-        ? 0
-        : hoverDelay;
-    if (delay === 0) {
-      openTooltip(trigger);
-      return;
-    }
-    openTimeout = window.setTimeout(() =&gt; {
-      openTimeout = null;
-      pendingTrigger = null;
-      openTooltip(trigger);
-    }, delay);
-  };
-  const handlePointerOpen = (event) =&gt; {
-    if (event.pointerType === &quot;touch&quot;) {
-      return;
-    }
-    const trigger = getTrigger(event.target);
-    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
-      return;
-    }
-    requestOpen(trigger);
-  };
-  const handlePointer = (event) =&gt; {
-    lastPointerWasTouch =
-      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
-  };
-  const handleTouchClick = (event) =&gt; {
-    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
-    lastPointerWasTouch = false;
-    if (!isTouch || event.detail === 0) {
-      return;
-    }
-    const trigger = getTrigger(event.target);
-    if (
-      trigger == null ||
-      !trigger.isConnected ||
-      getContent(trigger).length === 0 ||
-      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
-    ) {
-      if (pinnedByTouch) {
-        closeTooltip();
-      }
-      return;
-    }
-    openTooltip(trigger);
-    pinnedByTouch = activeTrigger === trigger;
-    window.setTimeout(() =&gt; {
-      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
-        closeTooltip(false);
-      }
-    }, 0);
-  };
-  const handleLeave = (event) =&gt; {
-    if (pinnedByTouch) {
-      return;
-    }
-    const trigger = getTrigger(event.target);
-    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
-      return;
-    }
-    if (activeTrigger === trigger || pendingTrigger === trigger) {
-      closeTooltip();
-    }
-  };
-  const handleFocusIn = (event) =&gt; {
-    const trigger = getTrigger(event.target);
-    if (trigger?.matches(&quot;:focus-visible&quot;)) {
-      requestOpen(trigger, true);
-    }
-  };
-  const handleKeyDown = (event) =&gt; {
-    if (event.key === &quot;Escape&quot;) {
-      closeTooltip();
-    }
-  };
-  const handleContextMenu = (event) =&gt; {
-    lastPointerWasTouch = false;
-    const trigger = getTrigger(event.target);
-    if (activeTrigger === trigger || pendingTrigger === trigger) {
-      closeTooltip();
-    }
-  };
-  const destroy = () =&gt; {
-    closeTooltip(false);
-    lastPointerWasTouch = false;
-    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
-    document.removeEventListener(&quot;pointerdown&quot;, handlePointer);
-    document.removeEventListener(&quot;pointercancel&quot;, handlePointer);
-    document.removeEventListener(&quot;click&quot;, handleTouchClick);
-    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
-    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
-    document.removeEventListener(&quot;focusout&quot;, handleLeave);
-    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
-    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
-    tooltip = null;
-  };
-
-  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
-  document.addEventListener(&quot;pointerdown&quot;, handlePointer);
-  document.addEventListener(&quot;pointercancel&quot;, handlePointer);
-  document.addEventListener(&quot;click&quot;, handleTouchClick);
-  document.addEventListener(&quot;pointerout&quot;, handleLeave);
-  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
-  document.addEventListener(&quot;focusout&quot;, handleLeave);
-  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
-  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
-  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
-})();
-&lt;/script&gt;
-&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
-(() =&gt; {
-  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
-  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
-  const selectTab = (selected) =&gt; {
-    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
-    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
-      const active = tab === selected;
-      tab.classList.toggle(&quot;active&quot;, active);
-      tab.setAttribute(&quot;aria-selected&quot;, String(active));
-      const id = tab.getAttribute(&quot;aria-controls&quot;);
-      const panel = id &amp;&amp; document.getElementById(id);
-      if (panel != null) {
-        panel.hidden = id !== panelId;
-        if (!panel.hidden &amp;&amp; selected.id) {
-          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
-        }
-      }
-    }
-  };
-  const interact = (event) =&gt; {
-    const tab = event.target?.closest?.(selector);
-    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
-      return;
-    }
-    if (event.type === &quot;click&quot;) {
-      selectTab(tab);
-      return;
-    }
-    const tabs = Array.from(
-      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
-    ).filter((candidate) =&gt; !candidate.matches(disabled));
-    const current = tabs.indexOf(tab);
-    let next;
-    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
-      next = (current + 1) % tabs.length;
-    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
-      next = (current + tabs.length - 1) % tabs.length;
-    } else if (event.key === &quot;Home&quot;) {
-      next = 0;
-    } else if (event.key === &quot;End&quot;) {
-      next = tabs.length - 1;
-    } else {
-      return;
-    }
-    event.preventDefault();
-    tabs[next].focus();
-    selectTab(tabs[next]);
-  };
-
-  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
-    const selected =
-      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
-      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
-      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
-    if (selected != null) {
-      selectTab(selected);
-    }
-  }
-  document.addEventListener(&quot;click&quot;, interact);
-  document.addEventListener(&quot;keydown&quot;, interact);
-  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
-    document.removeEventListener(&quot;click&quot;, interact);
-    document.removeEventListener(&quot;keydown&quot;, interact);
-  }, { once: true });
-})();
-&lt;/script&gt;
-
-&lt;script&gt;
-(() =&gt; {
-  const initialize = () =&gt; {
-    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
-  };
-  if (globalThis.lucide != null) {
-    initialize();
-    return;
-  }
-  document
-    .getElementById(&quot;codex-visualization-lucide&quot;)
-    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
-})();
-&lt;/script&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-"></iframe>
-<script>(() => {
-  const frame = document.getElementById("codex-visualization");
-  if (!(frame instanceof HTMLIFrameElement)) {
-    return;
-  }
-  let viewportHeight = globalThis.innerHeight;
-  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
-    globalThis.location.pathname,
-    globalThis.location.search,
-  ])}`;
-  const parseState = (serializedState) => {
-    if (
-      typeof serializedState !== "string" ||
-      new TextEncoder().encode(serializedState).length > 16 * 1024
-    ) {
-      throw new TypeError(
-        "Widget state must be a JSON object of at most 16 KiB",
-      );
-    }
-    /** @type {unknown} */
-    const state = JSON.parse(serializedState);
-    if (
-      state == null ||
-      typeof state !== "object" ||
-      Array.isArray(state) ||
-      ("imageIds" in state &&
-        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
-    ) {
-      throw new TypeError("Widget state must be a JSON object");
-    }
-    const storedState = { modelContent: null, privateContent: null, ...state };
-    const canonicalState = JSON.stringify(
-      storedState,
-      (_key, /** @type {unknown} */ value) => {
-        if (typeof value === "number" && !Number.isFinite(value)) {
-          throw new TypeError("Widget state must contain finite numbers");
-        }
-        return value;
-      },
-    );
-    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
-      throw new TypeError(
-        "Widget state must be a JSON object of at most 16 KiB",
-      );
-    }
-    return storedState;
-  };
-  let storage = null;
-  let state = null;
-  try {
-    const localStorage = globalThis.localStorage;
-    const probeKey = `${storageKey}:probe`;
-    localStorage.setItem(probeKey, "1");
-    localStorage.removeItem(probeKey);
-    storage = localStorage;
-    const savedState = storage.getItem(storageKey);
-    if (savedState != null) {
-      try {
-        state = parseState(savedState);
-      } catch {
-        // Invalid saved state does not disable future writes.
-      }
-    }
-  } catch {
-    storage = null;
-  }
-  const initialGlobals = {
-    widgetState: state,
-    statePersistence: storage == null ? "none" : "local",
-  };
-
-  const channel = new MessageChannel();
-  channel.port1.addEventListener("message", (event) => {
-    const data = event.data;
-    if (typeof data !== "object" || data == null) {
-      return;
-    }
-    if (data.type === "widget-state-write") {
-      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
-        return;
-      }
-      let ok = false;
-      try {
-        if (storage != null) {
-          const state = parseState(data.state);
-          storage.setItem(storageKey, JSON.stringify(state));
-          ok = true;
-        }
-      } catch {
-        // Storage denial, quota limits, and invalid state return a failed receipt.
-      }
-      channel.port1.postMessage({
-        type: "widget-state-result",
-        id: data.id,
-        ok,
-      });
-      return;
-    }
-    if (data.type === "height") {
-      const height = data.height;
-      if (
-        typeof height === "number" &&
-        Number.isFinite(height) &&
-        height >= 0 &&
-        height <= 10_000
-      ) {
-        frame.style.height = Math.ceil(height) + "px";
-      }
-      return;
-    }
-    if (data.type === "scroll-to") {
-      const top = data.top;
-      if (
-        typeof top === "number" &&
-        Number.isFinite(top) &&
-        top >= 0 &&
-        globalThis.navigator.userActivation?.isActive === true
-      ) {
-        globalThis.scrollTo({
-          top: Math.ceil(
-            globalThis.scrollY + frame.getBoundingClientRect().top + top,
-          ),
-        });
-      }
-      return;
-    }
-    if (data.type === "open-external") {
-      const rawHref = data.href;
-      if (typeof rawHref !== "string") {
-        return;
-      }
-      let href;
-      try {
-        const url = new URL(rawHref, document.baseURI);
-        if (url.protocol !== "https:") {
-          return;
-        }
-        href = url.href;
-      } catch {
-        return;
-      }
-      if (globalThis.navigator.userActivation?.isActive === true) {
-        const anchor = document.createElement("a");
-        anchor.href = href;
-        anchor.rel = "noopener noreferrer";
-        anchor.target = "_blank";
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
-      }
-      return;
-    }
-    if (data.type === "follow-up") {
-      const prompt = data.prompt;
-      if (
-        typeof prompt !== "string" ||
-        globalThis.navigator.userActivation?.isActive !== true
-      ) {
-        return;
-      }
-      const title = data.title;
-      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
-    }
-  });
-  channel.port1.start();
-  const srcdoc = frame.dataset.srcdoc;
-  if (srcdoc == null) {
-    return;
-  }
-  globalThis.addEventListener("resize", () => {
-    const height = Number.parseFloat(frame.style.height);
-    if (!Number.isFinite(height) || height <= viewportHeight) {
-      frame.style.removeProperty("height");
-    }
-    viewportHeight = globalThis.innerHeight;
-    channel.port1.postMessage({ type: "measure" });
-  });
-  frame.addEventListener(
-    "load",
-    () => {
-      frame.contentWindow?.postMessage(
-        { type: "codex-visualization-initialize" },
-        "*",
-        [channel.port2],
-      );
-    },
-    { once: true },
-  );
-  // Match the trusted bootstrap element, not the same text in an authored title.
-  frame.srcdoc = srcdoc.replace(
-    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
-    () =>
-      '<script type="application/json" id="codex-visualization-widget-state">' +
-      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
-      "<\/script>",
-  );
-  delete frame.dataset.srcdoc;
-})();
-</script>
 <footer>
-<p><strong>Склонение δ</strong> — угол между направлением на Солнце и плоскостью земного экватора. Положительный знак означает направление к северу от этой плоскости, отрицательный — к югу.</p>
-<p>Значения переписаны из исходной таблицы «Склонение Солнца». Год в таблице не указан; предусмотрено 29 февраля. Подозрительные скачки сохранены и отмечены при выборе даты.</p>
-<p>Модель схематическая: размеры и расстояния условные. Показано видимое с Земли направление на Солнце; его движение по эклиптике восстановлено приближённо по склонению и времени года.</p>
+  <p>Положительное δ означает, что Солнце к северу от плоскости экватора, отрицательное — к югу. Широта места, где Солнце в полдень стоит в зените, равна δ. Поэтому дальше тропиков (±23°27′, около 23,5°) Солнце в зените не бывает.</p>
+  <p>Ось Земли наклонена к перпендикуляру к плоскости орбиты примерно на 23,5° и всё время смотрит в одну сторону. В режиме «Зафиксировать Солнце» видно, как из-за этого Солнце в течение года освещает то Северное, то Южное полушарие сильнее.</p>
+  <p>Модель схематическая: размеры Земли и Солнца и расстояние между ними условные.</p>
 </footer>
+
 <section class="source-table" aria-labelledby="source-table-heading">
   <h2 id="source-table-heading">Исходная таблица</h2>
   <p><a href="solar-declination-table.png" target="_blank" rel="noopener">Открыть изображение в полном размере</a> · <a href="solar-declination-table.png" download>Скачать оригинал PNG</a></p>
@@ -2050,5 +213,726 @@ window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).addEventListener(&#x
     <img src="solar-declination-table.png" width="889" height="1920" loading="lazy" alt="Таблица «Склонение Солнца»: ежедневные значения в градусах и минутах для всех двенадцати месяцев.">
   </a>
 </section>
+</main>
+
+<script>
+(() => {
+'use strict';
+
+// ---------- Данные таблицы (как напечатано) ----------
+const ROWS = [
+'-23:7 -23:2 -22:57 -22:52 -22:46 -22:40 -22:33 -22:25 -22:18 -22:10 -22:1 -21:52 -21:43 -21:33 -21:22 -21:12 -20:1 -20:49 -20:37 -20:25 -20:12 -19:59 -19:46 -19:32 -19:18 -19:3 -18:48 -18:33 -18:18 -18:2 -17:46',
+'-17:29 -17:12 -16:55 -16:38 -16:20 -16:2 -15:44 -15:25 -15:7 -14:48 -14:28 -14:9 -13:49 -13:29 -13:9 -12:48 -12:28 -12:7 -11:46 -11:25 -11:3 -10:42 -10:20 -9:58 -9:36 -9:14 -8:51 -8:29 -8:6',
+'-7:44 -7:21 -6:58 -6:35 -6:12 -5:49 -5:25 -5:2 -4:39 -4:15 -3:52 -3:28 -3:5 -2:41 -2:17 -1:54 -1:30 -1:6 -0:24 -0:19 0:5 0:29 0:52 1:16 1:40 2:3 2:27 2:50 3:14 3:37 4:0',
+'4:24 4:47 5:10 5:33 5:56 6:18 6:41 7:3 7:26 7:49 8:10 8:32 8:54 9:16 9:38 9:59 10:20 10:41 11:2 11:23 11:44 12:4 12:24 12:44 13:4 13:23 13:43 14:2 14:20 14:39',
+'14:57 15:16 15:33 15:51 16:8 16:26 16:42 16:59 17:15 17:31 17:47 18:2 18:17 18:32 18:36 19:1 19:14 19:28 19:41 19:54 20:6 20:18 20:30 20:42 20:53 21:4 21:14 21:24 21:34 21:43 21:52',
+'22:0 22:8 22:16 22:23 22:30 22:37 22:43 22:49 22:54 22:59 23:4 23:8 23:12 23:15 23:18 23:20 23:22 23:24 23:25 23:26 23:27 23:27 23:26 23:26 23:25 23:23 23:21 23:18 23:16 23:12',
+'23:9 23:5 23:0 22:55 22:50 22:44 22:38 22:32 22:25 22:18 22:10 22:2 21:54 21:45 21:36 21:26 21:17 21:6 20:56 20:45 20:33 20:22 20:10 19:58 19:45 19:32 19:19 19:5 18:51 18:37 18:23',
+'18:8 17:53 17:27 17:22 17:6 16:49 16:33 16:16 15:59 15:42 15:25 15:6 14:48 14:30 14:11 13:53 13:34 13:14 12:55 12:35 12:16 11:56 11:35 11:15 10:55 10:34 10:13 9:52 9:31 9:9 8:48',
+'8:26 8:4 7:43 7:21 6:58 6:36 6:14 5:51 5:29 5:6 4:43 4:20 3:58 3:34 3:11 2:48 2:25 2:2 1:39 1:15 0:52 0:29 0:5 -0:18 -0:41 -1:5 -1:28 -1:52 -2:15 -2:38',
+'-3:2 -3:25 -3:48 -4:11 -4:35 -4:58 -5:21 -5:44 -6:7 -6:29 -6:52 -7:15 -7:37 -8:0 -8:22 -8:44 -9:6 -9:28 -9:50 -10:12 -10:33 -10:55 -11:16 -11:37 -11:58 -12:19 -12:39 -12:59 -13:19 -13:39 -13:59',
+'-14:18 -14:38 -14:57 -15:15 -15:34 -15:52 -16:10 -16:28 -16:45 -17:2 -17:19 -17:36 -17:52 -18:8 -18:23 -18:39 -18:54 -19:8 -19:23 -19:36 -19:50 -20:3 -20:16 -20:29 -20:41 -20:52 -21:4 -21:15 -21:26 -21:35',
+'-21:45 -21:54 -22:3 -22:12 -22:20 -22:27 -22:34 -22:41 -22:47 -22:53 -22:58 -23:3 -23:8 -23:12 -23:15 -23:18 -23:21 -23:23 -23:25 -23:26 -23:27 -23:27 -23:27 -23:26 -23:25 -23:23 -23:21 -23:18 -23:15 -23:12 -23:8'
+];
+// Значения, выбивающиеся из соседних дней. Исправление — середина между соседями, это предположение, а не проверенные данные.
+const CORRECTIONS = {16: '-21:1', 78: '-0:43', 135: '18:46', 215: '17:37'};
+const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+const MONTHS_SHORT = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+const KEY_DAYS = [
+  {i: 80, date: '21 марта', name: 'весеннее равноденствие', near: [79, 80]},
+  {i: 173, date: '22 июня', name: 'летнее солнцестояние', near: [171, 172, 173]},
+  {i: 266, date: '23 сентября', name: 'осеннее равноденствие', near: [265, 266]},
+  {i: 356, date: '22 декабря', name: 'зимнее солнцестояние', near: [355, 356, 357]}
+];
+
+const parseDM = s => {
+  const neg = s.startsWith('-');
+  const [d, m] = s.replace('-', '').split(':').map(Number);
+  return (neg ? -1 : 1) * (d + m / 60);
+};
+const days = [];
+const monthStart = [];
+ROWS.forEach((row, m) => {
+  monthStart.push(days.length);
+  row.split(' ').forEach((s, d) => {
+    const fix = CORRECTIONS[days.length];
+    days.push({m, d: d + 1, delta: parseDM(fix || s)});
+  });
+});
+console.assert(days.length === 366, '366 значений');
+const N = days.length;
+
+// ---------- Геометрия ----------
+const rad = Math.PI / 180;
+const EPS = (23 + 27 / 60) * rad; // наклон оси, как максимум в таблице (23°27′)
+const cosE = Math.cos(EPS), sinE = Math.sin(EPS);
+const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const mul = (a, k) => [a[0] * k, a[1] * k, a[2] * k];
+const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const norm = a => mul(a, 1 / Math.hypot(a[0], a[1], a[2]));
+// Экваториальная система (ось y — ось Земли) -> система эклиптики (ось y — перпендикуляр к орбите) и обратно.
+const eqToEcl = v => [v[0], v[1] * cosE - v[2] * sinE, v[1] * sinE + v[2] * cosE];
+const eclToEq = v => [v[0], v[1] * cosE + v[2] * sinE, -v[1] * sinE + v[2] * cosE];
+
+// Направление на Солнце в экваториальной системе для дробного дня pos.
+// Склонение берётся из таблицы (линейно между днями), прямое восхождение — из плавной формулы
+// положения Солнца (високосный год, как в таблице), чтобы Земля двигалась по орбите равномерно.
+// Это численное приближение, а не кеплеровская модель: из-за смешения табличного δ и формульного α
+// траектория Земли слегка неплоская (до ~0,09° от плоскости эклиптики, на экране меньше пикселя).
+function sunAt(pos) {
+  const base = Math.floor(pos), f = pos - base;
+  const i = ((base % N) + N) % N, j = (i + 1) % N;
+  const delta = days[i].delta * (1 - f) + days[j].delta * f;
+  // 8766 — дней от 1 января 2000 г. до 1 января 2024 г.; сдвиг −0,8 сут подгоняет формулу к таблице
+  // (равноденствия в ней 20–21 марта и 22–23 сентября). 366 дней таблицы растягиваем на тропический год,
+  // чтобы после 31 декабря Земля продолжала движение без скачка назад.
+  const n = 8765.2 + pos * 365.2422 / 366;
+  const g = (357.528 + 0.9856003 * n) * rad;
+  const L = (280.46 + 0.9856474 * n + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g)) * rad;
+  const alpha = Math.atan2(Math.sin(L) * cosE, Math.cos(L));
+  const d = delta * rad;
+  return {delta, s: [Math.cos(d) * Math.cos(alpha), Math.sin(d), Math.cos(d) * Math.sin(alpha)]};
+}
+
+// ---------- Форматирование ----------
+function fmt(v, signed = true) {
+  const n = Math.round(Math.abs(v) * 60);
+  const sign = !signed ? '' : n === 0 ? '' : v < 0 ? '−' : '+';
+  return sign + Math.floor(n / 60) + '°' + String(n % 60).padStart(2, '0') + '′';
+}
+function fmtLat(v) {
+  if (Math.round(Math.abs(v) * 60) === 0) return '0° (экватор)';
+  return fmt(Math.abs(v), false) + (v > 0 ? ' с. ш.' : ' ю. ш.');
+}
+const dateText = i => days[i].d + ' ' + MONTHS_GEN[days[i].m];
+
+// ---------- Состояние ----------
+const state = {
+  mode: 'sun',
+  pos: 173,
+  playing: false,
+  views: {earth: {yaw: 0.75, pitch: 0.5, zoom: 1}, sun: {yaw: 1.3, pitch: 0.6, zoom: 1}}
+};
+const DEFAULT_VIEWS = JSON.parse(JSON.stringify(state.views));
+const $ = id => document.getElementById(id);
+const canvas = $('scene'), ctx = canvas.getContext('2d');
+const layers = {eq: $('l-eq'), ec: $('l-ec'), tr: $('l-tr'), pc: $('l-pc')};
+let colors = {};
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const k of ['bg','fg','muted','line','card','earth','earth-light','earth-edge','night','equator','orbit','tropic','polar','sun','sun-glow','ray','light-ray','delta','zenith']) {
+    colors[k] = cs.getPropertyValue('--' + k).trim();
+  }
+}
+
+// ---------- 3D-сцена ----------
+let W = 600, H = 440, S = 80, CX = 300, CY = 220;
+let view = state.views.earth;
+let spheres = [];
+let labelBoxes = [];
+
+function rot(p) {
+  const cy = Math.cos(view.yaw), sy = Math.sin(view.yaw), cp = Math.cos(view.pitch), sp = Math.sin(view.pitch);
+  const x = p[0] * cy + p[2] * sy, z = -p[0] * sy + p[2] * cy;
+  return [x, p[1] * cp - z * sp, p[1] * sp + z * cp];
+}
+function project(p) {
+  const q = rot(p);
+  return [CX + q[0] * S, CY - q[1] * S, q[2]];
+}
+// Точка закрыта шаром, если лежит за его видимой поверхностью.
+function occluded(p) {
+  for (const sp of spheres) {
+    const v = rot(sub(p, sp.c));
+    const d2 = v[0] * v[0] + v[1] * v[1];
+    if (d2 < sp.r * sp.r * 0.995 && v[2] < Math.sqrt(sp.r * sp.r - d2) - sp.r * 0.03) return true;
+  }
+  return false;
+}
+function strokePts(pts, st) {
+  if (pts.length < 2) return;
+  ctx.beginPath();
+  pts.forEach((q, k) => k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]));
+  ctx.strokeStyle = st.color;
+  ctx.lineWidth = st.width || 1;
+  ctx.setLineDash(st.dash || []);
+  ctx.globalAlpha = st.alpha ?? 1;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+}
+// Линия с учётом перекрытия шарами: видимые участки — style, закрытые — hidden (или не рисуются).
+function line3(points, style, hidden = null) {
+  let run = [], runHidden = null;
+  const flush = () => {
+    if (run.length > 1 && (!runHidden || hidden)) strokePts(run, runHidden ? hidden : style);
+  };
+  for (const p of points) {
+    const q = project(p), h = occluded(p);
+    if (runHidden === null) runHidden = h;
+    if (h !== runHidden) {
+      run.push(q); flush(); run = [q]; runHidden = h;
+    } else run.push(q);
+  }
+  flush();
+}
+function circlePts(center, u, v, r, n = 96, a0 = 0, a1 = Math.PI * 2) {
+  return Array.from({length: n + 1}, (_, k) => {
+    const a = a0 + (a1 - a0) * k / n;
+    return add(center, add(mul(u, r * Math.cos(a)), mul(v, r * Math.sin(a))));
+  });
+}
+function label(p, text, color = colors.fg, dx = 0, dy = 0, opts = {}) {
+  const q = Array.isArray(p) && p.length === 3 ? project(p) : p;
+  ctx.font = (opts.bold ? '600 ' : '') + (W < 460 ? 13 : 13) + 'px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  const tw = ctx.measureText(text).width;
+  const offsets = opts.fixed ? [[0, 0]] : [[0, 0], [0, -16], [0, 16], [-30, 0], [30, 0], [0, -32], [0, 32]];
+  for (const [ox, oy] of offsets) {
+    const x = Math.max(tw / 2 + 4, Math.min(W - tw / 2 - 4, q[0] + dx + ox));
+    const y = Math.max(15, Math.min(H - 6, q[1] + dy + oy));
+    const box = {l: x - tw / 2 - 3, r: x + tw / 2 + 3, t: y - 13, b: y + 4};
+    if (!opts.fixed && labelBoxes.some(b => box.l < b.r && box.r > b.l && box.t < b.b && box.b > b.t)) continue;
+    labelBoxes.push(box);
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = colors.bg;
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+    return;
+  }
+}
+// Подпись у крайней (левой/правой/нижней) видимой точки кривой.
+function labelAtEdge(points, text, color, side) {
+  let best = null, bestV = -Infinity;
+  for (const p of points) {
+    if (occluded(p)) continue;
+    const q = project(p);
+    const v = side === 'left' ? -q[0] : side === 'right' ? q[0] : q[1];
+    if (v > bestV) { bestV = v; best = [q[0], q[1]]; }
+  }
+  if (!best) return;
+  const dx = side === 'left' ? 40 : side === 'right' ? -40 : 0;
+  label(best, text, color, dx, side === 'bottom' ? 16 : 18);
+}
+// Кольцо плоскости, разбитое на куски, чтобы корректно сортироваться по глубине с шарами.
+function pushAnnulus(items, center, u, v, r0, r1, color, alpha, nSeg = 72, nRad = 2) {
+  for (let k = 0; k < nRad; k++) {
+    const ra = r0 + (r1 - r0) * k / nRad, rb = r0 + (r1 - r0) * (k + 1) / nRad;
+    for (let i = 0; i < nSeg; i++) {
+      const a = i * 2 * Math.PI / nSeg, b = (i + 1) * 2 * Math.PI / nSeg;
+      const P = (r, t) => add(center, add(mul(u, r * Math.cos(t)), mul(v, r * Math.sin(t))));
+      const pts = [P(ra, a), P(rb, a), P(rb, b), P(ra, b)];
+      const z = pts.reduce((s, p) => s + rot(p)[2], 0) / 4;
+      items.push({z, draw() {
+        ctx.beginPath();
+        pts.forEach((p, k2) => { const q = project(p); k2 ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); });
+        ctx.closePath();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }});
+    }
+  }
+}
+// Земля: освещённый диск + ночная сторона с чёткой границей.
+function drawGlobe(c, r, sunDir, alpha = 1) {
+  const q = project(c), R = r * S;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  const g = ctx.createRadialGradient(q[0] - R * 0.35, q[1] - R * 0.35, R * 0.1, q[0], q[1], R);
+  g.addColorStop(0, colors['earth-light']);
+  g.addColorStop(1, colors.earth);
+  ctx.beginPath();
+  ctx.arc(q[0], q[1], R, 0, Math.PI * 2);
+  ctx.fillStyle = g;
+  ctx.fill();
+  const s = rot(sunDir);
+  let w = [s[1], -s[0], 0];
+  const wl = Math.hypot(w[0], w[1]);
+  ctx.beginPath();
+  if (wl < 1e-4) {
+    if (s[2] < 0) ctx.arc(q[0], q[1], R, 0, Math.PI * 2);
+  } else {
+    w = mul(w, 1 / wl);
+    let k = cross(s, w);
+    if (k[2] < 0) k = mul(k, -1);
+    const pts = [];
+    for (let i = 0; i <= 48; i++) {
+      const t = Math.PI * i / 48;
+      pts.push([w[0] * Math.cos(t) + k[0] * Math.sin(t), w[1] * Math.cos(t) + k[1] * Math.sin(t)]);
+    }
+    const start = Math.atan2(-w[1], -w[0]);
+    const mid = start + Math.PI / 2;
+    const dir = Math.cos(mid) * -s[0] + Math.sin(mid) * -s[1] > 0 ? 1 : -1;
+    for (let i = 0; i <= 48; i++) {
+      const a = start + dir * Math.PI * i / 48;
+      pts.push([Math.cos(a), Math.sin(a)]);
+    }
+    pts.forEach((p, i) => { const x = q[0] + p[0] * R, y = q[1] - p[1] * R; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.closePath();
+  }
+  ctx.fillStyle = colors.night;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(q[0], q[1], R, 0, Math.PI * 2);
+  ctx.strokeStyle = colors['earth-edge'];
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+function drawSun(c, r) {
+  const q = project(c), R = r * S;
+  const g = ctx.createRadialGradient(q[0], q[1], R * 0.6, q[0], q[1], R * 2.1);
+  g.addColorStop(0, colors['sun-glow']);
+  g.addColorStop(1, 'rgba(255,200,0,0)');
+  ctx.beginPath();
+  ctx.arc(q[0], q[1], R * 2.1, 0, Math.PI * 2);
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(q[0], q[1], R, 0, Math.PI * 2);
+  ctx.fillStyle = colors.sun;
+  ctx.fill();
+}
+function drawAngle(E, r, s, n, delta) {
+  // Дуга δ: вершина в центре Земли, от плоскости экватора до направления на Солнце.
+  let qd = sub(s, mul(n, dot(n, s)));
+  qd = norm(qd);
+  const rho = r * 1.55;
+  const dRad = delta * rad;
+  if (layers.eq.checked) line3([add(E, mul(qd, r)), add(E, mul(qd, r * 2.15))], {color: colors.equator, width: 1.5, dash: [5, 4]});
+  const arc = Array.from({length: 41}, (_, k) => {
+    const a = dRad * k / 40;
+    return add(E, add(mul(qd, rho * Math.cos(a)), mul(n, rho * Math.sin(a))));
+  });
+  if (Math.abs(delta) >= 0.5) line3(arc, {color: colors.delta, width: 3.5}, {color: colors.delta, width: 2, dash: [3, 4], alpha: 0.6});
+  const lp = add(E, add(mul(qd, r * 1.95 * Math.cos(dRad / 2)), mul(n, r * 1.95 * Math.sin(dRad / 2))));
+  const text = Math.abs(delta) < 0.5 ? 'δ ≈ 0°' : state.mode === 'earth' ? 'δ = ' + fmt(delta) : 'δ';
+  label(lp, text, colors.delta, 0, delta >= 0 ? -4 : 12, {bold: true});
+}
+function drawSurface(E, r, T) {
+  const P = (lat, a) => add(E, mul(T([Math.cos(lat) * Math.cos(a), Math.sin(lat), Math.cos(lat) * Math.sin(a)]), r));
+  const par = lat => Array.from({length: 121}, (_, k) => P(lat, k * Math.PI / 60));
+  // Меридианы для ориентира.
+  for (let m = 0; m < 12; m++) {
+    const lon = m * Math.PI / 6;
+    line3(Array.from({length: 49}, (_, k) => P(-Math.PI / 2 + k * Math.PI / 48, lon)), {color: colors['earth-edge'], width: 0.7, alpha: 0.45});
+  }
+  if (layers.pc.checked) [1, -1].forEach(sg => line3(par(sg * (Math.PI / 2 - EPS)), {color: colors.polar, width: 2, dash: [6, 4]}));
+  if (layers.tr.checked) [1, -1].forEach(sg => line3(par(sg * EPS), {color: colors.tropic, width: 2, dash: [6, 4]}));
+  line3(par(0), {color: colors.equator, width: 2.8});
+}
+
+function drawScene() {
+  if (!W || !H) return;
+  ctx.clearRect(0, 0, W, H);
+  labelBoxes = [];
+  const sunInfo = sunAt(state.pos);
+  const sQ = sunInfo.s;
+  const items = [];
+  const isEarth = state.mode === 'earth';
+  view = state.views[state.mode];
+  CX = W / 2;
+  CY = H / 2 + (isEarth ? 0 : H * 0.02);
+  // На узком экране орбиту и путь Солнца делаем меньше, чтобы Земля оставалась крупной.
+  const narrow = W < 520;
+  const SD = narrow ? 2.5 : 3.3, PR = narrow ? 2.1 : 2.5, OR = narrow ? 3.1 : 4;
+  S = (isEarth ? Math.min(W / (2 * SD + 0.8), H / 4.9) : Math.min(W / (2 * OR + 2.6), H / (2 * OR * Math.sin(DEFAULT_VIEWS.sun.pitch) + 3.4))) * view.zoom;
+
+  let E, r, T, s, n, R;
+  if (isEarth) {
+    E = [0, 0, 0]; r = 1; T = p => p; s = sQ; n = [0, 1, 0];
+    const sunPos = mul(s, SD);
+    spheres = [{c: E, r}, {c: sunPos, r: 0.3}];
+    const eclU = eclToEq([1, 0, 0]), eclV = eclToEq([0, 0, 1]);
+    if (layers.eq.checked) pushAnnulus(items, E, [1, 0, 0], [0, 0, 1], 1, PR, colors.equator, 0.1);
+    if (layers.ec.checked) pushAnnulus(items, E, eclU, eclV, 1, SD, colors.orbit, 0.06, 72, 3);
+    items.push({z: 0, draw() { drawGlobe(E, r, s); drawSurface(E, r, T); }});
+    items.push({z: rot(sunPos)[2], draw() { drawSun(sunPos, 0.3); }});
+    items.sort((a, b) => a.z - b.z).forEach(it => it.draw());
+    if (layers.eq.checked) {
+      line3(circlePts(E, [1, 0, 0], [0, 0, 1], PR), {color: colors.equator, width: 1.3}, {color: colors.equator, width: 1, dash: [3, 4], alpha: 0.5});
+      labelAtEdge(circlePts(E, [1, 0, 0], [0, 0, 1], PR), 'плоскость экватора', colors.equator, 'bottom');
+    }
+    if (layers.ec.checked) {
+      line3(circlePts(E, eclU, eclV, SD), {color: colors.orbit, width: 1.5}, {color: colors.orbit, width: 1, dash: [3, 4], alpha: 0.5});
+      labelAtEdge(circlePts(E, eclU, eclV, SD), 'путь Солнца за год', colors.orbit, 'left');
+    }
+    // Ось Земли.
+    line3([[0, 1, 0], [0, 1.7, 0]], {color: colors.fg, width: 2});
+    line3([[0, -1.6, 0], [0, -1, 0]], {color: colors.fg, width: 2}, {color: colors.fg, width: 1, dash: [3, 4], alpha: 0.5});
+    label([0, 1.95, 0], 'Северный полюс', colors.fg);
+    // Направление на Солнце.
+    line3([mul(s, 1), mul(s, SD - 0.3)], {color: colors.ray, width: 3}, {color: colors.ray, width: 2, dash: [5, 4], alpha: 0.6});
+    if (layers.eq.checked) {
+      const foot = [sunPos[0], 0, sunPos[2]];
+      line3([sunPos, foot], {color: colors.muted, width: 1, dash: [3, 4]});
+    }
+    label(sunPos, 'Солнце', colors.fg, 0, -0.3 * S - 10);
+  } else {
+    R = OR; r = 0.8; T = eqToEcl; n = eqToEcl([0, 1, 0]);
+    s = norm(eqToEcl(sQ));
+    E = mul(s, -R);
+    const sunR = 0.6;
+    spheres = [{c: E, r}, {c: [0, 0, 0], r: sunR}];
+    if (layers.ec.checked) pushAnnulus(items, [0, 0, 0], [1, 0, 0], [0, 0, 1], sunR, R + 1.2, colors.orbit, 0.05, 96, 4);
+    if (layers.eq.checked) pushAnnulus(items, E, T([1, 0, 0]), T([0, 0, 1]), r, r * 1.9, colors.equator, 0.12, 48, 1);
+    items.push({z: rot([0, 0, 0])[2], draw() { drawSun([0, 0, 0], sunR); }});
+    // Земля в особые дни: оси параллельны.
+    const ghosts = KEY_DAYS.map(k => ({k, E: mul(norm(eqToEcl(sunAt(k.i).s)), -R)}))
+      .filter(g => Math.hypot(...sub(g.E, E)) > 1.3);
+    ghosts.forEach(gh => {
+      const gs = norm(mul(gh.E, -1));
+      items.push({z: rot(gh.E)[2], draw() {
+        drawGlobe(gh.E, 0.32, gs, 0.55);
+        strokePts([project(add(gh.E, mul(n, -0.55))), project(add(gh.E, mul(n, 0.55)))], {color: colors.fg, width: 1.5, alpha: 0.6});
+      }});
+    });
+    items.push({z: rot(E)[2], draw() { drawGlobe(E, r, s); drawSurface(E, r, T); }});
+    items.sort((a, b) => a.z - b.z).forEach(it => it.draw());
+    // Орбита.
+    line3(circlePts([0, 0, 0], [1, 0, 0], [0, 0, 1], R, 180), {color: colors.orbit, width: 1.6}, {color: colors.orbit, width: 1, dash: [3, 4], alpha: 0.5});
+    // Стрелка направления движения Земли.
+    const ang = Math.atan2(E[2], E[0]);
+    const arrowPts = circlePts([0, 0, 0], [1, 0, 0], [0, 0, 1], R, 20, ang + 0.28, ang + 0.55);
+    line3(arrowPts, {color: colors.orbit, width: 2.5});
+    const a1 = project(arrowPts[arrowPts.length - 1]), a0 = project(arrowPts[arrowPts.length - 3]);
+    const th = Math.atan2(a1[1] - a0[1], a1[0] - a0[0]);
+    ctx.beginPath();
+    ctx.moveTo(a1[0] + 9 * Math.cos(th), a1[1] + 9 * Math.sin(th));
+    ctx.lineTo(a1[0] + 9 * Math.cos(th + 2.5), a1[1] + 9 * Math.sin(th + 2.5));
+    ctx.lineTo(a1[0] + 9 * Math.cos(th - 2.5), a1[1] + 9 * Math.sin(th - 2.5));
+    ctx.closePath();
+    ctx.fillStyle = colors.orbit;
+    ctx.fill();
+    if (layers.eq.checked) line3(circlePts(E, T([1, 0, 0]), T([0, 0, 1]), r * 1.9, 72), {color: colors.equator, width: 1.2}, {color: colors.equator, width: 1, dash: [3, 4], alpha: 0.5});
+    // Ось Земли.
+    line3([add(E, mul(n, r)), add(E, mul(n, r * 1.8))], {color: colors.fg, width: 2});
+    line3([add(E, mul(n, -r * 1.7)), add(E, mul(n, -r))], {color: colors.fg, width: 2}, {color: colors.fg, width: 1, dash: [3, 4], alpha: 0.5});
+    label(add(E, mul(n, r * 2.05)), 'N', colors.fg, 0, 0, {bold: true});
+    // Направление на Солнце (от Земли к Солнцу).
+    line3([add(E, mul(s, r)), mul(s, -sunR)], {color: colors.ray, width: 3}, {color: colors.ray, width: 2, dash: [5, 4], alpha: 0.6});
+    label([0, 0, 0], 'Солнце', colors.fg, 0, -sunR * S - 12);
+    // Подпись дальней метки — над ней, чтобы не заезжать на Солнце в центре.
+    ghosts.forEach(gh => label(gh.E, gh.k.date, colors.muted, 0, rot(gh.E)[2] < -1 ? -(0.32 * S + 8) : 0.32 * S + 16));
+    // Подпись орбиты — на участке между Землёй и следующей сезонной меткой, подальше от Земли.
+    const la = Math.atan2(E[2], E[0]) - 2.4;
+    label([Math.cos(la) * R, 0, Math.sin(la) * R], 'орбита Земли', colors.orbit, 0, 16);
+    label(add(E, mul(n, -r * 1.7)), 'Земля', colors.fg, 0, 18);
+  }
+
+  // Точка, где Солнце в зените.
+  const zp = add(E, mul(s, r));
+  if (!occluded(zp)) {
+    const q = project(zp);
+    ctx.beginPath();
+    ctx.arc(q[0], q[1], 6, 0, Math.PI * 2);
+    ctx.fillStyle = colors.zenith;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = colors.fg;
+    ctx.stroke();
+  }
+  drawAngle(E, r, s, n, sunInfo.delta);
+
+  ctx.font = '12px system-ui, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = colors.muted;
+  ctx.fillText('Размеры и расстояния условные', 8, H - 8);
+}
+
+// ---------- Разрез «Как измеряется δ» ----------
+const svgNS = 'http://www.w3.org/2000/svg';
+function drawSection(delta) {
+  const cx = 158, cy = 172, r = 88;
+  const d = delta * rad;
+  const s = [Math.cos(d), -Math.sin(d)]; // в координатах SVG (y вниз)
+  const p = [Math.sin(d), Math.cos(d)];  // перпендикуляр: граница дня и ночи
+  const pt = (x, y) => x.toFixed(1) + ',' + y.toFixed(1);
+  const parts = [];
+  // Ночная половина.
+  const night = [];
+  const a0 = Math.atan2(p[1], p[0]);
+  const mid = a0 + Math.PI / 2;
+  const dir = Math.cos(mid) * -s[0] + Math.sin(mid) * -s[1] > 0 ? 1 : -1;
+  for (let i = 0; i <= 40; i++) { const a = a0 + dir * Math.PI * i / 40; night.push(pt(cx + r * Math.cos(a), cy + r * Math.sin(a))); }
+  parts.push(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--earth)"/>`);
+  parts.push(`<polygon points="${night.join(' ')}" fill="var(--night)"/>`);
+  parts.push(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--earth-edge)"/>`);
+  // Солнечные лучи (свет идёт от Солнца к Земле).
+  for (const o of [-0.75, -0.4, 0.4, 0.75]) {
+    const bx = cx + p[0] * o * r, by = cy + p[1] * o * r;
+    const t0 = Math.sqrt(1 - o * o) * r, t1 = (352 - bx) / s[0];
+    const x0 = bx + s[0] * t0, y0 = by + s[1] * t0, x1 = bx + s[0] * t1, y1 = by + s[1] * t1;
+    parts.push(`<line x1="${x1}" y1="${y1}" x2="${x0}" y2="${y0}" stroke="var(--light-ray)" stroke-width="1.5" marker-end="url(#arr)"/>`);
+  }
+  // Плоскость экватора и ось.
+  parts.push(`<line x1="${cx - r - 26}" y1="${cy}" x2="${cx + r + 74}" y2="${cy}" stroke="var(--equator)" stroke-width="2.5"/>`);
+  parts.push(`<text x="${cx + r + 72}" y="${delta >= 0 ? cy + 16 : cy - 8}" text-anchor="end" fill="var(--equator)" font-size="12" stroke="var(--card)" stroke-width="3" paint-order="stroke">плоскость экватора</text>`);
+  parts.push(`<line x1="${cx}" y1="${cy - r - 26}" x2="${cx}" y2="${cy + r + 18}" stroke="var(--fg)" stroke-width="1.5"/>`);
+  parts.push(`<text x="${cx}" y="${cy - r - 30}" text-anchor="middle" fill="var(--fg)" font-size="13" font-weight="600">N</text>`);
+  parts.push(`<text x="${cx}" y="${cy + r + 32}" text-anchor="middle" fill="var(--fg)" font-size="13" font-weight="600">S</text>`);
+  // Тропики и полярные круги (в разрезе — хорды).
+  const chord = (lat, color, text) => {
+    const y = cy - r * Math.sin(lat), hw = r * Math.cos(lat);
+    parts.push(`<line x1="${cx - hw}" y1="${y}" x2="${cx + hw}" y2="${y}" stroke="${color}" stroke-width="1.8" stroke-dasharray="5 4"/>`);
+    parts.push(`<text x="${cx - hw - 4}" y="${y + 4}" text-anchor="end" fill="${color}" font-size="11">${text}</text>`);
+  };
+  if (layers.tr.checked) { chord(EPS, 'var(--tropic)', 'тропик'); chord(-EPS, 'var(--tropic)', 'тропик'); }
+  if (layers.pc.checked) { chord(Math.PI / 2 - EPS, 'var(--polar)', 'пол. круг'); chord(-(Math.PI / 2 - EPS), 'var(--polar)', 'пол. круг'); }
+  // Направление на Солнце и Солнце.
+  const L = (330 - cx) / s[0];
+  const sx = cx + s[0] * L, sy = cy + s[1] * L;
+  parts.push(`<line x1="${cx}" y1="${cy}" x2="${sx}" y2="${sy}" stroke="var(--ray)" stroke-width="2.5"/>`);
+  parts.push(`<circle cx="${sx}" cy="${sy}" r="16" fill="var(--sun-glow)"/><circle cx="${sx}" cy="${sy}" r="10" fill="var(--sun)"/>`);
+  parts.push(`<text x="${sx - 2}" y="${sy + (delta >= 0 ? -20 : 30)}" text-anchor="middle" fill="var(--fg)" font-size="12">Солнце</text>`);
+  // Угол δ.
+  const ra = 42;
+  if (Math.abs(delta) >= 0.5) {
+    const ex = cx + ra * Math.cos(d), ey = cy - ra * Math.sin(d);
+    parts.push(`<path d="M${cx + ra},${cy} A${ra},${ra} 0 0 ${delta > 0 ? 0 : 1} ${ex.toFixed(1)},${ey.toFixed(1)}" fill="none" stroke="var(--delta)" stroke-width="3.5"/>`);
+    const lx = cx + (ra + 14) * Math.cos(d / 2) + 6, ly = cy - (ra + 14) * Math.sin(d / 2) + 5;
+    parts.push(`<text x="${lx}" y="${ly}" fill="var(--delta)" font-size="15" font-weight="700" stroke="var(--card)" stroke-width="3" paint-order="stroke">δ</text>`);
+  } else {
+    parts.push(`<text x="8" y="40" fill="var(--delta)" font-size="12" font-weight="600">≈ 0° — направление почти в плоскости экватора</text>`);
+  }
+  // Точка зенита.
+  const zx = cx + r * s[0], zy = cy + r * s[1];
+  parts.push(`<circle cx="${zx}" cy="${zy}" r="6" fill="var(--zenith)" stroke="var(--fg)" stroke-width="2"/>`);
+  parts.push(`<text x="${zx - 10}" y="${zy + (delta >= 0 ? -12 : 22)}" text-anchor="end" fill="var(--fg)" font-size="12" font-weight="600" stroke="var(--card)" stroke-width="4" paint-order="stroke">в зените: ${fmtLat(delta)}</text>`);
+  parts.push(`<text x="8" y="20" fill="var(--delta)" font-size="15" font-weight="600">δ = ${fmt(delta)}</text>`);
+  const svg = $('section');
+  svg.innerHTML = `<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--light-ray)"/></marker></defs>` + parts.join('');
+}
+
+// ---------- График за год ----------
+const chart = $('chart');
+let chartGeom = null;
+function buildChart() {
+  const w = Math.max(300, chart.clientWidth || chart.parentElement.clientWidth);
+  const h = w < 520 ? 230 : 270;
+  const m = {l: w < 520 ? 54 : 58, r: 12, t: 22, b: 30};
+  const iw = w - m.l - m.r, ih = h - m.t - m.b;
+  const X = i => m.l + i / (N - 1) * iw;
+  const Y = v => m.t + (25 - v) / 50 * ih;
+  chartGeom = {w, h, m, X, Y, iw};
+  chart.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  chart.setAttribute('height', h);
+  const el = [];
+  const fs = w < 520 ? 11 : 12;
+  // Месяцы.
+  monthStart.forEach((st, k) => {
+    const end = k < 11 ? monthStart[k + 1] : N;
+    el.push(`<line x1="${X(st)}" y1="${m.t}" x2="${X(st)}" y2="${m.t + ih}" stroke="var(--line)"/>`);
+    el.push(`<text x="${(X(st) + X(end - 1)) / 2}" y="${h - 10}" text-anchor="middle" font-size="${fs}" fill="var(--muted)">${w < 520 ? ROMAN[k] : MONTHS_SHORT[k]}</text>`);
+  });
+  // Горизонтали.
+  const eDeg = EPS / rad;
+  [[eDeg, 'var(--tropic)', 'Северный тропик'], [0, 'var(--equator)', 'экватор'], [-eDeg, 'var(--tropic)', 'Южный тропик']].forEach(([v, c, t]) => {
+    el.push(`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l + iw}" y2="${Y(v)}" stroke="${c}" stroke-width="${v ? 1.2 : 1.6}" stroke-dasharray="${v ? '5 4' : ''}"/>`);
+    el.push(`<text x="${m.l - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="${fs}" fill="var(--muted)">${v ? fmt(v) : '0°'}</text>`);
+    // Подписи линий ставим туда, где кривая далеко: Северный тропик — в январе, Южный и экватор — летом.
+    el.push(`<text x="${X(v > 0 ? 4 : 150)}" y="${Y(v) + (v > 0 ? 15 : -6)}" text-anchor="start" font-size="${fs}" fill="${c}">${w < 520 && v ? 'тропик' : t}</text>`);
+  });
+  // Особые дни.
+  KEY_DAYS.forEach(k => {
+    el.push(`<line x1="${X(k.i)}" y1="${m.t}" x2="${X(k.i)}" y2="${m.t + ih}" stroke="var(--muted)" stroke-dasharray="2 4"/>`);
+    const short = w < 520 ? String(days[k.i].d).padStart(2, '0') + '.' + String(days[k.i].m + 1).padStart(2, '0') : k.date.replace('сентября', 'сент.').replace('декабря', 'дек.');
+    el.push(`<text x="${Math.min(X(k.i), w - 22)}" y="${m.t - 8}" text-anchor="middle" font-size="${fs}" fill="var(--muted)">${short}</text>`);
+  });
+  // Кривая.
+  el.push(`<polyline points="${days.map((d, i) => X(i).toFixed(1) + ',' + Y(d.delta).toFixed(1)).join(' ')}" fill="none" stroke="var(--delta)" stroke-width="2.2"/>`);
+  el.push(`<g id="chart-marker"><line id="cm-line" stroke="var(--fg)" stroke-width="1"/><circle id="cm-dot" r="6" fill="var(--zenith)" stroke="var(--fg)" stroke-width="2"/></g>`);
+  chart.innerHTML = el.join('');
+  updateChartMarker();
+}
+function updateChartMarker() {
+  if (!chartGeom) return;
+  const {X, Y, m, h} = chartGeom;
+  const pos = state.pos % N;
+  const delta = sunAt(state.pos).delta;
+  const line = chart.querySelector('#cm-line'), dotEl = chart.querySelector('#cm-dot');
+  if (!line) return;
+  line.setAttribute('x1', X(pos)); line.setAttribute('x2', X(pos));
+  line.setAttribute('y1', m.t); line.setAttribute('y2', h - m.b);
+  dotEl.setAttribute('cx', X(pos)); dotEl.setAttribute('cy', Y(delta));
+}
+function chartPick(e) {
+  const rect = chart.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * chartGeom.w / rect.width;
+  const i = Math.round((x - chartGeom.m.l) / chartGeom.iw * (N - 1));
+  setDay(Math.max(0, Math.min(N - 1, i)));
+}
+chart.addEventListener('pointerdown', e => { chartPick(e); chart.setPointerCapture(e.pointerId); });
+chart.addEventListener('pointermove', e => { if (e.buttons && chart.hasPointerCapture(e.pointerId)) chartPick(e); });
+
+// ---------- Текст ----------
+function updateReadout() {
+  const i = Math.floor(state.pos) % N;
+  const delta = state.playing ? sunAt(state.pos).delta : days[i].delta;
+  $('r-date').textContent = dateText(i);
+  $('r-delta').textContent = fmt(delta);
+  const key = KEY_DAYS.find(k => k.near.includes(i));
+  const ev = $('r-event');
+  ev.hidden = !key;
+  if (key) ev.textContent = 'около дня: ' + key.name;
+  const eDeg = EPS / rad;
+  let t;
+  if (Math.abs(delta) < 0.5) {
+    t = `Солнце почти в плоскости экватора. В полдень оно в зените над ${fmtLat(delta)}, рядом с экватором. На большей части Земли день и ночь близки по продолжительности.`;
+  } else {
+    const north = delta > 0;
+    const where = Math.abs(delta) >= eDeg - 1 / 60
+      ? (north ? ' — над Северным тропиком, дальше к северу Солнце в зените не бывает' : ' — над Южным тропиком, дальше к югу Солнце в зените не бывает')
+      : (north ? ' — между экватором и Северным тропиком' : ' — между экватором и Южным тропиком');
+    t = `Солнце в зените над ${fmtLat(delta)}${where}. В ${north ? 'Северном' : 'Южном'} полушарии день длиннее ночи; ${north ? 'севернее' : 'южнее'} ${fmt(90 - Math.abs(delta), false)} ${north ? 'с. ш.' : 'ю. ш.'} — полярный день, ${north ? 'южнее' : 'севернее'} ${fmt(90 - Math.abs(delta), false)} ${north ? 'ю. ш.' : 'с. ш.'} — полярная ночь.`;
+  }
+  $('r-explain').textContent = t;
+}
+
+// ---------- Обновление ----------
+function update() {
+  const i = Math.floor(state.pos) % N;
+  $('day').value = i;
+  updateReadout();
+  drawScene();
+  drawSection(sunAt(state.pos).delta);
+  updateChartMarker();
+  canvas.setAttribute('aria-label', `${state.mode === 'earth' ? 'Земля в центре' : 'Солнце в центре'}: ${dateText(i)}, склонение ${fmt(sunAt(state.pos).delta)}.`);
+}
+function saveHash() {
+  try {
+    history.replaceState(null, '', `#day=${Math.floor(state.pos) % N}&mode=${state.mode}`);
+  } catch (e) { /* file:// и песочницы */ }
+}
+function setDay(i) {
+  stop();
+  state.pos = i;
+  update();
+  saveHash();
+}
+function setMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  const earth = mode === 'earth';
+  $('scene-title').textContent = earth ? 'Земля в центре' : 'Солнце в центре';
+  $('scene-sub').textContent = earth
+    ? 'Так Солнце видно с Земли: за год оно проходит по кругу — эклиптике, то выше, то ниже экватора.'
+    : 'Земля летит вокруг Солнца, а её ось всё время наклонена в одну сторону.';
+  $('legend-orbit').textContent = earth ? 'Путь Солнца (эклиптика)' : 'Орбита Земли (плоскость эклиптики)';
+  $('l-ec-text').textContent = earth ? 'Плоскость эклиптики' : 'Плоскость орбиты';
+  update();
+  saveHash();
+}
+
+// ---------- Анимация ----------
+let raf = null, last = null;
+const MS_PER_DAY = 110;
+function frame(now) {
+  if (!state.playing) return;
+  if (last !== null) {
+    state.pos = (state.pos + Math.min(now - last, 100) / MS_PER_DAY) % N;
+    update();
+  }
+  last = now;
+  raf = requestAnimationFrame(frame);
+}
+function start() {
+  if (state.playing) return;
+  state.playing = true;
+  last = null;
+  $('play').textContent = '❚❚ Пауза';
+  $('play').setAttribute('aria-pressed', 'true');
+  $('readout').setAttribute('aria-live', 'off');
+  raf = requestAnimationFrame(frame);
+}
+function stop() {
+  if (!state.playing) return;
+  state.playing = false;
+  cancelAnimationFrame(raf);
+  state.pos = Math.floor(state.pos) % N;
+  $('play').textContent = '▶ Показать движение за год';
+  $('play').setAttribute('aria-pressed', 'false');
+  $('readout').setAttribute('aria-live', 'polite');
+}
+$('play').addEventListener('click', () => {
+  if (state.playing) { stop(); update(); saveHash(); } else start();
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden && state.playing) { stop(); update(); } });
+
+// ---------- Управление ----------
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+$('day').addEventListener('input', () => setDay(Number($('day').value)));
+document.querySelectorAll('[data-day]').forEach(b => b.addEventListener('click', () => setDay(Number(b.dataset.day))));
+Object.values(layers).forEach(el => el.addEventListener('change', update));
+const VIEW_ACTIONS = {
+  left: v => { v.yaw -= 0.3; },
+  right: v => { v.yaw += 0.3; },
+  top: v => { v.pitch = 1.5; },
+  side: v => { v.pitch = 0; },
+  reset: v => Object.assign(v, DEFAULT_VIEWS[state.mode]),
+  minus: v => { v.zoom = Math.max(0.6, v.zoom - 0.15); },
+  plus: v => { v.zoom = Math.min(1.8, v.zoom + 0.15); }
+};
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => {
+  VIEW_ACTIONS[b.dataset.view](state.views[state.mode]);
+  drawScene();
+}));
+let drag = null;
+canvas.addEventListener('pointerdown', e => { drag = {x: e.clientX, y: e.clientY}; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const v = state.views[state.mode];
+  v.yaw += (e.clientX - drag.x) * 0.008;
+  v.pitch = Math.max(-1.5, Math.min(1.5, v.pitch + (e.clientY - drag.y) * 0.008));
+  drag = {x: e.clientX, y: e.clientY};
+  drawScene();
+});
+canvas.addEventListener('pointerup', () => { drag = null; });
+canvas.addEventListener('pointercancel', () => { drag = null; });
+canvas.addEventListener('wheel', e => {
+  if (!e.ctrlKey && !e.metaKey) return;
+  e.preventDefault();
+  const v = state.views[state.mode];
+  v.zoom = Math.max(0.6, Math.min(1.8, v.zoom * Math.exp(-e.deltaY * 0.002)));
+  drawScene();
+}, {passive: false});
+
+// Подписи месяцев под ползунком.
+$('months').innerHTML = monthStart.map((st, k) => `<span style="left:calc(${(st + 15) / (N - 1) * 100}% )">${MONTHS_SHORT[k]}</span>`).join('');
+
+function resize() {
+  W = canvas.clientWidth;
+  H = canvas.clientHeight;
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = Math.round(W * ratio);
+  canvas.height = Math.round(H * ratio);
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  drawScene();
+}
+let chartWidth = 0;
+new ResizeObserver(() => {
+  const w = chart.clientWidth;
+  if (Math.abs(w - chartWidth) > 1) { chartWidth = w; buildChart(); }
+}).observe(chart);
+new ResizeObserver(resize).observe(canvas);
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); update(); });
+
+// Начальное состояние из адреса: #day=173&mode=sun
+const params = new URLSearchParams(location.hash.slice(1));
+const hashDay = Number(params.get('day'));
+if (Number.isInteger(hashDay) && hashDay >= 0 && hashDay < N && params.has('day')) state.pos = hashDay;
+readColors();
+buildChart();
+setMode(params.get('mode') === 'earth' ? 'earth' : 'sun');
+})();
+</script>
 </body>
 </html>
