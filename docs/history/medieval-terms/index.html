@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Понятийный диктант по истории Средних веков, 6 класс: 18 понятий с картинками, запоминалками, тренажёром и проверкой.">
+<title>Средние века: понятия</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+  <p class="crumbs"><a href="../../">← Все материалы</a></p>
+  <h1>Средние века: 18 понятий для диктанта</h1>
+  <p class="lead">Каждое понятие — картинка из настоящей средневековой книги, короткое определение и «крючок», за который слово цепляется в памяти. Сначала пройди <b>карточки</b>, потом <b>тренажёр</b>, а в конце напиши <b>диктант</b> сам себе.</p>
+
+  <nav class="tabs" role="tablist" aria-label="Режимы">
+    <button role="tab" data-tab="learn" aria-selected="true">📖 Карточки</button>
+    <button role="tab" data-tab="train" aria-selected="false">🃏 Тренажёр</button>
+    <button role="tab" data-tab="match" aria-selected="false">🧩 Соотнеси</button>
+    <button role="tab" data-tab="dictation" aria-selected="false">✍️ Диктант</button>
+  </nav>
+
+  <!-- ================= КАРТОЧКИ ================= -->
+  <section id="tab-learn" class="tab" data-tab="learn">
+    <p class="hint">Нажми на карточку, чтобы открыть определение и запоминалку. Отметь галочкой те, что уже знаешь: <span id="known-count">0</span> / 18.</p>
+    <div id="groups"></div>
+  </section>
+
+  <!-- ================= ТРЕНАЖЁР ================= -->
+  <section id="tab-train" class="tab" data-tab="train" hidden>
+    <p class="hint">Смотри на картинку и определение — вспомни слово. Потом переверни и честно ответь, знал ли. Незнакомые карточки вернутся ещё раз.</p>
+    <div class="train-controls">
+      <label><input type="radio" name="train-set" value="all" checked> все 18</label>
+      <label><input type="radio" name="train-set" value="feudal"> феодализм</label>
+      <label><input type="radio" name="train-set" value="church"> церковь</label>
+      <label><input type="radio" name="train-set" value="town"> город и деревня</label>
+      <button id="train-start" class="btn primary">Начать</button>
+    </div>
+    <div id="train-area"></div>
+  </section>
+
+  <!-- ================= СООТНЕСИ ================= -->
+  <section id="tab-match" class="tab" data-tab="match" hidden>
+    <p class="hint">Слева — понятия, справа — определения. Нажми на понятие, потом на его определение. Шесть пар за раз.</p>
+    <div class="train-controls"><button id="match-start" class="btn primary">Новый набор</button> <span id="match-status"></span></div>
+    <div id="match-area" class="match"></div>
+  </section>
+
+  <!-- ================= ДИКТАНТ ================= -->
+  <section id="tab-dictation" class="tab" data-tab="dictation" hidden>
+    <p class="hint">Как на настоящем диктанте: читаешь определение — пишешь понятие. Буква «ё» и регистр не важны, но одна опечатка будет отмечена.</p>
+    <div class="train-controls">
+      <label><input type="checkbox" id="dict-pics" checked> показывать картинку-подсказку</label>
+      <button id="dict-start" class="btn primary">Начать диктант</button>
+    </div>
+    <div id="dict-area"></div>
+  </section>
+
+  <footer class="credits">
+    <details>
+      <summary>Откуда картинки</summary>
+      <ul id="credits-list"></ul>
+      <p>Все миниатюры и картины — из Wikimedia Commons, общественное достояние (кроме отмеченных CC BY‑SA). Схемы нарисованы для этой страницы.</p>
+    </details>
+  </footer>
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>
