@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Задача на концентрацию: в раствор соли доливают воду, затем досыпают соль. Интерактивная лаборатория, проверка ответа и пошаговое решение.">
+<title>Раствор соли</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+  <p class="crumbs"><a href="../../">← Все материалы</a></p>
+  <h1>Задача о растворе соли</h1>
+  <p class="lead">Задача на проценты и концентрацию. Сначала разберёмся, что значат слова в условии. Потом можно самому долить воду и досыпать соль в «лаборатории». Решение спрятано под кнопкой, и открывать его лучше после того, как подумаешь сам.</p>
+
+  <nav class="toc" aria-label="Разделы">
+    <a href="#task">Условие</a>
+    <a href="#words">Что значат слова</a>
+    <a href="#lab">Лаборатория</a>
+    <a href="#solve">Ответ и решение</a>
+    <a href="#idea">Главная идея</a>
+  </nav>
+
+  <!-- ============ Условие ============ -->
+  <section id="task" class="card">
+    <h2>Условие</h2>
+    <blockquote class="statement">В растворе соли на <b>1 кг воды</b> приходится <b>1,5 кг соли</b>. Добавили воду так, что концентрация соли уменьшилась до <b>15%</b>. Затем добавили соль, и её концентрация стала <b>50%</b>. Во сколько раз изменилась масса раствора?</blockquote>
+    <p>В задаче три момента времени. Для каждого будем следить за тремя числами: сколько <span class="c-water">воды</span>, сколько <span class="c-salt">соли</span> и сколько весит весь раствор.</p>
+    <ol class="timeline">
+      <li><b>Начало.</b> Вода и соль, как сказано в условии.</li>
+      <li><b>Долили воду.</b> Концентрация соли стала 15%.</li>
+      <li><b>Досыпали соль.</b> Концентрация соли стала 50%.</li>
+    </ol>
+    <p>Нужно сравнить массу раствора <b>в конце</b> с массой <b>в начале</b>.</p>
+  </section>
+
+  <!-- ============ Слова ============ -->
+  <section id="words" class="card">
+    <h2>Что значат слова</h2>
+    <div class="defs">
+      <div class="def">
+        <h3>Раствор</h3>
+        <p>Вода и растворённая в ней соль вместе.</p>
+        <p class="formula">раствор = <span class="c-water">вода</span> + <span class="c-salt">соль</span></p>
+      </div>
+      <div class="def">
+        <h3>Концентрация соли</h3>
+        <p>Какую часть <b>всего раствора</b> составляет соль. Обычно её записывают в процентах.</p>
+        <p class="formula">концентрация = <span class="c-salt">соль</span> : раствор · 100%</p>
+      </div>
+    </div>
+
+    <h3 class="sub">«На 1 кг воды приходится 1,5 кг соли»</h3>
+    <p>Это значит, что в растворе <b>1 кг воды и 1,5 кг соли</b>. Весь раствор весит 1 + 1,5 = 2,5 кг.</p>
+    <p class="small">Будем рисовать массу квадратиками: <span class="tile w inline" aria-hidden="true"></span> — 0,5 кг воды, <span class="tile s inline" aria-hidden="true"></span> — 0,5 кг соли. В этой задаче все массы делятся на 0,5 кг, поэтому квадратики всегда целые.</p>
+    <div class="jar-row">
+      <figure class="jar-fig">
+        <div class="jar" id="start-jar"></div>
+        <figcaption>2 <span class="c-water">воды</span> + 3 <span class="c-salt">соли</span> = 5 квадратиков = 2,5 кг</figcaption>
+      </figure>
+    </div>
+
+    <div class="trap">
+      <p class="trap-title">⚠️ Частая ошибка</p>
+      <p>Прочитать условие как «в 1 кг <b>раствора</b> 1,5 кг соли». Так быть не может: соли не бывает больше, чем всего раствора. Здесь 1 кг — это только <b>вода</b>, а соль добавляется к ней сверху.</p>
+      <p>Вторая ловушка: проценты считают <b>от всего раствора</b>, а не от воды. «Соли 15%» значит «соль — это 15% массы раствора».</p>
+    </div>
+    <p class="small">В жизни в 1 кг воды растворится только около 0,36 кг соли. Здесь это не важно: это задача на проценты, а не на химию.</p>
+  </section>
+
+  <!-- ============ Лаборатория ============ -->
+  <section id="lab" class="card">
+    <h2>Лаборатория</h2>
+    <p>Повтори то, что происходит в условии. Сначала доливай воду, пока соли не станет ровно 15%. Потом досыпай соль, пока её не станет 50%.</p>
+    <div class="try">
+      <div class="lab">
+        <div class="lab-view">
+          <div class="jar tall" id="lab-jar" role="img" aria-label="Раствор в банке"></div>
+          <div class="meter" aria-hidden="true">
+            <div class="meter-bar"><div class="meter-fill" id="lab-fill"></div><div class="meter-goal" id="lab-goal"></div></div>
+            <div class="meter-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+          </div>
+        </div>
+        <div class="lab-side">
+          <dl class="readout">
+            <div><dt class="c-water">Вода</dt><dd id="lab-w"></dd></div>
+            <div><dt class="c-salt">Соль</dt><dd id="lab-s"></dd></div>
+            <div><dt>Раствор</dt><dd id="lab-m"></dd></div>
+            <div class="conc"><dt>Соли в растворе</dt><dd id="lab-c"></dd></div>
+          </dl>
+
+          <fieldset class="ctrl" id="ctrl-water">
+            <legend><span class="num sm">1</span> Доливаем воду <span class="goal">цель: 15%</span></legend>
+            <div class="ctrl-row">
+              <button class="btn sq" type="button" data-act="w-" aria-label="Убрать 0,5 кг воды">−</button>
+              <input type="range" id="lab-addw" min="0" max="20" step="1" value="0" aria-label="Сколько воды долить">
+              <button class="btn sq" type="button" data-act="w+" aria-label="Долить 0,5 кг воды">+</button>
+            </div>
+            <p class="ctrl-val">Долили: <b id="lab-addw-v"></b></p>
+          </fieldset>
+
+          <fieldset class="ctrl" id="ctrl-salt" disabled>
+            <legend><span class="num sm">2</span> Досыпаем соль <span class="goal">цель: 50%</span></legend>
+            <div class="ctrl-row">
+              <button class="btn sq" type="button" data-act="s-" aria-label="Убрать 0,5 кг соли">−</button>
+              <input type="range" id="lab-adds" min="0" max="20" step="1" value="0" aria-label="Сколько соли досыпать">
+              <button class="btn sq" type="button" data-act="s+" aria-label="Досыпать 0,5 кг соли">+</button>
+            </div>
+            <p class="ctrl-val">Досыпали: <b id="lab-adds-v"></b></p>
+          </fieldset>
+        </div>
+      </div>
+      <p id="lab-msg" class="result" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" type="button" id="lab-reset">Начать заново</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Ответ и решение ============ -->
+  <section id="solve" class="card">
+    <h2>Ответ и решение</h2>
+    <p>Во сколько раз масса раствора в конце больше, чем в начале? Ответ можно записать десятичной дробью (6,5) или обычной (13/2).</p>
+    <div class="check">
+      <form id="check-form">
+        <label for="ans">Твой ответ:</label>
+        <input id="ans" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="во сколько раз">
+        <button class="btn" type="submit">Проверить</button>
+      </form>
+      <p class="verdict" id="verdict" aria-live="polite"></p>
+    </div>
+    <details class="solution">
+      <summary>Показать решение</summary>
+      <div class="stepper" id="stepper"></div>
+    </details>
+  </section>
+
+  <!-- ============ Главная идея ============ -->
+  <section id="idea" class="card idea">
+    <h2>Главная идея</h2>
+    <p>В задачах на растворы ищи то, что <b>не меняется</b>.</p>
+    <div class="defs">
+      <div class="def">
+        <h3>Доливают воду</h3>
+        <p><span class="c-salt">Соль</span> остаётся той же. Знаем, сколько её и какую долю она составляет, значит, находим весь раствор:</p>
+        <p class="formula">раствор = соль : доля соли</p>
+      </div>
+      <div class="def">
+        <h3>Досыпают соль</h3>
+        <p><span class="c-water">Вода</span> остаётся той же. Если соли 50%, то воды тоже 50%:</p>
+        <p class="formula">раствор = вода : доля воды</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="small">Решение пошаговое: кнопки «Назад» и «Дальше» или стрелки ← → на клавиатуре, когда фокус на решении.</p>
+  </footer>
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>
