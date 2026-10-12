@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Интерактивный учебник: 25 рек и 4 водопада мира для контурной карты. Изучение, тренажёр «Найди на карте», «Что это?» и контурная карта для печати.">
+<title>Реки и водопады мира</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <p class="crumbs"><a href="../../">← Школьные материалы</a></p>
+  <h1>Реки и водопады мира</h1>
+  <p class="lead">Домашнее задание: нанести на контурную карту (стр. 12–13) и уметь показывать на карте <b>25 рек</b> и <b>4 водопада</b>. Изучи каждую реку, потренируйся находить их на карте — и переноси на контурную карту.</p>
+
+  <div class="seg" role="group" aria-label="Режим" id="modes">
+    <button type="button" data-mode="study" aria-pressed="true">📖 Изучать</button>
+    <button type="button" data-mode="find" aria-pressed="false">🎯 Найди на карте</button>
+    <button type="button" data-mode="guess" aria-pressed="false">❓ Что это?</button>
+    <button type="button" data-mode="contour" aria-pressed="false">✏️ Контурная карта</button>
+  </div>
+
+  <div class="stage">
+    <section class="mapbox" aria-label="Карта мира">
+      <div class="prompt" id="prompt" hidden></div>
+      <div class="mapwrap">
+        <svg id="map" viewBox="0 0 960 500" role="img" aria-label="Карта мира с реками и водопадами"></svg>
+        <div class="tip" id="tip" hidden></div>
+        <div class="zoombtns">
+          <button type="button" class="btn" id="zin" aria-label="Приблизить">+</button>
+          <button type="button" class="btn" id="zout" aria-label="Отдалить">−</button>
+          <button type="button" class="btn" id="zreset" aria-label="Показать весь мир">⤢</button>
+        </div>
+      </div>
+      <div class="layers" id="layers">
+        <label><input type="checkbox" id="lyrLabels" checked> Подписи</label>
+        <label><input type="checkbox" id="lyrOcean"> Раскрасить по океанам</label>
+        <label><input type="checkbox" id="lyrBorders"> Границы стран</label>
+        <label class="contour-only"><input type="checkbox" id="lyrHide"> Спрятать реки (проверь себя)</label>
+      </div>
+      <ul class="legend" id="legend" hidden></ul>
+      <p class="small">Колёсико или два пальца — масштаб, перетаскивание — сдвиг карты.</p>
+    </section>
+
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <footer>
+    <p class="small">Русла рек и береговая линия — Natural Earth (общественное достояние). Длины рек округлены, в разных учебниках они немного отличаются. Проекция карты — «Natural Earth», на контурной карте в тетради она может быть другой: ориентируйся по материкам, морям и заливам.</p>
+  </footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
