@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Задача 14*: вычислить A и B по длинным выражениям и найти их процентное отношение. Космическая миссия: ракеты сбивают действия по порядку, взрывы, стыковка планет и процентная линейка.">
+<title>Миссия «Процент»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<canvas id="space" aria-hidden="true"></canvas>
+
+<div class="page">
+  <!-- ============ Заставка ============ -->
+  <header class="hero">
+    <p class="crumbs"><a href="../../">← Все материалы</a></p>
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">Задача 14* · проценты</p>
+        <h1>Миссия «Процент»</h1>
+        <p class="lead">Два числа, <b class="c-a">A</b> и <b class="c-b">B</b>, спрятаны за длинными выражениями. Сбивай действия ракетами по одному, в правильном порядке, пока от выражения не останется одно число. А потом выясни, на сколько процентов одно число меньше или больше другого.</p>
+        <div class="hero-btns">
+          <button class="btn primary big" type="button" id="launch">🚀 Старт миссии</button>
+          <button class="btn big" type="button" id="trailer-btn">🎬 Трейлер</button>
+          <button class="btn" type="button" id="sound-btn" aria-pressed="true">🔊 Звук</button>
+        </div>
+      </div>
+      <div class="hero-rocket" id="hero-rocket" aria-hidden="true">
+        <svg viewBox="0 0 120 240" class="rocket">
+          <defs>
+            <linearGradient id="rk-body" x1="0" x2="1">
+              <stop offset="0" stop-color="#aab6ee"/><stop offset=".45" stop-color="#ffffff"/><stop offset="1" stop-color="#8492d0"/>
+            </linearGradient>
+            <radialGradient id="rk-fire" cx=".5" cy="0" r="1">
+              <stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#ffd166"/><stop offset=".7" stop-color="#ff6b3d"/><stop offset="1" stop-color="#ff6b3d" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <g class="rk-flame"><path d="M42 170 Q60 250 78 170 Z" fill="url(#rk-fire)"/></g>
+          <path d="M38 118 L12 170 L40 160 Z" fill="#ff5fa2"/>
+          <path d="M82 118 L108 170 L80 160 Z" fill="#ff5fa2"/>
+          <path d="M60 6 C90 36 90 110 82 172 L38 172 C30 110 30 36 60 6 Z" fill="url(#rk-body)"/>
+          <path d="M60 6 C71 17 78 30 81 44 L39 44 C42 30 49 17 60 6 Z" fill="#ff5fa2"/>
+          <circle cx="60" cy="88" r="15" fill="#0d1230" stroke="#4cc9f0" stroke-width="5"/>
+          <circle cx="55" cy="83" r="4" fill="#4cc9f0" opacity=".7"/>
+          <path d="M56 150 L60 192 L64 150 Z" fill="#ff5fa2"/>
+          <rect x="42" y="168" width="36" height="8" rx="2" fill="#5b6aa8"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Разделы">
+    <a href="#task">Условие</a>
+    <a href="#plan">План полёта</a>
+    <a href="#a">Планета A</a>
+    <a href="#b">Планета B</a>
+    <a href="#dock">Стыковка</a>
+    <a href="#idea">Главная идея</a>
+  </nav>
+
+  <main>
+    <!-- ============ Условие ============ -->
+    <section id="task" class="card">
+      <h2>Условие</h2>
+      <blockquote class="statement">Вычислите процентное отношение чисел <i>A</i> и <i>B</i> и определите: 1) на сколько процентов <i>A</i> меньше, чем <i>B</i>; 2) на сколько процентов <i>B</i> больше, чем <i>A</i>?</blockquote>
+      <div class="task-exprs">
+        <div class="stage mini" id="task-a"></div>
+        <div class="stage mini" id="task-b"></div>
+      </div>
+      <p>Выглядит страшно, но каждое выражение — это цепочка простых действий. Если делать их <b>по одному и в правильном порядке</b>, всё сократится до одного числа.</p>
+    </section>
+
+    <!-- ============ План ============ -->
+    <section id="plan" class="card">
+      <h2>План полёта</h2>
+      <ol class="route">
+        <li><span class="badge a">A</span><span><b>Найти A.</b> Отдельно числитель, отдельно знаменатель, потом делим.</span></li>
+        <li><span class="badge b">B</span><span><b>Найти B.</b> Так же.</span></li>
+        <li><span class="badge">%</span><span><b>Сравнить в процентах.</b> Тут главное понять, что принять за 100%.</span></li>
+      </ol>
+
+      <h3 class="sub">Бортовые правила: порядок действий</h3>
+      <ol class="rules">
+        <li><b>Скобки.</b> Сначала то, что внутри, от внутренних скобок к внешним.</li>
+        <li><b>Умножение и деление.</b> По порядку, слева направо. Деление не «главнее» умножения: что левее, то и первое.</li>
+        <li><b>Сложение и вычитание.</b> Тоже слева направо.</li>
+        <li><b>Большая дробная черта</b> — это деление. Числитель и знаменатель считаем как будто в скобках.</li>
+      </ol>
+
+      <h3 class="sub">Шпаргалка пилота</h3>
+      <ul class="cheats" data-tx>
+        <li>0,5 = {1/2}</li>
+        <li>0,25 = {1/4}</li>
+        <li>0,125 = {1/8}</li>
+        <li>0,6 = {3/5}</li>
+        <li>· 0,5 = пополам</li>
+        <li>· 0,01 → запятая на 2 знака влево</li>
+        <li>{2 2/7} = {16/7}</li>
+        <li>39,48 : 5,6 = 394,8 : 56</li>
+      </ul>
+      <p class="small">Последняя строчка: при делении на десятичную дробь переносим запятую в <b>обоих</b> числах на одинаковое число знаков, пока делитель не станет целым. Частное от этого не меняется.</p>
+    </section>
+
+    <!-- ============ Миссия A ============ -->
+    <section id="a" class="card">
+      <h2><span class="badge a">A</span> Миссия A</h2>
+      <p>Подсвеченная часть — <b class="c-gold">цель</b>. Посчитай её и введи ответ: попадёшь — получишь ⭐. Или нажми «Вычислить», и ракета сделает это за тебя. Под выражением — бортовой журнал с подробным решением каждого шага.</p>
+      <div class="mission" id="mission-a"></div>
+    </section>
+
+    <!-- ============ Миссия B ============ -->
+    <section id="b" class="card">
+      <h2><span class="badge b">B</span> Миссия B</h2>
+      <p>Здесь есть ловушка в знаменателе. Внимательно следи за порядком действий!</p>
+      <div class="mission" id="mission-b"></div>
+    </section>
+
+    <!-- ============ Стыковка ============ -->
+    <section id="dock" class="card">
+      <h2><span class="badge">%</span> Стыковка: сравниваем A и B</h2>
+      <div class="duo">
+        <figure>
+          <div class="planet planet-a sm" id="dock-pa"></div>
+          <figcaption><i>A</i> = <b id="dock-a">?</b></figcaption>
+        </figure>
+        <figure>
+          <div class="planet planet-b md" id="dock-pb"></div>
+          <figcaption><i>B</i> = <b id="dock-b">?</b></figcaption>
+        </figure>
+      </div>
+
+      <div class="lock" id="dock-lock">
+        <p>Стыковка откроется, когда обе планеты будут найдены. Можно не ждать:</p>
+        <button class="btn" type="button" id="dock-skip">Открыть сразу</button>
+      </div>
+
+      <div id="dock-body" hidden>
+        <p>У нас два числа: <b class="c-a">A = 9</b> и <b class="c-b">B = 36</b>. Заметь: 36 = 4 · 9, в <i>B</i> помещаются ровно четыре <i>A</i>. Разобьём <i>B</i> на «девятки» и посмотрим, как меняются проценты, если менять то, что принимаем за 100%.</p>
+
+        <div class="ruler-box">
+          <div class="seg" role="group" aria-label="Что принимаем за 100%">
+            <button type="button" data-base="b" aria-pressed="true">100% = B</button>
+            <button type="button" data-base="a" aria-pressed="false">100% = A</button>
+          </div>
+          <div class="rgrid">
+            <span></span><div class="ruler" id="ruler" aria-hidden="true"></div><span></span>
+            <span class="bar-l c-a">A</span><div class="cells" id="cells-a"></div><span class="bar-v" id="v-a"></span>
+            <span class="bar-l c-b">B</span><div class="cells" id="cells-b"></div><span class="bar-v" id="v-b"></span>
+          </div>
+          <p class="ruler-say" id="ruler-say" aria-live="polite"></p>
+        </div>
+
+        <h3 class="sub">Проверь себя</h3>
+        <div class="qs">
+          <div class="q" data-q="q1">
+            <p class="q-t"><span class="num">1</span> <span>Процентное отношение: сколько процентов <i>A</i> составляет от <i>B</i>?</span></p>
+            <form><input inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Сколько процентов A составляет от B"><span>%</span><button class="btn" type="submit">Проверить</button></form>
+            <p class="verdict" aria-live="polite"></p>
+          </div>
+          <div class="q" data-q="q2">
+            <p class="q-t"><span class="num">2</span> <span>На сколько процентов <i>A</i> меньше, чем <i>B</i>?</span></p>
+            <form><input inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="На сколько процентов A меньше B"><span>%</span><button class="btn" type="submit">Проверить</button></form>
+            <p class="verdict" aria-live="polite"></p>
+          </div>
+          <div class="q" data-q="q3">
+            <p class="q-t"><span class="num">3</span> <span>На сколько процентов <i>B</i> больше, чем <i>A</i>?</span></p>
+            <form><input inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="На сколько процентов B больше A"><span>%</span><button class="btn" type="submit">Проверить</button></form>
+            <p class="verdict" aria-live="polite"></p>
+          </div>
+        </div>
+        <p class="win" id="dock-win" hidden>🏆 Миссия «Процент» выполнена!</p>
+
+        <details class="solution">
+          <summary>Показать решение</summary>
+          <ol class="sol" data-tx>
+            <li>
+              <b>Процентное отношение A к B.</b> Делим A на B и умножаем на 100%:
+              <p class="eq">9 : 36 · 100% = {9/36} · 100% = {1/4} · 100% = <b>25%</b></p>
+            </li>
+            <li>
+              <b>На сколько процентов A меньше, чем B.</b> Сравниваем с B, значит, B = 100%. Разница: 36 − 9 = 27.
+              <p class="eq">27 : 36 · 100% = {3/4} · 100% = <b>75%</b></p>
+              <p class="small">Короче: A — это 25% от B, значит, до B не хватает 100% − 25% = 75%.</p>
+            </li>
+            <li>
+              <b>На сколько процентов B больше, чем A.</b> Сравниваем с A, значит, A = 100%. Разница та же: 27.
+              <p class="eq">27 : 9 · 100% = 3 · 100% = <b>300%</b></p>
+              <p class="small">Проверка: B = 36 = 9 + 3 · 9. Это A и ещё 300% от A.</p>
+            </li>
+          </ol>
+          <p class="answer">Ответ: A составляет 25% от B; 1) A меньше B на 75%; 2) B больше A на 300%.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ Главная идея ============ -->
+    <section id="idea" class="card">
+      <h2>Главная идея</h2>
+      <p class="big-idea">100% — это то, <b>с чем сравнивают</b>. Оно стоит после слова «чем».</p>
+      <div class="defs">
+        <div class="def">
+          <h3>«На сколько % <i>A</i> меньше, чем <u><i>B</i></u>»</h3>
+          <p class="formula">(<i>B</i> − <i>A</i>) : <b class="c-b"><i>B</i></b> · 100%</p>
+        </div>
+        <div class="def">
+          <h3>«На сколько % <i>B</i> больше, чем <u><i>A</i></u>»</h3>
+          <p class="formula">(<i>B</i> − <i>A</i>) : <b class="c-a"><i>A</i></b> · 100%</p>
+        </div>
+      </div>
+      <div class="trap">
+        <p class="trap-title">⚠️ Ловушка</p>
+        <p>Разница одна и та же — 27, а проценты разные: 75% и 300%. Дело в том, что «100%» разные: в первом вопросе 100% — это 36, во втором — 9.</p>
+        <p>Проверка: уменьшим 36 на 75% → останется 25% от 36, это 9 ✓. Увеличим 9 на 300% → получится 400% от 9, это 36 ✓.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="small">Ответ в миссиях можно вводить десятичной дробью (3,06), обыкновенной (21/4) или смешанным числом через пробел (5 1/4). Анимации отключаются, если в системе включено «Уменьшить движение».</p>
+  </footer>
+</div>
+
+<!-- ============ Трейлер ============ -->
+<div class="trailer" id="trailer" role="dialog" aria-modal="true" aria-label="Трейлер миссии" hidden>
+  <div class="tl-bar top"></div>
+  <div class="tl-bar bottom"></div>
+  <div class="tl-stage" id="tl-stage" aria-live="polite"></div>
+  <button class="btn tl-skip" type="button" id="tl-skip">Пропустить ✕</button>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<script src="app.js?v=1"></script>
+</body>
+</html>
