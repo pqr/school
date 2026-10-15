@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Детективная задача по геометрии для 6 класса: город в форме пятиконечной звезды, счёт на 21 светофор и подозреваемые. Сколько прямых и точек пересечения на рисунке звезды?">
+<title>Дело о 21 светофоре</title>
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<main>
+  <p class="crumbs"><a href="../../">← Все материалы</a></p>
+  <p class="kicker">Геометрия, 6 класс · прямые и точки пересечения</p>
+  <h1>Дело о 21 светофоре</h1>
+  <p class="lead">Город Звездоград построен в форме пятиконечной звезды. Мэру пришёл подозрительный счёт, и за дело взялся инспектор Циркуль. Ты его стажёр: соберёшь улики, найдёшь все проспекты и перекрёстки и выяснишь, кто врёт.</p>
+
+  <nav class="toc" aria-label="Разделы">
+    <a href="#case">Дело</a>
+    <a href="#draw">Карта</a>
+    <a href="#line">Архитектор</a>
+    <a href="#find-lines">Проспекты</a>
+    <a href="#find-points">Перекрёстки</a>
+    <a href="#solve">Очная ставка</a>
+    <a href="#sandbox">Последняя попытка</a>
+    <a href="#idea">Мораль</a>
+  </nav>
+
+  <!-- ============ Дело ============ -->
+  <section id="case" class="card">
+    <h2>Дело № 5: письмо мэра</h2>
+    <div class="letter" id="letter">
+      <p class="letter-head">Срочно. Лично в руки инспектору Циркулю</p>
+      <div class="letter-body" id="letter-body" aria-live="off"></div>
+      <button class="btn small-btn" type="button" id="letter-skip">Дочитать сразу</button>
+    </div>
+
+    <h3 class="sub">Улика: счёт</h3>
+    <div class="invoice">
+      <p class="inv-title">СЧЁТ № 21 · ООО «Мигай-Мигай»</p>
+      <table>
+        <tbody>
+          <tr><td>Светофор на перекрёсток</td><td>20 шт.</td><td>20 000 зв.</td></tr>
+          <tr><td>Светофор на перекрёсток «за лесом»</td><td>1 шт.</td><td>1 000 зв.</td></tr>
+          <tr><td>Мигание жёлтым по ночам</td><td></td><td>бесплатно 🎁</td></tr>
+        </tbody>
+        <tfoot><tr><td>Итого</td><td>21 шт.</td><td>21 000 зв.</td></tr></tfoot>
+      </table>
+      <p class="inv-sign">Директор <span class="scrawl">А. Мигалкин</span></p>
+      <p class="small">зв. — звездики, деньги Звездограда. Один светофор стоит 1000 звездиков.</p>
+    </div>
+
+    <h3 class="sub">Подозреваемые</h3>
+    <div class="suspects">
+      <article class="suspect" id="sus-arch">
+        <p class="ava" aria-hidden="true">🧑‍🎨</p>
+        <h4>Архитектор Штрих</h4>
+        <p class="claim">«Проспектов у нас <b>10</b>! Я сам рисовал контур города и все стороны пересчитал».</p>
+        <p class="stamp" hidden></p>
+      </article>
+      <article class="suspect" id="sus-broom">
+        <p class="ava" aria-hidden="true">🧹</p>
+        <h4>Дворник Петрович</h4>
+        <p class="claim">«Какие 10? <b>15</b>! Я каждый кусок улицы мету отдельной метлой, а мётел у меня 15».</p>
+        <p class="stamp" hidden></p>
+      </article>
+      <article class="suspect" id="sus-blink">
+        <p class="ava" aria-hidden="true">🚦</p>
+        <h4>Аркадий Мигалкин, фирма «Мигай-Мигай»</h4>
+        <p class="claim">«Всё по-честному: у каждого из 5 проспектов по 4 перекрёстка, 5 · 4 = <b>20</b>. И ещё один за лесом: там проспекты снова сходятся. Итого <b>21</b>».</p>
+        <p class="stamp" hidden></p>
+      </article>
+    </div>
+
+    <div class="say">
+      <p class="ava" aria-hidden="true">🕵️</p>
+      <div class="bubble">
+        <p class="who">Инспектор Циркуль</p>
+        <p>Стажёр, запиши словарик. Проспекты Звездограда прямые и уходят за город в обе стороны, до горизонта и дальше. Значит, для нас:</p>
+        <ul class="dict">
+          <li><b>проспект</b> = прямая;</li>
+          <li><b>перекрёсток</b> = точка пересечения двух прямых;</li>
+          <li><b>кусок улицы</b> между двумя перекрёстками = отрезок.</li>
+        </ul>
+        <p>Кто-то из троих ошибается. А может, и не нечаянно.</p>
+      </div>
+    </div>
+
+    <details class="solution textbook">
+      <summary>Задача из учебника, которая прячется в этом деле</summary>
+      <blockquote class="statement">Нарисуйте пятиконечную звезду. <b>Сколько прямых</b> изображено на рисунке? <b>Сколько у них точек попарных пересечений?</b></blockquote>
+      <p>«Попарное пересечение» — это точка, где встречаются <b>две</b> прямые. Берём любые две прямые, ищем, где они пересекаются, и так для каждой пары.</p>
+    </details>
+  </section>
+
+  <!-- ============ Карта ============ -->
+  <section id="draw" class="card">
+    <h2>Улика № 1: карта города</h2>
+    <p>Основатель Звездограда отметил на окружности 5 площадей и соединил их <b>через одну</b>: A → C → E → B → D → A. Перо он не отрывал: оно было последнее, и он боялся его потерять.</p>
+    <div class="try">
+      <div class="seg" role="group" aria-label="Как рисовать звезду">
+        <button type="button" data-mode="stroke" aria-pressed="true">Как основатель</button>
+        <button type="button" data-mode="outline" aria-pressed="false">Как архитектор</button>
+      </div>
+      <svg class="fig" id="draw-svg" viewBox="-130 -128 260 232" role="img" aria-label="Рисуем пятиконечную звезду"></svg>
+      <p class="result" id="draw-msg" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn primary" type="button" id="draw-play">▶ Нарисовать</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Архитектор ============ -->
+  <section id="line" class="card">
+    <h2>Улика № 2: показания архитектора</h2>
+    <div class="say">
+      <p class="ava" aria-hidden="true">🧑‍🎨</p>
+      <div class="bubble">
+        <p class="who">Архитектор Штрих</p>
+        <p>Я рисую город контуром, без линий внутри. Сторон у контура 10, значит, и проспектов 10. Логично? Логично!</p>
+      </div>
+    </div>
+    <div class="say">
+      <p class="ava" aria-hidden="true">🕵️</p>
+      <div class="bubble">
+        <p class="who">Инспектор Циркуль</p>
+        <p>Не спешите. Сторона контура — это кусок улицы, то есть <b>отрезок</b>. А проспект — это вся <b>прямая</b>. Если два куска лежат на одной прямой, проспект у них один.</p>
+      </div>
+    </div>
+    <div class="defs">
+      <div class="def">
+        <h3>Отрезок — кусок улицы</h3>
+        <p>У него два конца, его можно измерить линейкой или пройти пешком.</p>
+        <svg class="mini" viewBox="0 0 240 60" aria-hidden="true">
+          <line class="seg-line" x1="50" y1="30" x2="190" y2="30"/>
+          <circle class="end" cx="50" cy="30" r="4.5"/><circle class="end" cx="190" cy="30" r="4.5"/>
+          <text class="lbl" x="50" y="50">A</text><text class="lbl" x="190" y="50">C</text>
+        </svg>
+      </div>
+      <div class="def">
+        <h3>Прямая — весь проспект</h3>
+        <p>У прямой концов нет: она бесконечно продолжается в обе стороны. На карте видно только её кусочек.</p>
+        <svg class="mini" viewBox="0 0 240 60" aria-hidden="true">
+          <line class="ray-run" x1="120" y1="30" x2="-10" y2="30"/>
+          <line class="ray-run" x1="120" y1="30" x2="250" y2="30"/>
+          <line class="seg-line" x1="50" y1="30" x2="190" y2="30"/>
+          <circle class="end" cx="50" cy="30" r="4.5"/><circle class="end" cx="190" cy="30" r="4.5"/>
+          <text class="lbl" x="50" y="50">A</text><text class="lbl" x="190" y="50">C</text>
+        </svg>
+      </div>
+    </div>
+    <div class="trap">
+      <p class="trap-title">⚠️ Запомни</p>
+      <p>Когда спрашивают, сколько <b>прямых</b> на рисунке, считают не кусочки, а прямые, на которых эти кусочки лежат.</p>
+    </div>
+  </section>
+
+  <!-- ============ Проспекты ============ -->
+  <section id="find-lines" class="card">
+    <h2><span class="num">1</span> Сколько в городе проспектов?</h2>
+    <div class="say">
+      <p class="ava" aria-hidden="true">🧹</p>
+      <div class="bubble">
+        <p class="who">Дворник Петрович</p>
+        <p>Проверяйте сколько хотите. Кусков 15, мётел 15, проспектов 15. У меня всё сходится!</p>
+      </div>
+    </div>
+    <p><b>Задание стажёру:</b> нажимай на улицы на карте. Каждый раз появится весь проспект, на котором лежит этот кусок. Ищи, пока не останется серых улиц.</p>
+    <div class="try">
+      <svg class="fig tap" id="lines-svg" viewBox="-130 -128 260 232" role="img" aria-label="Карта: нажми на улицу, чтобы найти проспект"></svg>
+      <p class="counter">Найдено проспектов: <b id="lines-n">0</b></p>
+      <p class="result" id="lines-msg" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" type="button" id="lines-done">Это все?</button>
+        <button class="btn" type="button" id="lines-reset">Начать заново</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Перекрёстки ============ -->
+  <section id="find-points" class="card">
+    <h2><span class="num">2</span> Сколько перекрёстков?</h2>
+    <div class="say">
+      <p class="ava" aria-hidden="true">🚦</p>
+      <div class="bubble">
+        <p class="who">Аркадий Мигалкин</p>
+        <p>Да тут и считать нечего: 5 · 4 = 20. Я вам светофоры уже заказал. Ах да, и ещё один за лесом. Не благодарите.</p>
+      </div>
+    </div>
+    <p><b>Задание стажёру:</b> нажимай на места, где <b>пересекаются</b> два проспекта, и ставь там светофор. Не забудь, что проспекты идут и дальше кончиков лучей.</p>
+    <div class="try">
+      <svg class="fig tap" id="points-svg" viewBox="-130 -128 260 232" role="img" aria-label="Пять проспектов: нажми на перекрёсток"></svg>
+      <p class="counter">Поставлено светофоров: <b id="points-n">0</b></p>
+      <p class="result" id="points-msg" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" type="button" id="points-done">Это все?</button>
+        <button class="btn" type="button" id="points-reset">Начать заново</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Очная ставка ============ -->
+  <section id="solve" class="card">
+    <h2>Очная ставка</h2>
+    <p>Подозреваемые в кабинете, инспектор ждёт твой отчёт. Запиши, сколько на самом деле проспектов и перекрёстков.</p>
+    <div class="check">
+      <form id="check-form">
+        <div class="field">
+          <label for="ans-lines">Проспектов (прямых):</label>
+          <input id="ans-lines" inputmode="numeric" autocomplete="off" placeholder="?">
+        </div>
+        <div class="field">
+          <label for="ans-points">Перекрёстков (точек):</label>
+          <input id="ans-points" inputmode="numeric" autocomplete="off" placeholder="?">
+        </div>
+        <button class="btn primary" type="submit">Доложить</button>
+      </form>
+      <p class="verdict" id="verdict-lines" aria-live="polite"></p>
+      <p class="verdict" id="verdict-points" aria-live="polite"></p>
+    </div>
+
+    <div class="culprit">
+      <h3>Кто ошибся нарочно?</h3>
+      <p>Ошиблись все трое. Но кто-то нечаянно, а кто-то ради выгоды. Укажи на виновного.</p>
+      <div class="row-btns" role="group" aria-label="Выбери виновного">
+        <button class="btn" type="button" data-who="arch">🧑‍🎨 Штрих</button>
+        <button class="btn" type="button" data-who="broom">🧹 Петрович</button>
+        <button class="btn" type="button" data-who="blink">🚦 Мигалкин</button>
+      </div>
+      <p class="result" id="culprit-msg" aria-live="polite"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Рапорт инспектора: решение по шагам</summary>
+      <div class="stepper" id="stepper"></div>
+    </details>
+  </section>
+
+  <!-- ============ Песочница ============ -->
+  <section id="sandbox" class="card">
+    <h2>Последняя попытка Мигалкина</h2>
+    <div class="say">
+      <p class="ava" aria-hidden="true">🚦</p>
+      <div class="bubble">
+        <p class="who">Аркадий Мигалкин</p>
+        <p>Ладно, пусть сейчас перекрёстков 10. Давайте перестроим город! Сдвинем площади, и перекрёстков станет больше, вот увидите!</p>
+      </div>
+    </div>
+    <p>Перетаскивай площади A, B, C, D, E. Проспекты всегда идут через те же пары площадей. Получится ли у Мигалкина больше 10 перекрёстков?</p>
+    <div class="try">
+      <svg class="fig drag" id="sand-svg" viewBox="-150 -140 300 270" role="img" aria-label="Пять проспектов с подвижными площадями"></svg>
+      <p class="counter" id="sand-n"></p>
+      <p class="result" id="sand-msg" aria-live="polite"></p>
+      <div class="row-btns">
+        <button class="btn" type="button" data-preset="star">Как было</button>
+        <button class="btn" type="button" data-preset="random">Случайный город</button>
+        <button class="btn" type="button" data-preset="parallel">Два параллельных</button>
+        <button class="btn" type="button" data-preset="three">Три в одной точке</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Мораль ============ -->
+  <section id="idea" class="card idea">
+    <h2>Мораль сей басни</h2>
+    <div class="defs">
+      <div class="def">
+        <h3>Считай прямые, а не кусочки</h3>
+        <p>15 кусков дворника и 10 сторон архитектора лежат всего на <b>5</b> прямых: по 3 куска и по 2 стороны на каждой.</p>
+      </div>
+      <div class="def">
+        <h3>Две прямые встречаются не больше одного раза</h3>
+        <p>Значит, точек не больше, чем пар прямых. Считаем пары так, чтобы ни одну не взять дважды:</p>
+        <p class="formula">4 + 3 + 2 + 1 = 10</p>
+        <p class="small">А 5 · 4 = 20 — это каждая пара, посчитанная два раза. Ровно так ошибся Мигалкин.</p>
+      </div>
+    </div>
+    <div class="epilogue" id="epilogue" hidden>
+      <p class="who">Эпилог</p>
+      <p>Счёт на 21 светофор порвали. Звездоград купил ровно 10 светофоров, а на сэкономленные 11 000 звездиков построил каток в форме пятиугольника. Мигалкин теперь работает регулировщиком. Говорят, он до сих пор ищет перекрёсток за лесом.</p>
+    </div>
+    <details class="solution bonus">
+      <summary>Мигалкин мечтает о шестом проспекте. Сколько тогда перекрёстков?</summary>
+      <p>Новый, шестой проспект может пересечь каждый из 5 старых: это ещё 5 перекрёстков. 10 + 5 = <b>15</b>. Седьмой даст ещё 6: 15 + 6 = 21. Вот где Мигалкин получил бы свои 21 светофор, но для этого нужно 7 проспектов, а не 5.</p>
+      <p class="small">Это наибольшее число. Если есть параллельные проспекты или три сходятся в одной точке, перекрёстков меньше. Проверь в «Последней попытке».</p>
+    </details>
+  </section>
+
+  <footer>
+    <p class="small">Рапорт инспектора листается кнопками «Назад» и «Дальше» или стрелками ← → на клавиатуре, когда фокус на рапорте.</p>
+  </footer>
+</main>
+<script src="app.js?v=2"></script>
+</body>
+</html>
