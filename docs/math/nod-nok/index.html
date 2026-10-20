@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="НОД и НОК для 6 класса: делители и кратные, разложение на простые множители-кирпичики, два мешка (диаграмма), мастерская с задачами из учебника, тренажёр и шпаргалка.">
+<title>НОД и НОК: кирпичики</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Unbounded:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="crumbs"><a href="../../">← Все материалы</a></p>
+    <p class="kicker">Математика, 6 класс. Делимость чисел</p>
+    <h1>НОД и НОК</h1>
+    <p class="subtitle">конструктор из простых кирпичиков</p>
+    <div class="hero-demo" id="hero" aria-label="Два числа собираются из простых множителей">
+      <div class="eq" id="hero-a"></div>
+      <div class="eq" id="hero-b"></div>
+      <div class="eq hero-ans" id="hero-g"></div>
+      <div class="eq hero-ans" id="hero-l"></div>
+      <p class="hero-note" id="hero-note"></p>
+      <button class="btn small-btn" type="button" id="hero-replay" hidden>Собрать ещё раз</button>
+    </div>
+    <p class="lead">Каждое число собрано из простых множителей, как домик из кирпичиков. Разберёшь два числа на кирпичики — и сразу видно, что у них общего (это <b>НОД</b>) и какой самый маленький домик вмещает оба набора (это <b>НОК</b>). По дороге будут лягушки, дробилка, два мешка и тренажёр со звёздами.</p>
+  </header>
+
+  <nav class="toc" aria-label="Разделы">
+    <a href="#why"><span class="n">1</span>Два слова</a>
+    <a href="#divs"><span class="n">2</span>Делители</a>
+    <a href="#mult"><span class="n">3</span>Кратные</a>
+    <a href="#bricks"><span class="n">4</span>Кирпичики</a>
+    <a href="#crusher"><span class="n">5</span>Дробилка</a>
+    <a href="#venn"><span class="n">6</span>Два мешка</a>
+    <a href="#workshop"><span class="n">7</span>Мастерская</a>
+    <a href="#which"><span class="n">8</span>Что искать?</a>
+    <a href="#trainer"><span class="n">9</span>Тренажёр</a>
+    <a href="#cheat"><span class="n">10</span>Шпаргалка</a>
+  </nav>
+
+  <!-- ============ Два слова ============ -->
+  <section id="why" class="chapter" data-num="1">
+    <h2 data-num="1">Два слова, которые легко перепутать</h2>
+    <p>НОД и НОК отличаются одной буквой, но ищут противоположные вещи. Нажми на каждую часть слова, чтобы понять, что она значит.</p>
+    <div class="defs">
+      <div class="def">
+        <h3><span class="abbr">НОД</span> · наибольший общий делитель</h3>
+        <div class="words" data-term="nod">
+          <button type="button" class="word" data-k="0">Наибольший</button>
+          <button type="button" class="word" data-k="1">Общий</button>
+          <button type="button" class="word" data-k="2">Делитель</button>
+        </div>
+        <p class="word-tip" data-tip="nod">Выбери слово ↑</p>
+        <p class="formula">НОД(16, 24) = 8</p>
+        <p class="small">16 делится на 8 и 24 делится на 8. Большего такого числа нет.</p>
+      </div>
+      <div class="def">
+        <h3><span class="abbr">НОК</span> · наименьшее общее кратное</h3>
+        <div class="words" data-term="nok">
+          <button type="button" class="word" data-k="0">Наименьшее</button>
+          <button type="button" class="word" data-k="1">Общее</button>
+          <button type="button" class="word" data-k="2">Кратное</button>
+        </div>
+        <p class="word-tip" data-tip="nok">Выбери слово ↑</p>
+        <p class="formula">НОК(12, 30) = 60</p>
+        <p class="small">60 делится на 12 и на 30. Меньшего такого числа нет.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">Запоминалка: Д — вниз, К — вверх</h3>
+    <p><b>Д</b>елитель всегда <b>не больше</b> самих чисел: он их делит, значит, он «меньше или равен». <b>К</b>ратное всегда <b>не меньше</b> самих чисел: оно на них делится, значит, оно «больше или равно». Отсюда правило-проверялка, которое ловит половину ошибок:</p>
+    <div class="try">
+      <div class="inputs">
+        <label>a <input type="number" id="why-a" min="1" max="999" value="16"></label>
+        <label>b <input type="number" id="why-b" min="1" max="999" value="24"></label>
+      </div>
+      <div class="chain" id="why-chain" aria-live="polite"></div>
+      <p class="small">НОД живёт слева: между 1 и меньшим числом. НОК живёт справа: между большим числом и произведением. Если твой ответ выпал из своей клетки, где-то ошибка.</p>
+    </div>
+  </section>
+
+  <!-- ============ Делители ============ -->
+  <section id="divs" class="chapter" data-num="2">
+    <h2 data-num="2">Делители: ищем общее перебором</h2>
+    <p>Самый честный способ найти НОД: выписать все делители каждого числа и посмотреть, какие совпадают. Введи два числа и нажми «Показать»: делители первого числа загорятся <span class="tag ta">синим</span>, второго — <span class="tag tb">оранжевым</span>, общие — <span class="tag tc">золотым</span>.</p>
+    <div class="try">
+      <div class="inputs">
+        <label>a <input type="number" id="div-a" min="1" max="120" value="16"></label>
+        <label>b <input type="number" id="div-b" min="1" max="120" value="24"></label>
+        <button class="btn primary" type="button" id="div-show">Показать делители</button>
+        <span class="presets">Из учебника:
+          <button class="btn small-btn" type="button" data-pair="16,24">16 и 24</button>
+          <button class="btn small-btn" type="button" data-pair="35,182">35 и 182</button>
+          <button class="btn small-btn" type="button" data-pair="56,81">56 и 81</button>
+        </span>
+      </div>
+      <div class="numgrid" id="div-grid" aria-label="Числа от 1 до большего из двух"></div>
+      <p class="result" id="div-result"></p>
+    </div>
+
+    <h3 class="sub">Хитрость: проверяем делители меньшего числа, начиная с большего</h3>
+    <p>Выписывать все делители большого числа долго. Достаточно взять делители <b>меньшего</b> числа и по очереди, <b>с самого большого</b>, проверять: делится ли на него большее число? Первый, который подошёл, и есть НОД.</p>
+    <div class="try">
+      <button class="btn primary" type="button" id="walk-play">Проиграть перебор для чисел выше</button>
+      <p class="small" style="margin-top:10px">Берём числа из верстака выше. Делители меньшего числа появятся по одному, с самого большого, с пометкой «делится» или «не делится».</p>
+      <ol class="walk" id="walk-list"></ol>
+      <p class="result" id="walk-result"></p>
+    </div>
+    <div class="trap">
+      <p class="trap-title">⚠️ Когда перебор не спасает</p>
+      <p>Для 1968 и 2520 делителей слишком много. Для больших чисел нужен другой инструмент: кирпичики. Но сначала разберёмся с кратными.</p>
+    </div>
+  </section>
+
+  <!-- ============ Кратные ============ -->
+  <section id="mult" class="chapter" data-num="3">
+    <h2 data-num="3">Кратные: лягушки на числовой прямой</h2>
+    <p>Кратные числа — это его «прыжки»: 12, 24, 36, 48… Лягушка-a прыгает через a клеток, лягушка-b — через b. Первая клетка, куда приземлятся обе, и есть <b>НОК</b>. Нажми «Прыгать» и смотри, где они встретятся.</p>
+    <div class="try">
+      <div class="inputs">
+        <label>a <input type="number" id="frog-a" min="1" max="60" value="12"></label>
+        <label>b <input type="number" id="frog-b" min="1" max="60" value="30"></label>
+        <button class="btn primary" type="button" id="frog-play">Прыгать 🐸</button>
+        <span class="presets">Из учебника:
+          <button class="btn small-btn" type="button" data-pair="4,6">4 и 6</button>
+          <button class="btn small-btn" type="button" data-pair="12,30">12 и 30</button>
+          <button class="btn small-btn" type="button" data-pair="36,54">36 и 54</button>
+        </span>
+      </div>
+      <div class="pond-wrap"><svg class="pond" id="pond" viewBox="0 0 900 200" role="img" aria-label="Числовая прямая с прыжками двух лягушек"></svg></div>
+      <p class="result" id="frog-result"></p>
+      <p class="small" id="frog-lists"></p>
+    </div>
+    <p>Так находят НОК для небольших чисел: перебирают кратные <b>большего</b> числа (его прыжки длиннее, значит, их меньше) и проверяют, делится ли каждое на меньшее. 54 на 36 не делится, 108 = 36 · 3 делится. Значит, НОК(36, 54) = 108.</p>
+  </section>
+
+  <!-- ============ Кирпичики ============ -->
+  <section id="bricks" class="chapter" data-num="4">
+    <h2 data-num="4">Кирпичики: разложение на простые множители</h2>
+    <p>Простое число делится только на 1 и на себя: это кирпичик, который дальше не ломается. Любое число можно разобрать на такие кирпичики, причём <b>единственным</b> способом. У каждого простого числа здесь свой цвет:</p>
+    <p class="legend" id="prime-legend"></p>
+    <p>Разбирают число «столбиком»: делим на самый маленький подходящий простой множитель, результат снова делим, и так до единицы.</p>
+    <div class="try">
+      <div class="inputs">
+        <label>Число <input type="number" id="col-n" min="2" max="99999" value="2520"></label>
+        <button class="btn primary" type="button" id="col-play">Разложить столбиком</button>
+        <span class="presets">
+          <button class="btn small-btn" type="button" data-n="1968">1968</button>
+          <button class="btn small-btn" type="button" data-n="2520">2520</button>
+          <button class="btn small-btn" type="button" data-n="56">56</button>
+          <button class="btn small-btn" type="button" data-n="81">81</button>
+        </span>
+      </div>
+      <div class="column-wrap">
+        <table class="column" id="col-table" aria-label="Разложение столбиком"><tbody></tbody></table>
+        <div class="col-out">
+          <div class="eq" id="col-eq"></div>
+          <p class="small" id="col-pow"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Дробилка ============ -->
+  <section id="crusher" class="chapter" data-num="5">
+    <h2 data-num="5">Дробилка: разбери число сам</h2>
+    <p>Тебе дают число. Нажимай на простой множитель, на который оно делится: кусок откалывается в лоток, число уменьшается. Так до единицы. Если остаток сам простой, жми «Это уже простое!».</p>
+    <div class="try crusher">
+      <div class="crusher-top">
+        <div class="big-num" id="cr-num" aria-live="polite">2520</div>
+        <div class="cr-stats">Разобрано чисел: <b id="cr-score">0</b> · Промахов: <b id="cr-miss">0</b></div>
+      </div>
+      <div class="cr-buttons" id="cr-buttons"></div>
+      <div class="tray" id="cr-tray" aria-label="Лоток с кирпичиками"></div>
+      <p class="result" id="cr-result"></p>
+      <div class="row-btns">
+        <button class="btn" type="button" id="cr-skip">Другое число</button>
+        <button class="btn" type="button" id="cr-rules">Признаки делимости</button>
+      </div>
+      <div class="rules" id="cr-rules-box" hidden>
+        <p><b>На 2</b> делятся чётные числа: последняя цифра 0, 2, 4, 6 или 8.</p>
+        <p><b>На 3</b> делится число, у которого сумма цифр делится на 3. 1968: 1 + 9 + 6 + 8 = 24, делится.</p>
+        <p><b>На 5</b> делятся числа, которые заканчиваются на 0 или 5.</p>
+        <p><b>На 9</b> делится число, у которого сумма цифр делится на 9 (это два кирпичика 3).</p>
+        <p><b>На 7, 11, 13</b> школьных признаков нет: просто пробуй делить.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Два мешка ============ -->
+  <section id="venn" class="chapter" data-num="6">
+    <h2 data-num="6">Два мешка: НОД в середине, НОК — всё вместе</h2>
+    <p>Главная картинка этой темы. Разложи кирпичики двух чисел по двум мешкам так, чтобы <b>общие</b> кирпичики лежали в середине, где мешки пересекаются. Тогда:</p>
+    <ul>
+      <li><b>середина</b> (только общее) — это <b>НОД</b>;</li>
+      <li><b>всё, что есть в мешках</b> (общее считаем один раз) — это <b>НОК</b>.</li>
+    </ul>
+    <div class="try">
+      <div class="inputs">
+        <label>a <input type="number" id="venn-a" min="2" max="99999" value="12"></label>
+        <label>b <input type="number" id="venn-b" min="2" max="99999" value="30"></label>
+        <button class="btn primary" type="button" id="venn-play">Разложить по мешкам</button>
+        <span class="presets">
+          <button class="btn small-btn" type="button" data-pair="12,30">12 и 30</button>
+          <button class="btn small-btn" type="button" data-pair="16,24">16 и 24</button>
+          <button class="btn small-btn" type="button" data-pair="1968,2520">1968 и 2520</button>
+          <button class="btn small-btn" type="button" data-pair="56,81">56 и 81</button>
+        </span>
+      </div>
+      <div class="eq" id="venn-row-a"></div>
+      <div class="eq" id="venn-row-b"></div>
+      <div class="venn" id="venn-fig">
+        <div class="circle ca" aria-hidden="true"></div>
+        <div class="circle cb" aria-hidden="true"></div>
+        <div class="region left" id="venn-left"><span class="rlabel">только у <b id="venn-la">a</b></span></div>
+        <div class="region mid" id="venn-mid"><span class="rlabel">общее</span></div>
+        <div class="region right" id="venn-right"><span class="rlabel">только у <b id="venn-lb">b</b></span></div>
+      </div>
+      <div class="venn-out" id="venn-out"></div>
+    </div>
+    <div class="trap">
+      <p class="trap-title">💡 Бонус для проверки</p>
+      <p>Если перемножить кирпичики левого мешка целиком и правого мешка целиком, получится a · b. А если перемножить НОД и НОК, получится то же самое: середина посчитана дважды, по разу на каждый мешок. Поэтому <b>НОД · НОК = a · b</b>. Удобно проверять ответ.</p>
+    </div>
+  </section>
+
+  <!-- ============ Мастерская ============ -->
+  <section id="workshop" class="chapter" data-num="7">
+    <h2 data-num="7">Мастерская: задачи из учебника</h2>
+    <p>Здесь всё как в тетради: разложения записаны одно под другим, общие множители нужно <b>обвести в квадратик</b>. Для НОК — взять разложение первого числа и <b>дописать недостающие</b> кирпичики из остальных.</p>
+    <div class="try">
+      <div class="task-pick" id="ws-tasks"></div>
+      <div class="ws-head">
+        <p class="ws-title" id="ws-title"></p>
+        <p class="ws-hint" id="ws-instr"></p>
+      </div>
+      <div class="ws-rows" id="ws-rows"></div>
+      <div class="ws-build" id="ws-build" hidden>
+        <span class="ws-build-label">НОК =</span>
+        <div class="eq" id="ws-build-row"></div>
+      </div>
+      <div class="row-btns">
+        <button class="btn primary" type="button" id="ws-check">Проверить</button>
+        <button class="btn" type="button" id="ws-hint">Подсказка</button>
+        <button class="btn" type="button" id="ws-reset">Сбросить</button>
+        <button class="btn" type="button" id="ws-random">Случайная задача</button>
+      </div>
+      <p class="result" id="ws-result" aria-live="polite"></p>
+      <div class="ws-answer" id="ws-answer" hidden></div>
+      <p class="counter">Решено в мастерской: <b id="ws-score">0</b> ⭐</p>
+    </div>
+    <h3 class="sub">Алгоритм из учебника</h3>
+    <div class="algos">
+      <div class="algo">
+        <h4>НОД</h4>
+        <ol>
+          <li>Разложить числа на простые множители.</li>
+          <li>Найти наибольшую <b>общую часть</b> разложений. Если общих множителей нет, числа <b>взаимно простые</b>: НОД = 1.</li>
+          <li>Выписать НОД как произведение простых множителей и, если нужно, вычислить.</li>
+        </ol>
+      </div>
+      <div class="algo">
+        <h4>НОК</h4>
+        <ol>
+          <li>Разложить числа на простые множители.</li>
+          <li>Взять разложение одного числа и <b>добавить недостающие</b> множители из разложений остальных.</li>
+          <li>Выписать НОК как произведение простых множителей и, если нужно, вычислить.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Что искать ============ -->
+  <section id="which" class="chapter" data-num="8">
+    <h2 data-num="8">Что искать: НОД или НОК?</h2>
+    <p>В задачах слова «НОД» и «НОК» не написаны. Их нужно узнать по смыслу. Подсказка: если что-то <b>режут, делят, раскладывают</b> на одинаковые части «как можно крупнее» — это НОД. Если ждут, когда что-то <b>совпадёт, повторится</b>, или складывают из одинаковых кусочков «самое маленькое целое» — это НОК.</p>
+    <div class="try">
+      <p class="small">Задача <b id="wh-n">1</b> из <b id="wh-total">8</b> · угадано: <b id="wh-score">0</b></p>
+      <p class="situation" id="wh-text"></p>
+      <div class="row-btns">
+        <button class="btn choice" type="button" data-ans="nod">Это НОД</button>
+        <button class="btn choice" type="button" data-ans="nok">Это НОК</button>
+        <button class="btn" type="button" id="wh-next" hidden>Дальше →</button>
+      </div>
+      <p class="result" id="wh-result" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ============ Тренажёр ============ -->
+  <section id="trainer" class="chapter" data-num="9">
+    <h2 data-num="9">Тренажёр</h2>
+    <p>Случайные примеры трёх уровней. Отвечай числом, за серию без ошибок получай звёзды. Если застрял, нажми «Решение»: покажутся кирпичики с обведённой общей частью.</p>
+    <div class="try">
+      <div class="seg" role="group" aria-label="Уровень">
+        <button type="button" data-level="1" aria-pressed="true">Разминка</button>
+        <button type="button" data-level="2" aria-pressed="false">Кирпичики</button>
+        <button type="button" data-level="3" aria-pressed="false">Мастер</button>
+      </div>
+      <p class="question" id="tr-q" aria-live="polite"></p>
+      <div class="inputs" id="tr-num-row">
+        <input type="number" id="tr-input" min="1" inputmode="numeric" placeholder="ответ">
+        <button class="btn primary" type="button" id="tr-check">Проверить</button>
+      </div>
+      <div class="row-btns" id="tr-yn-row" hidden>
+        <button class="btn choice" type="button" data-yn="yes">Да, взаимно простые</button>
+        <button class="btn choice" type="button" data-yn="no">Нет</button>
+      </div>
+      <p class="result" id="tr-result"></p>
+      <div class="row-btns">
+        <button class="btn" type="button" id="tr-solve">Решение</button>
+        <button class="btn" type="button" id="tr-next">Следующий →</button>
+      </div>
+      <div class="ws-answer" id="tr-solution" hidden></div>
+      <p class="counter">Серия: <b id="tr-streak">0</b> · Лучшая серия: <b id="tr-best">0</b> · Всего верно: <b id="tr-total">0</b> <span id="tr-stars"></span></p>
+    </div>
+  </section>
+
+  <!-- ============ Шпаргалка ============ -->
+  <section id="cheat" class="chapter" data-num="10">
+    <h2 data-num="10">Шпаргалка</h2>
+    <table class="cheat">
+      <thead><tr><th></th><th>НОД</th><th>НОК</th></tr></thead>
+      <tbody>
+        <tr><th>Расшифровка</th><td>наибольший общий <b>делитель</b></td><td>наименьшее общее <b>кратное</b></td></tr>
+        <tr><th>Что это</th><td>самое большое число, <b>на которое делятся</b> оба</td><td>самое маленькое число, <b>которое делится</b> на оба</td></tr>
+        <tr><th>Где живёт</th><td>от 1 до меньшего числа</td><td>от большего числа до a · b</td></tr>
+        <tr><th>В мешках</th><td>середина: только общие кирпичики</td><td>всё вместе: общие один раз + все остальные</td></tr>
+        <tr><th>Кирпичики</th><td>каждый простой множитель берём <b>меньшее</b> число раз</td><td>каждый простой множитель берём <b>большее</b> число раз</td></tr>
+        <tr><th>Если общих нет</th><td>НОД = 1, числа взаимно простые</td><td>НОК = a · b</td></tr>
+        <tr><th>Для маленьких чисел</th><td>выписать делители, найти общий побольше</td><td>перебирать кратные большего числа</td></tr>
+        <tr><th>Проверка</th><td colspan="2">НОД · НОК = a · b. НОД делит оба числа, НОК делится на оба.</td></tr>
+      </tbody>
+    </table>
+    <h3 class="sub">Примеры из учебника</h3>
+    <div class="examples" id="cheat-examples"></div>
+  </section>
+
+  <p class="footer small">По конспекту «Наибольший общий делитель» и «Наименьшее общее кратное», 6 класс. Прогресс тренажёра сохраняется в этом браузере.</p>
+</main>
+<script src="app.js?v=2"></script>
+</body>
+</html>
