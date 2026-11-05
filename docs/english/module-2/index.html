@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Английский, грамматика Модуля 2: порядковые числительные, some/any, предлоги места и времени. Интерактивная линия метро с запоминалками, играми и экзаменом.">
+<title>Английский. Модуль 2: линия метро грамматики</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Golos+Text:wght@400;500;600;700&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@700&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+
+<!-- ===================== ГЕРОЙ: КАРТА МЕТРО ===================== -->
+<header class="hero">
+  <p class="crumbs"><a href="../../">← Все материалы</a></p>
+  <p class="kicker">Английский язык · Грамматика · Модуль 2</p>
+  <h1>Линия <span class="h1-mark">Модуль&nbsp;2</span></h1>
+  <p class="subtitle">Четыре станции — четыре правила. У каждого правила есть своя запоминалка. Пройди линию до конечной, и правила останутся в голове.</p>
+
+  <nav class="metro" id="metro" aria-label="Станции урока">
+    <ol>
+      <li class="station" style="--c:var(--red)" data-i="0"><a href="#ordinal"><span class="dot"></span><span class="st-num">1</span><span class="st-name">1st&nbsp;2nd&nbsp;3rd</span><span class="st-sub">Порядковые числительные</span></a></li>
+      <li class="station" style="--c:var(--yellow)" data-i="1"><a href="#someany"><span class="dot"></span><span class="st-num">2</span><span class="st-name">Some&nbsp;/&nbsp;Any</span><span class="st-sub">Немного, несколько</span></a></li>
+      <li class="station" style="--c:var(--green)" data-i="2"><a href="#place"><span class="dot"></span><span class="st-num">3</span><span class="st-name">Где?</span><span class="st-sub">Предлоги места</span></a></li>
+      <li class="station" style="--c:var(--blue)" data-i="3"><a href="#time"><span class="dot"></span><span class="st-num">4</span><span class="st-name">Когда?</span><span class="st-sub">Предлоги времени</span></a></li>
+      <li class="station terminal" style="--c:var(--purple)" data-i="4"><a href="#final"><span class="dot"></span><span class="st-num">5</span><span class="st-name">Экзамен</span><span class="st-sub">Конечная</span></a></li>
+    </ol>
+    <div class="train" id="train" aria-hidden="true">
+      <svg viewBox="0 0 64 30"><rect x="2" y="3" width="60" height="22" rx="9" fill="#e5322d" stroke="#1b1530" stroke-width="3"/><rect x="10" y="8" width="10" height="8" rx="2" fill="#fff"/><rect x="24" y="8" width="10" height="8" rx="2" fill="#fff"/><rect x="38" y="8" width="10" height="8" rx="2" fill="#fff"/><path d="M52 8h5a3 3 0 0 1 3 3v5h-8z" fill="#ffc928"/><circle cx="16" cy="26" r="3.5" fill="#1b1530"/><circle cx="48" cy="26" r="3.5" fill="#1b1530"/></svg>
+    </div>
+  </nav>
+
+  <div class="board" aria-live="polite">
+    <div class="board-top"><span id="board-st">Станция 1</span><span class="board-clock" id="board-clock">07:00</span></div>
+    <p class="board-line" id="board-line"></p>
+  </div>
+
+  <div class="pass" id="pass">
+    <div class="pass-text"><b>Твой проездной</b><span id="pass-count">Пройдено станций: 0 из 5</span></div>
+    <div class="pass-holes" id="pass-holes"><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</header>
+
+<!-- ===================== СТАНЦИЯ 1: ПОРЯДКОВЫЕ ===================== -->
+<section id="ordinal" class="stop" style="--c:var(--red);--soft:#ffe3de">
+  <div class="plate"><span class="plate-num">1</span><div><p class="plate-kicker">Станция 1</p><h2>Ordinal Numbers <small>Порядковые числительные</small></h2></div></div>
+
+  <p class="lead">Порядковые числительные отвечают на вопрос <b>«который?»</b>: седьмой, десятый, пятьдесят шестой. Рецепт простой: берём обычное число и пришиваем хвостик <b class="tail">-th</b>.</p>
+
+  <div class="recipe" id="recipe">
+    <div class="rec-row"><span class="rec-w">seven</span><span class="rec-plus">+</span><span class="rec-t">th</span><span class="rec-eq">=</span><span class="rec-r">seven<b>th</b></span><span class="rec-ru">седьмой</span></div>
+    <div class="rec-row"><span class="rec-w">ten</span><span class="rec-plus">+</span><span class="rec-t">th</span><span class="rec-eq">=</span><span class="rec-r">ten<b>th</b></span><span class="rec-ru">десятый</span></div>
+    <div class="rec-row"><span class="rec-w">fifty-six</span><span class="rec-plus">+</span><span class="rec-t">th</span><span class="rec-eq">=</span><span class="rec-r">fifty-six<b>th</b></span><span class="rec-ru">пятьдесят шестой</span></div>
+  </div>
+
+  <article class="card">
+    <h3><span class="h-ico">⚡</span>Три бунтаря: first, second, third</h3>
+    <p>Первые три числа хвост <b>-th</b> не носят: у них свои слова. Зато у них есть фокус: <b>хвостик у цифры — это последние две буквы слова</b>. Нажми «Показать фокус».</p>
+    <div class="rebels" id="rebels">
+      <div class="rebel"><div class="rb-num">1<span class="rb-suf">st</span></div><div class="rb-word">fir<span class="rb-tail">st</span></div><div class="rb-ru">первый</div></div>
+      <div class="rebel"><div class="rb-num">2<span class="rb-suf">nd</span></div><div class="rb-word">seco<span class="rb-tail">nd</span></div><div class="rb-ru">второй</div></div>
+      <div class="rebel"><div class="rb-num">3<span class="rb-suf">rd</span></div><div class="rb-word">thi<span class="rb-tail">rd</span></div><div class="rb-ru">третий</div></div>
+      <div class="rebel calm"><div class="rb-num">4<span class="rb-suf">th</span></div><div class="rb-word">four<span class="rb-tail">th</span></div><div class="rb-ru">четвёртый</div></div>
+    </div>
+    <button class="btn primary" type="button" id="rebels-play">Показать фокус</button>
+    <div class="sticker">Первый, второй и третий —<br>самые вредные на свете:<br><b>first, second, third.</b><br>А всем остальным — хвостик <b>TH</b>!</div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">🔭</span>Генератор: смотри на хвост</h3>
+    <p>В длинных числах на «первый-второй-третий» меняется <b>только последнее слово</b>. Поэтому смотри на <b>последнюю цифру</b>: 51<b>st</b>, 22<b>nd</b>, 63<b>rd</b>, 6503<b>rd</b>. Введи любое число до 9999.</p>
+    <div class="gen">
+      <div class="gen-in">
+        <label class="num-label">Число <input type="number" id="gen-n" min="1" max="9999" value="51" inputmode="numeric"></label>
+        <span class="presets">Из учебника:
+          <button class="chip" type="button" data-n="51">51</button><button class="chip" type="button" data-n="101">101</button><button class="chip" type="button" data-n="22">22</button><button class="chip" type="button" data-n="382">382</button><button class="chip" type="button" data-n="63">63</button><button class="chip" type="button" data-n="6503">6503</button>
+          <span class="presets-sep">Ловушки:</span><button class="chip trap" type="button" data-n="11">11</button><button class="chip trap" type="button" data-n="12">12</button><button class="chip trap" type="button" data-n="13">13</button>
+        </span>
+      </div>
+      <div class="gen-out">
+        <div class="gen-big" id="gen-big"></div>
+        <div class="gen-word"><span id="gen-word"></span> <button class="say" type="button" id="gen-say" aria-label="Произнести">🔊</button></div>
+        <p class="gen-why" id="gen-why"></p>
+      </div>
+    </div>
+    <div class="trapbox"><b>Ловушка 11, 12, 13.</b> Это «тинейджеры»: eleven, twelve, thirteen. Их последние буквы — не first/second/third, поэтому всегда <b>th</b>: 11th, 12th, 13th, и так же 111th, 212th, 313th.</div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">🩺</span>Хирургия слов: правила правописания</h3>
+    <p>Некоторые числа перед хвостом <b>-th</b> немного меняются. Выбери пациента и посмотри операцию.</p>
+    <div class="patients" id="patients"></div>
+    <div class="optable">
+      <div class="op-word" id="op-word" aria-live="polite"></div>
+      <p class="op-rule" id="op-rule"></p>
+    </div>
+    <div class="mnemo-row">
+      <div class="mnemo"><b>VE → F</b><span>five → fi<em>f</em>th, twelve → twel<em>f</em>th. Пятёрка и двенадцать снимают «ve» и надевают F.</span></div>
+      <div class="mnemo"><b>-E</b><span>nine → ninth. Девятка на диете: теряет e.</span></div>
+      <div class="mnemo"><b>Y → IE</b><span>twenty → twent<em>ie</em>th, thirty → thirt<em>ie</em>th, forty → fort<em>ie</em>th. Игрек стесняется хвоста и превращается в IE.</span></div>
+    </div>
+  </article>
+
+  <article class="card bodyguard-card">
+    <h3><span class="h-ico">🕶️</span>THE — телохранитель</h3>
+    <div class="bg-wrap">
+      <svg class="guard" viewBox="0 0 120 150" aria-hidden="true">
+        <circle cx="60" cy="38" r="26" fill="#f6c9a4" stroke="#1b1530" stroke-width="3"/>
+        <path d="M34 34c4-22 48-22 52 0" fill="#1b1530"/>
+        <rect x="36" y="33" width="21" height="11" rx="4" fill="#1b1530"/><rect x="63" y="33" width="21" height="11" rx="4" fill="#1b1530"/><path d="M57 37h6" stroke="#1b1530" stroke-width="3"/>
+        <path d="M50 54q10 6 20 0" stroke="#1b1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M18 146v-50q0-28 42-28t42 28v50z" fill="#1b1530"/>
+        <path d="M60 68l-8 14 8 50 8-50z" fill="#fff"/><path d="M57 80h6l-2 30h-2z" fill="#e5322d"/>
+        <rect x="27" y="100" width="66" height="26" rx="6" fill="#ffc928" stroke="#1b1530" stroke-width="3"/>
+        <text x="60" y="119" text-anchor="middle" font-family="Rubik, sans-serif" font-weight="900" font-size="19" fill="#1b1530">THE</text>
+      </svg>
+      <div>
+        <p>Порядковое числительное <b>никогда не ходит одно</b>. Рядом с ним стоит охранник: артикль <b>the</b> или «чей?»-слово: <b>my, his, her, our</b>.</p>
+        <ul class="examples">
+          <li><span class="en">He took <mark>the</mark> first prize at the Olympic Games.</span><span class="ru">Он получил первый приз на Олимпийских играх.</span></li>
+          <li><span class="en">It's <mark>my</mark> thirteenth birthday today.</span><span class="ru">Сегодня мне тринадцать лет.</span></li>
+        </ul>
+        <p class="small">Охранник один: никогда не «a first» — первый бывает только один, поэтому <b>the</b>.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">📅</span>Даты: пишем коротко — говорим длинно</h3>
+    <p>На письме дата короткая: <b>September 1, July 4</b>. А вслух её «раскладывают»: <b>the</b> + порядковое + <b>of</b> + месяц.</p>
+    <div class="dates">
+      <div class="date-pick">
+        <label>Месяц <select id="d-month"></select></label>
+        <label>Число <select id="d-day"></select></label>
+        <button class="chip" type="button" id="d-sep1">September 1</button>
+        <button class="chip" type="button" id="d-jul4">July 4</button>
+      </div>
+      <div class="date-show">
+        <div class="date-written"><span class="date-cap">пишем</span><span id="d-written"></span></div>
+        <div class="date-arrow">⟶</div>
+        <div class="date-spoken"><span class="date-cap">говорим <button class="say" type="button" id="d-say" aria-label="Произнести">🔊</button></span><div id="d-spoken" class="spoken-chips"></div></div>
+      </div>
+      <p class="bday" id="d-bday"></p>
+    </div>
+    <div class="sticker small-sticker">Формула даты: <b>THE — число — OF — месяц</b>. Телохранитель впереди, «of» как мостик.</div>
+  </article>
+
+  <div class="checkpoint" data-topic="ordinal"></div>
+</section>
+
+<!-- ===================== СТАНЦИЯ 2: SOME / ANY ===================== -->
+<section id="someany" class="stop" style="--c:var(--yellow);--soft:#fff3c4">
+  <div class="plate"><span class="plate-num">2</span><div><p class="plate-kicker">Станция 2</p><h2>Some / Any <small>немного, несколько, какой-нибудь</small></h2></div></div>
+
+  <p class="lead">Оба слова значат «немного, несколько». Разница — в том, <b>какое это предложение</b>: уверенное, вопрос или «нет».</p>
+
+  <div class="duo">
+    <article class="hero-word some-card">
+      <div class="hw-big"><span class="hw-letter">S</span>OME</div>
+      <ul class="hw-list">
+        <li><b>S</b> — <b>Sure</b>: уверенно говорю «да» <span class="pill plus">+</span></li>
+        <li><b>S</b> — <b>Share</b>: угощаю или прошу <span class="pill gift">🎁</span></li>
+      </ul>
+      <p class="hw-ex">I've got <mark>some</mark> money.<br>Would you like <mark>some</mark> coffee?<br>Can I have <mark>some</mark> coffee, please?</p>
+    </article>
+    <article class="hero-word any-card">
+      <div class="hw-big"><span class="hw-letter">A</span><span class="hw-letter">N</span>Y</div>
+      <ul class="hw-list">
+        <li><b>A</b> — <b>Ask</b>: спрашиваю <span class="pill q">?</span></li>
+        <li><b>N</b> — <b>No</b>: отрицаю <span class="pill minus">−</span></li>
+      </ul>
+      <p class="hw-ex">Have you got <mark>any</mark> money?<br>No, I haven't got <mark>any</mark> money.</p>
+    </article>
+  </div>
+  <div class="sticker">Первые буквы подсказывают: <b>S</b>OME — <b>S</b>ure и <b>S</b>hare. <b>A</b>-<b>N</b>Y — <b>A</b>sk и <b>N</b>o.<br>Вопрос с угощением или просьбой — это «делюсь», значит <b>some</b>!</div>
+
+  <article class="card">
+    <h3><span class="h-ico">🔀</span>Переключатель предложений</h3>
+    <p>Выбери предмет и тип предложения. Смотри, как слово перепрыгивает между <b>some</b> и <b>any</b>.</p>
+    <div class="sw-nouns" id="sw-nouns"></div>
+    <div class="sw-modes" id="sw-modes"></div>
+    <div class="sw-stage">
+      <p class="sw-sentence" id="sw-sentence"></p>
+      <p class="sw-ru" id="sw-ru"></p>
+      <p class="sw-why" id="sw-why"></p>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">🛒</span>С кем дружат some и any</h3>
+    <p>Some и any ставим перед тем, что <b>нельзя посчитать</b> (sugar, bread, milk) и перед <b>множественным числом</b> (pens, cars, apples). Перед одной штукой — нельзя: там нужен <b>a/an</b>. Нажимай на товары.</p>
+    <div class="shelf" id="shelf"></div>
+    <p class="shelf-out" id="shelf-out" aria-live="polite">Выбери товар на полке ↑</p>
+  </article>
+
+  <div class="checkpoint" data-topic="someany"></div>
+</section>
+
+<!-- ===================== СТАНЦИЯ 3: ПРЕДЛОГИ МЕСТА ===================== -->
+<section id="place" class="stop" style="--c:var(--green);--soft:#d9f5e4">
+  <div class="plate"><span class="plate-num">3</span><div><p class="plate-kicker">Станция 3</p><h2>Prepositions of Place <small>предлоги места: где?</small></h2></div></div>
+
+  <p class="lead">Предлоги места показывают, где находится предмет или человек относительно других. Знакомься: кот Мистер Тиг и его друг Коробок.</p>
+
+  <article class="card scene-card">
+    <div class="scene-wrap">
+      <svg class="scene" id="scene" viewBox="0 0 640 300" role="img" aria-label="Кот и коробка">
+        <rect x="0" y="0" width="640" height="300" fill="#e9f8ff"/>
+        <rect x="0" y="250" width="640" height="50" fill="#bfe6c9"/>
+        <path d="M0 250H640" stroke="#1b1530" stroke-width="3"/>
+        <g id="zebra" class="fadeable">
+          <rect x="95" y="250" width="70" height="50" fill="#5b5f6b"/>
+          <rect x="95" y="256" width="70" height="7" fill="#fff"/><rect x="95" y="270" width="70" height="7" fill="#fff"/><rect x="95" y="284" width="70" height="7" fill="#fff"/>
+          <path d="M92 195 C 150 160, 210 155, 258 160" stroke="#e5322d" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+          <text x="175" y="150" text-anchor="middle" font-family="Caveat, cursive" font-size="22" font-weight="700" fill="#e5322d">лицом к лицу</text>
+        </g>
+        <g id="boxB" class="fadeable">
+          <g transform="translate(222 0)">
+            <rect x="268" y="205" width="10" height="45" fill="#8a5a2b" stroke="#1b1530" stroke-width="3"/><rect x="362" y="205" width="10" height="45" fill="#8a5a2b" stroke="#1b1530" stroke-width="3"/>
+            <path d="M260 115L280 100H400L380 115Z" fill="#6b4220" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M380 115L400 100V190L380 205Z" fill="#b97a3c" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="260" y="115" width="120" height="90" fill="#d9964f" stroke="#1b1530" stroke-width="3"/>
+          </g>
+        </g>
+        <g id="boxA">
+          <rect x="268" y="205" width="10" height="45" fill="#8a5a2b" stroke="#1b1530" stroke-width="3"/>
+          <rect x="362" y="205" width="10" height="45" fill="#8a5a2b" stroke="#1b1530" stroke-width="3"/>
+          <path d="M280 100L290 70H410L400 100Z" fill="#e8b273" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M260 115L280 100H400L380 115Z" fill="#6b4220" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <g id="cat">
+          <path d="M22 -14 C 48 -18, 52 -52, 40 -60" stroke="#f08a24" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <ellipse cx="0" cy="-22" rx="27" ry="23" fill="#f08a24" stroke="#1b1530" stroke-width="3"/>
+          <ellipse cx="0" cy="-17" rx="14" ry="14" fill="#ffd9a8"/>
+          <ellipse cx="-11" cy="-2" rx="9" ry="5" fill="#ffd9a8" stroke="#1b1530" stroke-width="2.5"/>
+          <ellipse cx="11" cy="-2" rx="9" ry="5" fill="#ffd9a8" stroke="#1b1530" stroke-width="2.5"/>
+          <path d="M-21 -64 L-18 -90 L-3 -76 Z" fill="#f08a24" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M21 -64 L18 -90 L3 -76 Z" fill="#f08a24" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="0" cy="-58" r="24" fill="#f08a24" stroke="#1b1530" stroke-width="3"/>
+          <path d="M-6 -80 l3 8 M6 -80 l-3 8 M0 -82 v8" stroke="#c4621a" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="-9" cy="-60" r="4.5" fill="#1b1530"/><circle cx="9" cy="-60" r="4.5" fill="#1b1530"/>
+          <circle cx="-7.5" cy="-61.5" r="1.5" fill="#fff"/><circle cx="10.5" cy="-61.5" r="1.5" fill="#fff"/>
+          <path d="M-3 -51 h6 l-3 3 z" fill="#e5577b"/>
+          <path d="M-4 -46 q4 3 8 0" stroke="#1b1530" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M-12 -50 h-14 M-12 -47 l-13 4 M12 -50 h14 M12 -47 l13 4" stroke="#1b1530" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+        <g id="cover">
+          <rect x="362" y="205" width="10" height="45" fill="#8a5a2b" stroke="#1b1530" stroke-width="3"/>
+          <path d="M380 115L400 100V190L380 205Z" fill="#b97a3c" stroke="#1b1530" stroke-width="3" stroke-linejoin="round"/>
+          <rect x="260" y="115" width="120" height="90" fill="#d9964f" stroke="#1b1530" stroke-width="3"/>
+          <path d="M300 115v22h40v-22" fill="#f2d39c" stroke="#1b1530" stroke-width="2"/>
+          <circle cx="302" cy="160" r="5" fill="#1b1530"/><circle cx="338" cy="160" r="5" fill="#1b1530"/>
+          <path d="M308 176 q12 10 24 0" stroke="#1b1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="292" cy="172" r="6" fill="#f2a07b" opacity=".7"/><circle cx="348" cy="172" r="6" fill="#f2a07b" opacity=".7"/>
+        </g>
+      </svg>
+      <div class="scene-cap" aria-live="polite"><span class="sc-en" id="sc-en">The cat is in the box.</span><span class="sc-ru" id="sc-ru">Кот в коробке.</span><button class="say" type="button" id="sc-say" aria-label="Произнести">🔊</button></div>
+    </div>
+    <div class="prep-buttons" id="prep-buttons"></div>
+    <p class="prep-hook" id="prep-hook"></p>
+    <div class="scene-tools">
+      <button class="btn primary" type="button" id="cat-guess">Игра: угадай, где кот</button>
+      <span class="guess-score" id="guess-score"></span>
+    </div>
+    <div class="guess-opts" id="guess-opts" hidden></div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">🎯</span>AT, IN, ON: три характера</h3>
+    <p>Эти три предлога ставим в готовых выражениях. Чтобы не учить их списком, запомни <b>картинку</b> каждого.</p>
+    <div class="trio">
+      <div class="trio-card t-at">
+        <div class="trio-sign">AT<span class="trio-ico">@</span></div>
+        <p class="trio-what"><b>Точка на карте.</b> Адрес с номером дома и места, куда ходят по делу.</p>
+        <p class="trio-ex">at school · at university · at college · at work · at home · at 20 Oxford Street</p>
+        <p class="trio-hook">@ — как в адресе почты. Адрес = точка = AT.</p>
+      </div>
+      <div class="trio-card t-in">
+        <div class="trio-sign">IN<span class="trio-ico">▣</span></div>
+        <p class="trio-what"><b>Внутри рамки.</b> Город, страна, континент — внутри границ. Кровать, больница, тюрьма, небо, воздух, картинка, газета — тоже.</p>
+        <p class="trio-ex">in Moscow · in England · in Europe · in Australia · in bed · in hospital · in prison · in the sky · in the air · in a picture · in a newspaper/magazine · in the middle of</p>
+        <p class="trio-hook">Ловушка: по-русски «НА картинке», «В небе» — а по-английски <b>IN a picture</b>. У картинки есть рамка — значит, мы внутри!</p>
+      </div>
+      <div class="trio-card t-on">
+        <div class="trio-sign">ON<span class="trio-ico">◧</span></div>
+        <p class="trio-what"><b>Сторона и этаж.</b> Слева, справа, на этаже.</p>
+        <p class="trio-ex">on the left · on the right · on the first floor</p>
+        <p class="trio-hook">Стоишь НА полу этажа, смотришь НА левую сторону → ON.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">🧺</span>Игра «Разложи по корзинам»</h3>
+    <p>Выражение появляется сверху. Нажми корзину AT, IN или ON. Правильное улетит в корзину, а неправильное корзина вытолкнет с подсказкой.</p>
+    <div class="sorter" id="sorter">
+      <div class="sort-card-wrap"><div class="sort-card" id="sort-card"></div></div>
+      <p class="sort-msg" id="sort-msg" aria-live="polite"></p>
+      <div class="baskets">
+        <button class="basket b-at" type="button" data-p="at"><span class="bk-label">AT</span><span class="bk-items"></span></button>
+        <button class="basket b-in" type="button" data-p="in"><span class="bk-label">IN</span><span class="bk-items"></span></button>
+        <button class="basket b-on" type="button" data-p="on"><span class="bk-label">ON</span><span class="bk-items"></span></button>
+      </div>
+      <p class="sort-progress" id="sort-progress"></p>
+      <button class="btn" type="button" id="sort-restart" hidden>Сыграть ещё раз</button>
+    </div>
+  </article>
+
+  <div class="checkpoint" data-topic="place"></div>
+</section>
+
+<!-- ===================== СТАНЦИЯ 4: ПРЕДЛОГИ ВРЕМЕНИ ===================== -->
+<section id="time" class="stop" style="--c:var(--blue);--soft:#dde8ff">
+  <div class="plate"><span class="plate-num">4</span><div><p class="plate-kicker">Станция 4</p><h2>Prepositions of Time <small>предлоги времени: когда?</small></h2></div></div>
+
+  <p class="lead">Главная картинка этой станции — <b>воронка</b>. Наверху широкие отрезки времени, внизу — точки. Чем меньше отрезок, тем «острее» предлог: <b>IN → ON → AT</b>.</p>
+
+  <article class="card zoom-card">
+    <div class="zoom">
+      <div class="funnel" id="funnel">
+        <div class="fl fl-in" data-p="in"><b>IN</b><span>век · год · время года · месяц</span></div>
+        <div class="fl fl-on" data-p="on"><b>ON</b><span>день · дата</span></div>
+        <div class="fl fl-at" data-p="at"><b>AT</b><span>точка</span></div>
+      </div>
+      <div class="lens-side">
+        <div class="lens" id="lens"><div class="lens-in" id="lens-in"></div></div>
+        <p class="lens-phrase" id="lens-phrase"></p>
+        <input type="range" id="zoom" min="0" max="6" step="1" value="0" aria-label="Приближение времени: от века до часа">
+        <div class="zoom-scale"><span>век</span><span>час</span></div>
+        <button class="btn primary" type="button" id="zoom-play">▶ Приблизить от века до часа</button>
+      </div>
+    </div>
+    <div class="sticker">IN — в большом, как в коробке: <b>in 1996, in September</b>.<br>ON — на листке календаря: <b>on Monday, on May 6th</b>.<br>AT — точка, стрелка часов: <b>at 7 o'clock</b>. Значок <b>@</b> похож на циферблат!</div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">🦊</span>Хитрецы: выражения, которые надо узнать в лицо</h3>
+    <p>Переворачивай карточки. Сначала попробуй угадать предлог сам.</p>
+    <div class="flips" id="flips"></div>
+  </article>
+
+  <article class="card">
+    <h3><span class="h-ico">⏱️</span>Аркада «Часовщик»</h3>
+    <p>15 выражений подряд. Жми IN, ON или AT. Серия правильных ответов подряд даёт бонус.</p>
+    <div class="arcade" id="arcade">
+      <div class="arc-top"><span id="arc-n">0 / 15</span><span id="arc-streak">Серия: 0</span><span id="arc-score">Очки: 0</span></div>
+      <div class="arc-timer"><i id="arc-bar"></i></div>
+      <div class="arc-phrase" id="arc-phrase">Готов?</div>
+      <div class="arc-btns">
+        <button class="arc-b a-in" type="button" data-p="in" disabled>IN</button>
+        <button class="arc-b a-on" type="button" data-p="on" disabled>ON</button>
+        <button class="arc-b a-at" type="button" data-p="at" disabled>AT</button>
+      </div>
+      <p class="arc-msg" id="arc-msg" aria-live="polite"></p>
+      <div class="arc-ctrl">
+        <button class="btn primary" type="button" id="arc-start">Старт</button>
+        <label class="toggle"><input type="checkbox" id="arc-timed" checked> с таймером (8 секунд)</label>
+      </div>
+      <div class="arc-result" id="arc-result"></div>
+    </div>
+  </article>
+
+  <div class="checkpoint" data-topic="time"></div>
+</section>
+
+<!-- ===================== КОНЕЧНАЯ: ЭКЗАМЕН ===================== -->
+<section id="final" class="stop" style="--c:var(--purple);--soft:#f0e2ff">
+  <div class="plate"><span class="plate-num">5</span><div><p class="plate-kicker">Конечная</p><h2>Экзамен <small>12 вопросов по всей линии</small></h2></div></div>
+  <p class="lead">Вопросы со всех станций вперемешку. После ошибки появится запоминалка. Если сдашь на 10 из 12 и выше, проездной будет полностью прокомпостирован.</p>
+
+  <div class="checkpoint exam" data-topic="all"></div>
+
+  <article class="ticket" id="ticket">
+    <div class="ticket-head"><span>БИЛЕТ-ШПАРГАЛКА</span><span>Линия «Модуль 2»</span></div>
+    <div class="ticket-grid">
+      <div class="tk" style="--c:var(--red)"><h4>1st 2nd 3rd</h4>
+        <p>Число + <b>th</b>: seventh, tenth.</p>
+        <p>Бунтари: <b>fir<u>st</u>, seco<u>nd</u>, thi<u>rd</u></b> — хвост = 2 последние буквы.</p>
+        <p>Смотри на последнюю цифру: 51st, 22nd, 63rd. Но <b>11th, 12th, 13th</b>.</p>
+        <p><b>VE→F</b> fifth, twelfth · <b>−E</b> ninth · <b>Y→IE</b> twentieth.</p>
+        <p>Охранник <b>the / my</b>: the first prize.</p>
+        <p>September 1 = <b>the first of September</b>.</p>
+      </div>
+      <div class="tk" style="--c:var(--yellow)"><h4>Some / Any</h4>
+        <p><b>S</b>OME — <b>S</b>ure (+) и <b>S</b>hare (угощаю, прошу).</p>
+        <p><b>AN</b>Y — <b>A</b>sk (?) и <b>N</b>o (−).</p>
+        <p>Would you like some…? Can I have some…?</p>
+        <p>Только с «не посчитать» и мн. числом: some bread, some apples.</p>
+      </div>
+      <div class="tk" style="--c:var(--green)"><h4>Где?</h4>
+        <p>in, on, under, in front of, be<b>hind</b> (зад), next to / be<b>side</b> (бок), near, be<b>tw</b>een (two), opposite.</p>
+        <p><b>AT @</b> точка-адрес: at school, at work, at home, at 20 Oxford Street.</p>
+        <p><b>IN ▣</b> рамка: in Moscow, in bed, in hospital, in the sky, in a picture.</p>
+        <p><b>ON ◧</b> сторона, этаж: on the left, on the first floor.</p>
+      </div>
+      <div class="tk" style="--c:var(--blue)"><h4>Когда?</h4>
+        <p>Воронка: <b>IN</b> век, год, сезон, месяц → <b>ON</b> день, дата → <b>AT</b> точка.</p>
+        <p>at night, но in the morning/afternoon/evening.</p>
+        <p>AT-тракционы: at Christmas, at Easter, at the weekend.</p>
+        <p>День побеждает: on Tuesday evening, on a hot day.</p>
+        <p>IN = через: in an hour, in a week.</p>
+      </div>
+    </div>
+    <div class="ticket-foot"><button class="btn" type="button" id="print-ticket">🖨 Распечатать билет</button><span>Загляни сюда завтра и сдай экзамен ещё раз: повтор на следующий день помогает запомнить надолго.</span></div>
+  </article>
+</section>
+
+<footer class="foot"><a href="../../">← Все материалы</a></footer>
+</main>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+<script src="app.js?v=1"></script>
+</body>
+</html>

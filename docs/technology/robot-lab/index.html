@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="15 задач из trud.pdf: интерактивная лаборатория роботов для 6 класса. Шестерёнки, повороты, весы и поиск маршрута.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23145dd1%22/%3E%3Ctext x=%2232%22 y=%2246%22 text-anchor=%22middle%22 font-size=%2244%22 fill=%22white%22%3ER%3C/text%3E%3C/svg%3E">
+<title>Роболаб — понять, попробовать, запомнить</title>
+<link rel="stylesheet" href="style.css"><script defer src="app.js"></script>
+</head>
+<body>
+<header><a href="../../" class="brand">Школьная мастерская</a><span>Технология · 6 класс</span><a href="assets/tasks.pdf" target="_blank" rel="noopener">Исходный PDF ↗</a></header>
+<div class="layout">
+<aside><a class="lab-brand" href="#field">Роболаб<span>Маленькие опыты.<br>Большое понимание.</span></a><nav aria-label="Главы учебника" id="nav"></nav><div class="progress-label"><span>Задачи решены</span><strong id="progress-text">0 / 15</strong></div><progress id="progress" max="15" value="0" aria-label="Решено задач"></progress><p class="storage-note" id="storage-note">Прогресс сохраняется в этом браузере.</p><button id="recall-open" class="secondary">Проверить, что запомнил</button><a class="cheat-link" href="#cheats">Памятка инженера</a></aside>
+<main id="main" tabindex="-1"></main>
+</div>
+<footer>По задачам из trud.pdf. Модели упрощены: колёса катятся без проскальзывания, шестерёнки не проскальзывают.</footer>
+<dialog id="diagram"><button id="diagram-close" class="close" aria-label="Закрыть схему">×</button><h2 id="diagram-title">Схема крупнее</h2><p>На телефоне двигай схему в стороны, чтобы рассмотреть детали.</p><div id="diagram-content" tabindex="0" aria-label="Увеличенная схема с прокруткой"></div></dialog>
+<dialog id="recall"><button id="recall-close" class="close" aria-label="Закрыть проверку">×</button><p class="eyebrow">Вспомни без подсказки</p><h2 id="recall-title"></h2><div id="recall-options"></div><p id="recall-feedback" role="status"></p><button id="recall-next">Следующий вопрос</button></dialog>
+<noscript>Для интерактивных опытов включи JavaScript. Оригинальные задачи доступны по ссылке на PDF вверху страницы.</noscript>
+</body></html>
