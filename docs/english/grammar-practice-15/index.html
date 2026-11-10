@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Английский, Grammar Practice, стр. 15: at/in/on, some/any, предлоги места, вопросы о картинке, there is/are и it is/they are. Интерактивная тренировка с проверкой и котом.">
+<title>Grammar Practice, стр. 15</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+
+<!-- ===================== HERO: КОТ НА СЦЕНЕ ===================== -->
+<header class="hero">
+  <div class="hero-grid">
+    <div class="hero-text">
+      <p class="crumbs"><a href="../../">← Все материалы</a></p>
+      <p class="kicker">Английский · Grammar Practice · стр. 15</p>
+      <h1>Где кот, сколько и <span class="hl">что есть</span></h1>
+      <p class="lead">Пять заданий со страницы учебника. Перед каждым — короткое правило, потом сам пример. Проверяй по кнопке и смотри, почему ответ верный.</p>
+      <a class="btn primary" href="#ex1">Начать с задания 1 ↓</a>
+    </div>
+
+    <figure class="stage-wrap">
+      <div class="stage" id="stage" data-pos="start" aria-hidden="true">
+        <div class="sun"></div>
+        <div class="table"><b></b><i></i><i></i></div>
+        <div class="box"></div>
+        <div class="ground"></div>
+        <div class="cat">🐱</div>
+      </div>
+      <div class="stage-btns" role="group" aria-label="Где кот?">
+        <button class="chip" type="button" data-pos="on">on the table</button>
+        <button class="chip" type="button" data-pos="under">under the table</button>
+        <button class="chip" type="button" data-pos="front">in front of the table</button>
+        <button class="chip" type="button" data-pos="in">in the box</button>
+      </div>
+      <figcaption class="caption" id="caption" aria-live="polite">Нажми на предлог — кот переедет на место.</figcaption>
+    </figure>
+  </div>
+
+  <nav class="tabs" aria-label="Задания">
+    <a href="#ex1" data-tab="ex1"><b>1</b> at · in · on</a>
+    <a href="#ex2" data-tab="ex2"><b>2</b> some · any</a>
+    <a href="#ex3" data-tab="ex3"><b>3</b> предлоги места</a>
+    <a href="#ex4" data-tab="ex4"><b>4</b> вопросы</a>
+    <a href="#ex5" data-tab="ex5"><b>5</b> there · it</a>
+  </nav>
+</header>
+
+<!-- ===================== ЗАДАНИЕ 1 ===================== -->
+<section class="ex" id="ex1" style="--c:var(--orange)">
+  <div class="ex-head">
+    <span class="num">1</span>
+    <div><h2>Fill in <i>at, in, on</i></h2><p>Предлоги времени и места. Выбери нужный.</p></div>
+    <span class="score" data-score>—</span>
+  </div>
+
+  <div class="rules">
+    <article class="note n1"><h3>AT</h3><p>точка и адрес: <b>at 20 Apple Street</b>, <b>at home</b>, <b>at 7 o'clock</b></p></article>
+    <article class="note n2"><h3>IN</h3><p>большие отрезки: <b>in the winter</b>, <b>in July</b>, <b>in the morning</b></p></article>
+    <article class="note n3"><h3>ON</h3><p>дни и даты: <b>on Monday</b>, <b>on 4th July</b></p></article>
+  </div>
+
+  <ol class="items">
+    <li class="item"><span class="q">His house is <select data-a="at" data-hint="at + адрес: at 20 Apple Street."><option value="">…</option><option>at</option><option>in</option><option>on</option></select> 20, Apple Street.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">It rains <select data-a="in" data-hint="in + сезон: in the winter."><option value="">…</option><option>at</option><option>in</option><option>on</option></select> the winter.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">See you <select data-a="in" data-hint="in + часть дня: in the morning (но at night)."><option value="">…</option><option>at</option><option>in</option><option>on</option></select> the morning.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">Let's meet <select data-a="on" data-hint="on + день недели: on Monday."><option value="">…</option><option>at</option><option>in</option><option>on</option></select> Monday.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">Is he <select data-a="at" data-hint="at home, а не in home: «дома» — at home."><option value="">…</option><option>at</option><option>in</option><option>on</option></select> home?</span><span class="fb" aria-live="polite"></span></li>
+  </ol>
+
+  <div class="actions">
+    <button class="btn primary" type="button" data-check>Проверить</button>
+    <button class="btn ghost" type="button" data-reset>Сбросить</button>
+  </div>
+</section>
+
+<!-- ===================== ЗАДАНИЕ 2 ===================== -->
+<section class="ex" id="ex2" style="--c:var(--teal)">
+  <div class="ex-head">
+    <span class="num">2</span>
+    <div><h2>Fill in <i>some / any</i> и их «-thing, -body, -where»</h2><p>Выбери слово: some и any, something/anything, somewhere/anywhere.</p></div>
+    <span class="score" data-score>—</span>
+  </div>
+
+  <div class="rules">
+    <article class="note n2"><h3>SOME</h3><p>в утверждении: <b>some books</b>, <b>something</b>, <b>somewhere</b></p></article>
+    <article class="note n1"><h3>ANY</h3><p>в вопросе и отрицании: <b>any books</b>, <b>anything</b>, <b>anywhere</b></p></article>
+    <article class="note n3"><h3>-thing / -body / -where</h3><p>то же правило: <b>something</b> — утверждение, <b>anything</b> — вопрос или «не»</p></article>
+  </div>
+
+  <ol class="items">
+    <li class="item"><span class="q">He's got <select data-a="some" data-hint="утверждение: He's got some books."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> books.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">Has she got <select data-a="anything" data-hint="вопрос: Has she got anything…? Вопрос = any-."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> in your new pencil-case?</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">They haven't got <select data-a="any" data-hint="отрицание: haven't got any computer games."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> computer games.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">Can I have <select data-a="something" data-hint="утверждение-просьба: something to drink."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> to drink, please?</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">I have got <select data-a="some" data-hint="утверждение: I have got some bread."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> bread.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">Is there a cinema <select data-a="anywhere" data-hint="вопрос про место: anywhere."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> in the town?</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q">Make some sandwiches, there isn't <select data-a="anything" data-hint="отрицание: there isn't anything else."><option value="">…</option><option>some</option><option>any</option><option>something</option><option>anything</option><option>somewhere</option><option>anywhere</option></select> else for breakfast.</span><span class="fb" aria-live="polite"></span></li>
+  </ol>
+
+  <div class="actions">
+    <button class="btn primary" type="button" data-check>Проверить</button>
+    <button class="btn ghost" type="button" data-reset>Сбросить</button>
+  </div>
+</section>
+
+<!-- ===================== ЗАДАНИЕ 3 ===================== -->
+<section class="ex" id="ex3" style="--c:var(--pink)">
+  <div class="ex-head">
+    <span class="num">3</span>
+    <div><h2>Fill in <i>in, in front of, between, under, on, opposite</i></h2><p>Смотри на картинку-подсказку и выбирай предлог.</p></div>
+    <span class="score" data-score>—</span>
+  </div>
+
+  <div class="scenes">
+    <div class="scene-card">
+      <div class="scene-pic" aria-hidden="true">🛋️ <span>↔</span> 📺</div>
+      <p class="q">They are <select data-a="opposite" data-hint="opposite = напротив: They are opposite the TV."><option value="">…</option><option>opposite</option><option>in</option><option>in front of</option><option>under</option><option>between</option><option>on</option></select> the TV.</p>
+      <span class="fb" aria-live="polite"></span>
+    </div>
+    <div class="scene-card">
+      <div class="scene-pic" aria-hidden="true">🛏️🙂</div>
+      <p class="q">He is <select data-a="in" data-hint="in bed = в постели: He is in bed."><option value="">…</option><option>opposite</option><option>in</option><option>in front of</option><option>under</option><option>between</option><option>on</option></select> bed.</p>
+      <span class="fb" aria-live="polite"></span>
+    </div>
+    <div class="scene-card">
+      <div class="scene-pic" aria-hidden="true">🧑‍🦱 <span>→</span> 👩</div>
+      <p class="q">Tony is <select data-a="in front of" data-hint="in front of = перед: Tony is in front of Sandra."><option value="">…</option><option>opposite</option><option>in</option><option>in front of</option><option>under</option><option>between</option><option>on</option></select> Sandra.</p>
+      <span class="fb" aria-live="polite"></span>
+    </div>
+    <div class="scene-card">
+      <div class="scene-pic" aria-hidden="true">👧🧒👦</div>
+      <p class="q">Lyn is <select data-a="between" data-hint="между двумя: Lyn is between Sue and Pat. Under = под, здесь не подходит."><option value="">…</option><option>opposite</option><option>in</option><option>in front of</option><option>under</option><option>between</option><option>on</option></select> Sue and Pat.</p>
+      <span class="fb" aria-live="polite"></span>
+    </div>
+    <div class="scene-card">
+      <div class="scene-pic" aria-hidden="true">🚴‍♀️ <span>🚲</span></div>
+      <p class="q">She's <select data-a="on" data-hint="on + транспорт, на котором едут: on her bicycle."><option value="">…</option><option>opposite</option><option>in</option><option>in front of</option><option>under</option><option>between</option><option>on</option></select> her bicycle.</p>
+      <span class="fb" aria-live="polite"></span>
+    </div>
+    <div class="scene-card">
+      <div class="scene-pic" aria-hidden="true">🐱 <span>→</span> 🚗</div>
+      <p class="q">The cat is <select data-a="on" data-hint="на машине: The cat is on the car."><option value="">…</option><option>opposite</option><option>in</option><option>in front of</option><option>under</option><option>between</option><option>on</option></select> the car.</p>
+      <span class="fb" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" type="button" data-check>Проверить</button>
+    <button class="btn ghost" type="button" data-reset>Сбросить</button>
+  </div>
+</section>
+
+<!-- ===================== ЗАДАНИЕ 4 ===================== -->
+<section class="ex" id="ex4" style="--c:var(--purple)">
+  <div class="ex-head">
+    <span class="num">4</span>
+    <div><h2>Look at the picture and ask and answer</h2><p>Вопрос строится по слову из списка. Ответ зависит от того, что видно на картинке из учебника, — здесь проверяешь сам.</p></div>
+    <span class="score score-off">не проверяется</span>
+  </div>
+
+  <div class="rules">
+    <article class="note n3"><h3>Много</h3><p><b>Are there any girls</b> in the picture? — <b>Yes, there are.</b> / <b>No, there aren't.</b></p></article>
+    <article class="note n1"><h3>Один</h3><p><b>Is there a dog</b> in the picture? — <b>Yes, there is.</b> / <b>No, there isn't.</b></p></article>
+  </div>
+
+  <div class="words" id="words" role="group" aria-label="Слова для вопроса"></div>
+  <div class="qa" id="qa" aria-live="polite">
+    <p class="qa-q">Выбери слово — появится вопрос.</p>
+    <div class="qa-btns" id="qa-btns"></div>
+    <p class="qa-a" id="qa-a"></p>
+  </div>
+</section>
+
+<!-- ===================== ЗАДАНИЕ 5 ===================== -->
+<section class="ex" id="ex5" style="--c:var(--green)">
+  <div class="ex-head">
+    <span class="num">5</span>
+    <div><h2>Fill in the gaps: <i>it is, there is, they are, there are</i></h2><p>Новое в комнате — <b>there is / there are</b>. Тот же предмет, о котором уже говорили, — <b>it is / they are</b>.</p></div>
+    <span class="score" data-score>—</span>
+  </div>
+
+  <div class="rules">
+    <article class="note n2"><h3>THERE IS / ARE</h3><p>что-то есть, говорим впервые: <b>there is a table</b>, <b>there are two books</b></p></article>
+    <article class="note n3"><h3>IT IS / THEY ARE</h3><p>это (уже названо): <b>it is small</b>, <b>they are school books</b></p></article>
+    <article class="note n1"><h3>Одно или много?</h3><p>one/a → <b>is</b>; many/two/some → <b>are</b></p></article>
+  </div>
+
+  <ol class="items">
+    <li class="item"><span class="q"><select data-a="there is" data-hint="новое: there is + одно (a table)."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> a table in front of the sofa.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="it is" data-hint="тот же стол, уже назван: it is small."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> a small table.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="there are" data-hint="новое, много: there are some paintings."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> some paintings on the walls.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="they are" data-hint="картины уже названы: they are Picasso's."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> Picasso's paintings.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="there are" data-hint="новое, два: there are two books."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> two books on the table.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="they are" data-hint="книги уже названы: they are school books."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> school books.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="there is" data-hint="новое место, одно: there is a sports shop."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> a sports shop around the corner.</span><span class="fb" aria-live="polite"></span></li>
+    <li class="item"><span class="q"><select data-a="it is" data-hint="тот же магазин: it is a big shop."><option value="">…</option><option>it is</option><option>there is</option><option>they are</option><option>there are</option></select> a big shop.</span><span class="fb" aria-live="polite"></span></li>
+  </ol>
+
+  <div class="actions">
+    <button class="btn primary" type="button" data-check>Проверить</button>
+    <button class="btn ghost" type="button" data-reset>Сбросить</button>
+  </div>
+</section>
+
+<!-- ===================== ФИНИШ ===================== -->
+<section class="finish" id="finish" aria-labelledby="finish-h">
+  <h2 id="finish-h">Проездной заполнен?</h2>
+  <p class="finish-score">Всего правильных ответов в заданиях 1, 2, 3 и 5: <b id="total">0 из 26</b></p>
+  <p class="finish-msg" id="finish-msg">Проверь каждое задание кнопкой «Проверить». Ошибки подскажут правило.</p>
+  <button class="btn ghost" type="button" id="reset-all">Сбросить всё</button>
+</section>
+
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>

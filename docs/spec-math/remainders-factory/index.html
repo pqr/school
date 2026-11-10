@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Делимость и остатки для 6 класса: 9 задач спецмата как цеха фабрики. Делительная машина, признаки делимости, остатки суммы и произведения, фокусник и число 2280, сканер остатков, решето до 30.">
+<title>Фабрика остатков</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Rubik:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <p class="crumbs"><a href="../../">← Все материалы</a></p>
+  <p class="kicker">Спецмат, 6 класс · делимость и остатки · письменное решение</p>
+  <h1>Фабрика остатков</h1>
+  <p class="subtitle">девять цехов, одна машина и штампы ОТК</p>
+
+  <div class="machine" id="machine">
+    <div class="m-panel">
+      <label class="m-label">Число на конвейер
+        <input type="number" id="m-n" min="0" max="99999" value="38" inputmode="numeric">
+      </label>
+      <div class="m-label">Ящик на
+        <div class="chips" id="m-chips">
+          <button type="button" class="chip" data-m="2">2</button>
+          <button type="button" class="chip" data-m="3">3</button>
+          <button type="button" class="chip" data-m="4">4</button>
+          <button type="button" class="chip is-on" data-m="5">5</button>
+          <button type="button" class="chip" data-m="6">6</button>
+          <button type="button" class="chip" data-m="9">9</button>
+          <button type="button" class="chip" data-m="10">10</button>
+          <button type="button" class="chip" data-m="30">30</button>
+          <input type="number" id="m-custom" class="chip chip-input" min="2" max="99" placeholder="своё" inputmode="numeric" aria-label="Свой делитель">
+        </div>
+      </div>
+      <button type="button" class="btn big-btn" id="m-run">Пуск!</button>
+    </div>
+
+    <div class="belt" id="belt" aria-live="polite">
+      <div class="belt-track">
+        <div class="crates" id="m-crates"></div>
+        <div class="tray" id="m-tray">
+          <p class="tray-title">Лоток остатка</p>
+          <div class="coins" id="m-coins"></div>
+        </div>
+      </div>
+      <div class="stamp-zone" id="m-stamp"></div>
+    </div>
+
+    <p class="readout" id="m-readout"><b>38</b> = <b>5</b> · <b>7</b> + <b>3</b></p>
+    <p class="m-note" id="m-note">Складываем число в ящики по 5. Семь ящиков полные, а 3 монетки не влезли — это и есть <b>остаток</b>. Остаток всегда меньше ящика.</p>
+  </div>
+
+  <p class="lead">Задачи про делимость почти никогда не требуют делить столбиком. Хитрость в другом: <b>полные ящики нам не интересны</b>, важно только то, что в них не поместилось. Научишься смотреть на хвостики — и все девять цехов пройдёшь. За каждый цех на твой пропуск ставят штамп ОТК.</p>
+
+  <div class="pass" id="pass">
+    <p class="pass-title">Пропуск стажёра</p>
+    <div class="pass-stamps" id="pass-stamps"></div>
+    <p class="pass-note" id="pass-note">Штампов: 0 из 9</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Разделы">
+  <a href="#brief">Инструктаж</a>
+  <a href="#w1">1</a><a href="#w2">2</a><a href="#w3">3</a><a href="#w4">4</a><a href="#w5">5</a>
+  <a href="#w6">6</a><a href="#w7">7</a><a href="#w8">8</a><a href="#w9">9</a>
+  <a href="#cheat">Шпаргалка</a>
+</nav>
+
+<!-- ================= BRIEF ================= -->
+<section id="brief" class="plate">
+  <header class="w-head"><span class="w-num">Инструктаж</span><h2>Три правила фабрики</h2></header>
+
+  <div class="rules">
+    <article class="rule">
+      <p class="rule-num">1</p>
+      <h3>Запись деления с остатком</h3>
+      <p>Любое число можно сложить в ящики по <i>m</i> штук. Получится <i>q</i> полных ящиков и хвостик <i>r</i>:</p>
+      <p class="formula">N = m · q + r,&nbsp; 0 ≤ r &lt; m</p>
+      <p>Если <i>r</i> = 0, число <b>делится</b> на <i>m</i>. Проверь на машине: 38 = 5 · 7 + 3, а 40 = 5 · 8 + 0.</p>
+    </article>
+
+    <article class="rule">
+      <p class="rule-num">2</p>
+      <h3>Признаки делимости</h3>
+      <table class="signs">
+        <tr><th>на 2</th><td>последняя цифра чётная</td></tr>
+        <tr><th>на 5</th><td>последняя цифра 0 или 5</td></tr>
+        <tr><th>на 10</th><td>последняя цифра 0</td></tr>
+        <tr><th>на 4</th><td>число из двух последних цифр делится на 4</td></tr>
+        <tr><th>на 3</th><td>сумма цифр делится на 3</td></tr>
+        <tr><th>на 9</th><td>сумма цифр делится на 9</td></tr>
+      </table>
+      <p>Составные делители собираем из взаимно простых: <b>6 = 2 · 3</b>, <b>18 = 2 · 9</b>, <b>45 = 5 · 9</b>. Делится на 45 значит «делится и на 5, и на 9».</p>
+    </article>
+
+    <article class="rule">
+      <p class="rule-num">3</p>
+      <h3>Ящики не считаются</h3>
+      <p>Когда складываем или умножаем два числа, полные ящики так и остаются полными. Остаток результата зависит <b>только от остатков</b> слагаемых или множителей.</p>
+      <div class="minilab" id="rule3">
+        <div class="minilab-row">
+          <label>a <input type="number" id="r3-a" value="17" min="0" max="999"></label>
+          <label>b <input type="number" id="r3-b" value="23" min="0" max="999"></label>
+          <label>ящик <input type="number" id="r3-m" value="5" min="2" max="99"></label>
+        </div>
+        <div class="minilab-out" id="r3-out"></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= W1 ================= -->
+<section id="w1" class="plate workshop" data-w="1">
+  <header class="w-head"><span class="w-num">Цех 1</span><h2>n² + 1 и ящики по 3</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Доказать, что <i>n</i>² + 1 не делится на 3 ни при каком натуральном <i>n</i>.</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Опыт: крути число, смотри на хвостик</p>
+    <label class="slider-label">n = <output id="w1-nv">1</output>
+      <input type="range" id="w1-n" min="1" max="30" value="1">
+    </label>
+    <div class="wheels" id="w1-wheels">
+      <div class="wheel-card"><p>n</p><svg viewBox="0 0 100 100" class="wheel" id="w1-wa"></svg><p class="wheel-cap" id="w1-ca"></p></div>
+      <div class="wheel-card"><p>n²</p><svg viewBox="0 0 100 100" class="wheel" id="w1-wb"></svg><p class="wheel-cap" id="w1-cb"></p></div>
+      <div class="wheel-card"><p>n² + 1</p><svg viewBox="0 0 100 100" class="wheel" id="w1-wc"></svg><p class="wheel-cap" id="w1-cc"></p></div>
+    </div>
+    <p class="hint" id="w1-hint">Стрелка показывает остаток при делении на 3. Прокрути n от 1 до 30: на третьем колесе стрелка ни разу не встанет на 0.</p>
+
+    <p class="lab-title">Почему так: квадрат из ящиков</p>
+    <p>Любое n = 3q + r, где r — хвостик: 0, 1 или 2. Тогда n² — это квадрат со стороной 3q + r. Разрежем его:</p>
+    <div class="area-wrap">
+      <svg viewBox="0 0 260 260" class="area" id="w1-area"></svg>
+      <div class="area-side">
+        <div class="btn-row" id="w1-rbtns">
+          <button type="button" class="btn small-btn is-on" data-r="0">r = 0</button>
+          <button type="button" class="btn small-btn" data-r="1">r = 1</button>
+          <button type="button" class="btn small-btn" data-r="2">r = 2</button>
+        </div>
+        <p id="w1-area-text"></p>
+      </div>
+    </div>
+    <table class="cases" id="w1-cases">
+      <tr><th>остаток n</th><th>остаток n²</th><th>остаток n² + 1</th></tr>
+      <tr><td>0</td><td>0 · 0 = 0</td><td class="bad">1</td></tr>
+      <tr><td>1</td><td>1 · 1 = 1</td><td class="bad">2</td></tr>
+      <tr><td>2</td><td>2 · 2 = 4 → 1</td><td class="bad">2</td></tr>
+    </table>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>При делении на 3 число n даёт остаток 0, 1 или 2. Запишем n = 3q + r.</li>
+      <li>n² = (3q + r)² = 9q² + 6qr + r² = 3 · (3q² + 2qr) + r². Первое слагаемое делится на 3, поэтому остаток n² такой же, как у r².</li>
+      <li>Перебираем три случая: r = 0 → r² = 0; r = 1 → r² = 1; r = 2 → r² = 4, остаток 1. Значит, n² при делении на 3 даёт остаток 0 или 1.</li>
+      <li>Тогда n² + 1 даёт остаток 1 или 2 и никогда не делится на 3. Что и требовалось доказать.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="1">Поставить штамп</button>
+</section>
+
+<!-- ================= W2 ================= -->
+<section id="w2" class="plate workshop" data-w="2">
+  <header class="w-head"><span class="w-num">Цех 2</span><h2>2023 в обёртке из одной цифры</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Можно ли к числу 2023 приписать слева и справа одну и ту же цифру, чтобы получившееся число делилось на 6? А на 18?</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Опыт: выбери цифру-обёртку</p>
+    <div class="digit-pad" id="w2-pad"></div>
+    <p class="bignum" id="w2-num"><span class="d-a">?</span>2023<span class="d-a">?</span></p>
+    <div class="gauges" id="w2-gauges">
+      <div class="gauge" id="w2-g2"><p class="g-title">на 2</p><p class="g-body">последняя цифра…</p></div>
+      <div class="gauge" id="w2-gs"><p class="g-title">сумма цифр</p><p class="g-body">2 + 0 + 2 + 3 + a + a = 7 + 2a</p></div>
+      <div class="gauge" id="w2-g3"><p class="g-title">на 3</p><p class="g-body">…</p></div>
+      <div class="gauge" id="w2-g9"><p class="g-title">на 9</p><p class="g-body">…</p></div>
+    </div>
+    <div class="verdicts">
+      <p class="verdict" id="w2-v6">на 6 = на 2 и на 3: <b>?</b></p>
+      <p class="verdict" id="w2-v18">на 18 = на 2 и на 9: <b>?</b></p>
+    </div>
+    <button type="button" class="btn small-btn" id="w2-all">Проверить все девять цифр</button>
+    <table class="cases" id="w2-table" hidden></table>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>Пусть приписали цифру a. Получилось число <b>a2023a</b>. Ноль слева стоять не может, поэтому a от 1 до 9.</li>
+      <li>Делимость на 6 — это делимость на 2 и на 3 сразу. На 2: последняя цифра a чётная, то есть a = 2, 4, 6 или 8.</li>
+      <li>На 3: сумма цифр 2 + 0 + 2 + 3 + a + a = 7 + 2a делится на 3. Проверяем чётные a: 7 + 4 = 11 нет, 7 + 8 = 15 <b>да</b>, 7 + 12 = 19 нет, 7 + 16 = 23 нет.</li>
+      <li>Ответ на первый вопрос: можно, a = 4, число 420234 делится на 6.</li>
+      <li>Делимость на 18 — это на 2 и на 9. Для делимости на 9 сумма 7 + 2a должна делиться на 9. При a от 1 до 9 эта сумма лежит от 9 до 25 и к тому же нечётная (7 нечётное плюс чётное), поэтому единственная возможность — 9. Тогда a = 1, но это нечётная цифра, и число 120231 на 2 не делится.</li>
+      <li>Ответ на второй вопрос: на 18 нельзя.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="2">Поставить штамп</button>
+</section>
+
+<!-- ================= W3 ================= -->
+<section id="w3" class="plate workshop" data-w="3">
+  <header class="w-head"><span class="w-num">Цех 3</span><h2>Лена и число 2008</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Лена умножила число на сумму его цифр и получила 2008. Какое число она загадала? Найдите все варианты и покажите, что других нет.</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Шаг 1. Разбираем 2008 на простые детали</p>
+    <div class="tree" id="w3-tree">
+      <button type="button" class="btn small-btn" id="w3-split">Разложить</button>
+      <div class="tree-rows" id="w3-rows"></div>
+    </div>
+    <p class="hint" id="w3-prime" hidden></p>
+
+    <p class="lab-title">Шаг 2. Сумма цифр — маленькая деталь</p>
+    <p>Загаданное число не больше 2008 (иначе произведение было бы больше). У чисел до 999 сумма цифр не больше 27, у чисел от 1000 до 1999 — не больше 1 + 9 + 9 + 9 = 28, у чисел от 2000 до 2008 — не больше 10. Итого сумма цифр не больше 28. Значит, сумма цифр — делитель 2008, который не больше 28. Такие делители: <b>1, 2, 4, 8</b>.</p>
+    <div class="cards" id="w3-cards"></div>
+    <p class="hint" id="w3-hint">Нажми на карточку, чтобы проверить кандидата.</p>
+
+    <p class="lab-title">Проверь своё число</p>
+    <div class="minilab-row">
+      <label>N <input type="number" id="w3-try" min="1" max="99999" value="251"></label>
+      <p class="minilab-out" id="w3-try-out"></p>
+    </div>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>Пусть N — число Лены, S — сумма его цифр. Тогда N · S = 2008.</li>
+      <li>Разложим: 2008 = 2 · 2 · 2 · 251, а 251 — простое (не делится на 2, 3, 5, 7, 11, 13, а 17² = 289 &gt; 251).</li>
+      <li>N ≤ 2008, поэтому S ≤ 1 + 9 + 9 + 9 = 28. S — делитель 2008, не больше 28: S ∈ {1, 2, 4, 8}.</li>
+      <li>S = 1 → N = 2008, сумма цифр 10 ≠ 1. S = 2 → N = 1004, сумма 5 ≠ 2. S = 4 → N = 502, сумма 7 ≠ 4. S = 8 → N = 251, сумма 2 + 5 + 1 = 8. Подходит!</li>
+      <li>Ответ: 251, других вариантов нет, потому что мы перебрали все возможные суммы цифр.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="3">Поставить штамп</button>
+</section>
+
+<!-- ================= W4 ================= -->
+<section id="w4" class="plate workshop" data-w="4">
+  <header class="w-head"><span class="w-num">Цех 4</span><h2>Ящики по 225 и по 75</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">При делении данного числа на 225 в остатке получилось 150. Разделится ли данное число нацело на 75 и почему?</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Опыт: перепакуй груз</p>
+    <label class="slider-label">Полных ящиков по 225: <output id="w4-kv">3</output>
+      <input type="range" id="w4-k" min="0" max="6" value="3">
+    </label>
+    <p class="readout" id="w4-read"></p>
+    <div class="cargo" id="w4-cargo"></div>
+    <div class="btn-row">
+      <button type="button" class="btn small-btn" id="w4-repack">Перепаковать по 75</button>
+      <button type="button" class="btn small-btn" id="w4-back">Вернуть по 225</button>
+    </div>
+    <p class="hint" id="w4-hint">Один ящик на 225 — это ровно три ящика по 75. А хвостик 150 — ровно два ящика по 75. Ничего не остаётся!</p>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>Запишем число: N = 225 · q + 150.</li>
+      <li>225 = 75 · 3 и 150 = 75 · 2. Подставим: N = 75 · 3q + 75 · 2 = 75 · (3q + 2).</li>
+      <li>Число представлено как 75, умноженное на целое число. Значит, оно делится на 75 нацело.</li>
+      <li>Ответ: да, разделится. Остаток 150 сам делится на 75, и делитель 225 тоже делится на 75.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="4">Поставить штамп</button>
+</section>
+
+<!-- ================= W5 ================= -->
+<section id="w5" class="plate workshop" data-w="5">
+  <header class="w-head"><span class="w-num">Цех 5</span><h2>Две звёздочки и число 45</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Какие цифры можно поставить на месте звёздочек в числе 72*4*, чтобы оно делилось на 45? Найдите все варианты и покажите, что других нет.</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Опыт: крути звёздочки</p>
+    <div class="starnum">
+      <span>7</span><span>2</span>
+      <span class="star-slot"><button type="button" class="arrow" data-s="a" data-d="1">▲</button><b id="w5-a">0</b><button type="button" class="arrow" data-s="a" data-d="-1">▼</button></span>
+      <span>4</span>
+      <span class="star-slot"><button type="button" class="arrow" data-s="b" data-d="1">▲</button><b id="w5-b">0</b><button type="button" class="arrow" data-s="b" data-d="-1">▼</button></span>
+    </div>
+    <div class="gauges">
+      <div class="gauge" id="w5-g5"><p class="g-title">на 5</p><p class="g-body">…</p></div>
+      <div class="gauge" id="w5-g9"><p class="g-title">на 9</p><p class="g-body">…</p></div>
+      <div class="gauge" id="w5-g45"><p class="g-title">на 45</p><p class="g-body">…</p></div>
+    </div>
+    <p class="lab-title">Карта всех 100 вариантов</p>
+    <div class="btn-row">
+      <button type="button" class="btn small-btn tog" id="w5-t5">подсветить «на 5»</button>
+      <button type="button" class="btn small-btn tog" id="w5-t9">подсветить «на 9»</button>
+    </div>
+    <div class="heat-wrap">
+      <div class="heat-ylab">первая ★</div>
+      <div>
+        <div class="heat-xlab">вторая ★ (последняя цифра)</div>
+        <div class="heat" id="w5-heat"></div>
+      </div>
+    </div>
+    <p class="hint">Строка — первая звёздочка, столбец — вторая. Клетка, где встречаются обе подсветки, и есть ответ. Нажми на клетку, чтобы поставить эти цифры.</p>
+    <div class="collection" id="w5-found"><p>Найдено:</p><span class="slot"></span><span class="slot"></span><span class="slot"></span></div>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>45 = 5 · 9, а 5 и 9 взаимно просты, значит число должно делиться и на 5, и на 9.</li>
+      <li>На 5: последняя цифра 0 или 5.</li>
+      <li>На 9: сумма цифр 7 + 2 + a + 4 + b = 13 + a + b делится на 9. Сумма от 13 до 31, поэтому она равна 18 или 27.</li>
+      <li>Если b = 0: 13 + a = 18 → a = 5; 13 + a = 27 → a = 14, не цифра. Получили 72540.</li>
+      <li>Если b = 5: 18 + a = 18 → a = 0; 18 + a = 27 → a = 9. Получили 72045 и 72945.</li>
+      <li>Ответ: 72045, 72540, 72945. Других нет: мы перебрали обе возможные последние цифры и обе возможные суммы.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="5">Поставить штамп</button>
+</section>
+
+<!-- ================= W6 ================= -->
+<section id="w6" class="plate workshop" data-w="6">
+  <header class="w-head"><span class="w-num">Цех 6</span><h2>Два хвостика складываются в ящик</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Число <i>x</i> при делении на 10 даёт в остатке 8, а число <i>y</i> при делении на 35 даёт в остатке 17. Докажите, что сумма <i>x</i> + <i>y</i> делится нацело на 5.</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Опыт: пересыпь обе кучи в пятёрки</p>
+    <div class="minilab-row">
+      <label class="slider-label">ящиков по 10 у x: <output id="w6-av">2</output><input type="range" id="w6-a" min="0" max="5" value="2"></label>
+      <label class="slider-label">ящиков по 35 у y: <output id="w6-bv">1</output><input type="range" id="w6-b" min="0" max="3" value="1"></label>
+    </div>
+    <div class="piles">
+      <div class="pile"><p class="pile-title" id="w6-xt"></p><div class="dots" id="w6-x"></div></div>
+      <div class="pile"><p class="pile-title" id="w6-yt"></p><div class="dots" id="w6-y"></div></div>
+    </div>
+    <button type="button" class="btn small-btn" id="w6-merge">Сложить хвостики</button>
+    <div class="merge" id="w6-mergeout"></div>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>x = 10a + 8. Ящики по 10 — это по два ящика по 5, а 8 = 5 + 3. Значит, x = 5 · (2a + 1) + 3: при делении на 5 остаток 3.</li>
+      <li>y = 35b + 17. Ящик по 35 — это семь ящиков по 5, а 17 = 15 + 2. Значит, y = 5 · (7b + 3) + 2: при делении на 5 остаток 2.</li>
+      <li>x + y = 5 · (2a + 1) + 5 · (7b + 3) + 3 + 2 = 5 · (2a + 7b + 4) + 5 = 5 · (2a + 7b + 5).</li>
+      <li>Сумма равна 5, умноженному на целое число, поэтому делится на 5. Хвостики 3 и 2 сложились в полный ящик.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="6">Поставить штамп</button>
+</section>
+
+<!-- ================= W7 ================= -->
+<section id="w7" class="plate workshop" data-w="7">
+  <header class="w-head"><span class="w-num">Цех 7</span><h2>Фокусник, Сима и Пров</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Фокусник задумал два натуральных числа и сообщил Симе их сумму, а Прову — их произведение. Зная, что произведение равно 2280, Пров смог отгадать задуманные числа только после того, как Сима сообщила, что сумма у неё нечётна и двузначна. Так какие числа задумал фокусник?</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Что знает Пров</p>
+    <p class="formula">2280 = 2 · 2 · 2 · 3 · 5 · 19</p>
+    <p>Пров раскладывает 2280 на два множителя всеми способами. Получается <b>16 пар</b>, и какая из них задумана — непонятно.</p>
+    <div class="pairs" id="w7-pairs"></div>
+    <p class="lab-title">Что сказала Сима</p>
+    <div class="btn-row">
+      <button type="button" class="btn small-btn tog" id="w7-odd">«Сумма нечётная»</button>
+      <button type="button" class="btn small-btn tog" id="w7-two">«Сумма двузначная»</button>
+    </div>
+    <p class="hint" id="w7-hint">Нажимай на подсказки Симы и смотри, какие пары вылетают с конвейера.</p>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>2280 = 2³ · 3 · 5 · 19. Все пары множителей: (1; 2280), (2; 1140), (3; 760), (4; 570), (5; 456), (6; 380), (8; 285), (10; 228), (12; 190), (15; 152), (19; 120), (20; 114), (24; 95), (30; 76), (38; 60), (40; 57).</li>
+      <li>Сумма нечётна, значит одно число чётное, а другое нечётное. Тогда все три двойки достались чётному числу: оно делится на 8. Остаются пары (8; 285), (24; 95), (40; 57), (120; 19), (152; 15), (456; 5), (760; 3), (2280; 1).</li>
+      <li>Их суммы: 293, 119, 97, 139, 167, 461, 763, 2281. Двузначная только 97.</li>
+      <li>Ответ: 40 и 57.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="7">Поставить штамп</button>
+</section>
+
+<!-- ================= W8 ================= -->
+<section id="w8" class="plate workshop" data-w="8">
+  <header class="w-head"><span class="w-num">Цех 8</span><h2>Сканер остатков</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Пусть N — наименьшее натуральное число, остатки от деления которого на 2, 3, 4, 5 и 6 различны. Найдите это число.</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Опыт: прогони числа через сканер</p>
+    <div class="scanner">
+      <div class="scan-n"><button type="button" class="arrow" id="w8-dec">◀</button><output id="w8-n">1</output><button type="button" class="arrow" id="w8-inc">▶</button></div>
+      <p class="scan-cap">остатки от деления</p>
+      <div class="scan-gauges" id="w8-g"></div>
+      <p class="scan-msg" id="w8-msg"></p>
+      <div class="btn-row">
+        <button type="button" class="btn small-btn" id="w8-play">Запустить сканер</button>
+        <button type="button" class="btn small-btn" id="w8-reset">С начала</button>
+      </div>
+    </div>
+    <p class="lab-title">Почему именно столько</p>
+    <div class="logic" id="w8-logic">
+      <p>Остаток на 2 — это 0 или 1. Остатки на 2, 4 и 6 всегда одной чётности: число и его остаток отличаются на несколько ящиков чётного размера. А остаток на 6, если его самого поделить на 3, даёт тот же остаток, что и N при делении на 3 (ящики по 6 — это по два ящика по 3). Поэтому вариантов совсем мало. Разберём оба случая:</p>
+      <div class="branches">
+        <div class="branch">
+          <p class="br-title">Остаток на 2 равен 1</p>
+          <p>Тогда на 4 остаток 1 или 3; единица занята, значит <b>3</b>. На 6 остаток нечётный и не 1, не 3: значит <b>5</b>. Тогда на 3 остаток 2. Занято 1, 2, 3, 5, остаток на 5 может быть <b>0</b> или <b>4</b>.</p>
+          <p>N + 1 делится на 2, 3, 4, 6, то есть на 12: N = 11, 23, 35, 47… Остаток на 5: 11 → 1, 23 → 3, <b>35 → 0</b>. Подходит!</p>
+        </div>
+        <div class="branch">
+          <p class="br-title">Остаток на 2 равен 0</p>
+          <p>Тогда на 4 остаток <b>2</b>, на 3 остаток <b>1</b> (ноль и двойка заняты), на 6 — чётный с остатком 1 на 3: <b>4</b>. На 5 остаётся <b>3</b>.</p>
+          <p>N − 10 делится на 12: N = 10, 22, 34, 46, 58… Остаток 3 на 5 впервые у <b>58</b>. Больше, чем 35.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>Остаток на 2 равен 0 или 1. Остатки на 4 и на 6 той же чётности, что и остаток на 2. Остаток на 6 при делении на 3 даёт тот же остаток, что и само N при делении на 3.</li>
+      <li>Случай «остаток на 2 равен 1»: на 4 — 3, на 6 — 5, на 3 — 2, на 5 — 0 или 4. Тогда N + 1 делится на 12: N = 11, 23, 35, … Первое с остатком 0 или 4 на 5 — это 35.</li>
+      <li>Случай «остаток на 2 равен 0»: на 4 — 2, на 3 — 1, на 6 — 4, на 5 — 3. N даёт остаток 10 при делении на 12: N = 10, 22, 34, 46, 58, … Первое с остатком 3 на 5 — это 58.</li>
+      <li>Наименьшее из найденных — 35. Проверка: 35 : 2 → 1, 35 : 3 → 2, 35 : 4 → 3, 35 : 5 → 0, 35 : 6 → 5. Все остатки разные.</li>
+      <li>Ответ: N = 35.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="8">Поставить штамп</button>
+</section>
+
+<!-- ================= W9 ================= -->
+<section id="w9" class="plate workshop" data-w="9">
+  <header class="w-head"><span class="w-num">Цех 9</span><h2>Простое число и ящик на 30</h2><span class="w-done" hidden>штамп ✓</span></header>
+  <blockquote class="task">Доказать, что остаток от деления простого числа на 30 — простое число или единица.</blockquote>
+
+  <div class="lab">
+    <p class="lab-title">Шаг 1. Какие остатки вообще бывают</p>
+    <p>Остаток от деления на 30 — одно из чисел от 0 до 29. Если простое p меньше 30, то остаток — само p, и доказывать нечего. Дальше считаем p &gt; 30: тогда остаток не может делиться на 2, 3 или 5, иначе и p делилось бы (ящики по 30 делятся на 2, 3 и 5, и хвостик тоже). Вычеркнем такие остатки:</p>
+    <div class="btn-row">
+      <button type="button" class="btn small-btn tog" id="w9-s2">вычеркнуть кратные 2</button>
+      <button type="button" class="btn small-btn tog" id="w9-s3">кратные 3</button>
+      <button type="button" class="btn small-btn tog" id="w9-s5">кратные 5</button>
+    </div>
+    <div class="sieve" id="w9-sieve"></div>
+    <p class="hint" id="w9-hint">Остаток простого числа не может делиться на 2, 3 или 5. Иначе и само число делилось бы (ящики по 30 делятся на 2, 3 и 5, а хвостик тоже). Исключение — само число 2, 3 или 5: оно меньше 30 и целиком остаётся «в хвостике».</p>
+
+    <p class="lab-title">Шаг 2. Проверь любое простое</p>
+    <div class="minilab-row">
+      <label>p <input type="number" id="w9-p" min="2" max="99999" value="97"></label>
+      <div class="chips" id="w9-chips"></div>
+    </div>
+    <p class="readout" id="w9-out"></p>
+  </div>
+
+  <details class="solution">
+    <summary>Решение для тетради</summary>
+    <ol>
+      <li>Пусть p — простое, p = 30q + r, где 0 ≤ r ≤ 29.</li>
+      <li>Если p &lt; 30, то q = 0 и r = p — само простое число. Это, например, p = 2, 3, 5.</li>
+      <li>Пусть p &gt; 30. Если r делится на 2, то и p = 30q + r делится на 2 (оба слагаемых чётные), а p &gt; 2 — противоречие с простотой. Так же r не делится на 3 и на 5. И r ≠ 0, иначе p делилось бы на 30.</li>
+      <li>Среди чисел от 1 до 29 не делятся ни на 2, ни на 3, ни на 5 только 1, 7, 11, 13, 17, 19, 23, 29. Все, кроме единицы, простые. Составного среди них быть не может: наименьшее составное без делителей 2, 3, 5 — это 7 · 7 = 49, а оно больше 29.</li>
+      <li>Значит, остаток — единица или простое число. Что и требовалось доказать.</li>
+    </ol>
+  </details>
+  <button type="button" class="btn done-btn" data-done="9">Поставить штамп</button>
+</section>
+
+<!-- ================= CHEAT ================= -->
+<section id="cheat" class="plate cheat">
+  <header class="w-head"><span class="w-num">Шпаргалка</span><h2>Что унести с фабрики</h2></header>
+  <ul class="cheat-list">
+    <li><b>N = m · q + r</b>, остаток r меньше делителя m. Делится — значит r = 0.</li>
+    <li><b>Ящики не считаются.</b> У суммы и произведения остаток зависит только от остатков слагаемых и множителей. Поэтому n² ведёт себя как r², а 3 + 2 хвостиков дают полный ящик по 5.</li>
+    <li><b>Перебор по остаткам.</b> Чтобы доказать «ни при каком n», достаточно проверить все остатки: для 3 их всего три.</li>
+    <li><b>Признаки:</b> 2, 5, 10 — последняя цифра; 4 — две последние; 3, 9 — сумма цифр. Составной делитель раскладываем на взаимно простые: 6 = 2 · 3, 18 = 2 · 9, 45 = 5 · 9.</li>
+    <li><b>Сузь перебор.</b> Сумма цифр маленькая; если один множитель нечётный, все двойки произведения сидят во втором; при p &gt; 30 остаток простого p не делится на 2, 3, 5 — каждая такая мысль выкидывает десятки лишних вариантов.</li>
+    <li><b>Перепаковка.</b> Если делитель и остаток оба делятся на d, то и число делится на d: 225q + 150 = 75 · (3q + 2).</li>
+  </ul>
+  <p class="final" id="final" hidden>Все девять штампов на месте. Смена окончена, стажёр!</p>
+</section>
+
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>

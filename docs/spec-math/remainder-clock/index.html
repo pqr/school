@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Деление с остатком для 6 класса: циферблат остатков, замена чисел остатками, цикл степеней 9^100, Поле Чудес и Буратино, принцип Дирихле, шпионы с конфетами, шахматная доска и признак делимости на 11.">
+<title>Циферблат остатков</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+
+  <!-- ============ Герой ============ -->
+  <header class="hero">
+    <p class="crumbs"><a href="../../">← Все материалы</a></p>
+    <p class="kicker">Спецматематика, 6 класс · деление с остатком</p>
+    <h1>Циферблат остатков</h1>
+    <p class="subtitle">часы, у которых столько делений, сколько ты скажешь</p>
+
+    <div class="hero-demo">
+      <div class="dial-wrap">
+        <svg id="hero-dial" role="img" aria-label="Циферблат остатков"></svg>
+        <div class="turns" aria-live="polite"><span class="turns-n" id="hero-turns">0</span><span class="turns-l">кругов</span></div>
+      </div>
+      <div class="hero-panel">
+        <label class="field">Заведи число
+          <input id="hero-n" type="number" inputmode="numeric" min="0" max="9999999" value="2023">
+        </label>
+        <p class="field-label">Делений на циферблате</p>
+        <div class="mods" id="hero-mods" role="group" aria-label="Делений на циферблате">
+          <button type="button" class="mod on" data-m="5">5</button>
+          <button type="button" class="mod" data-m="7">7</button>
+          <button type="button" class="mod" data-m="8">8</button>
+          <button type="button" class="mod" data-m="10">10</button>
+          <button type="button" class="mod" data-m="11">11</button>
+          <button type="button" class="mod" data-m="12">12</button>
+          <button type="button" class="mod" data-m="24">24</button>
+        </div>
+        <button type="button" class="btn big" id="hero-go">Крутить стрелку</button>
+        <p class="readout mono" id="hero-readout">2023 = 5 · 404 + <b>3</b></p>
+        <p class="hero-note" id="hero-note">Стрелка делает полные круги, а останавливается там, где кончается число. Место остановки и есть <b>остаток</b>.</p>
+      </div>
+    </div>
+
+    <p class="lead">Обычные часы считают по 12: стрелка прошла 12 часов и снова на нуле. А если делений 5? Или 7? Или 29? Тогда стрелка «забывает» всё, что делится на 5, 7 или 29, и показывает только остаток. На таком циферблате семь задач из листка решаются почти без вычислений.</p>
+  </header>
+
+  <nav class="toc" aria-label="Разделы">
+    <a href="#rules"><span class="n">0</span>Правила</a>
+    <a href="#p1" data-task="p1"><span class="n">1</span>Остаток</a>
+    <a href="#p2" data-task="p2"><span class="n">2</span>9<sup>100</sup></a>
+    <a href="#p3" data-task="p3"><span class="n">3</span>Поле Чудес</a>
+    <a href="#p4" data-task="p4"><span class="n">4</span>Шесть чисел</a>
+    <a href="#p5" data-task="p5"><span class="n">5</span>Шпионы</a>
+    <a href="#p6" data-task="p6"><span class="n">6</span>Доска</a>
+    <a href="#p7" data-task="p7"><span class="n">7</span>На 11</a>
+    <a href="#cheat"><span class="n">★</span>Шпаргалка</a>
+    <span class="progress" id="progress" title="Решено задач">★ 0/9</span>
+  </nav>
+
+  <!-- ============ 0. Правила ============ -->
+  <section id="rules" class="chapter">
+    <h2 data-num="0">Три правила циферблата</h2>
+
+    <div class="rule">
+      <div class="rule-n">1</div>
+      <div>
+        <h3>Любое число — это полные круги плюс остаток</h3>
+        <p>Если на циферблате <span class="mono">m</span> делений, то число <span class="mono">n</span> раскладывается единственным способом:</p>
+        <p class="formula">n = m · q + r, где 0 ≤ r &lt; m</p>
+        <p><span class="mono">q</span> — сколько полных кругов сделала стрелка, <span class="mono">r</span> — где остановилась. Например, 2023 = 5 · 404 + 3: четыреста четыре круга и остановка на тройке.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-n">2</div>
+      <div>
+        <h3>Складывать и умножать можно не числа, а их остатки</h3>
+        <p>Стрелке всё равно, сколько кругов она сделала. Поэтому перед сложением или умножением каждое число можно заменить его остатком, и результат на циферблате не изменится. Проверь на любых целых числах (до девяти цифр) и любом циферблате от 2 до 99:</p>
+        <div class="lab" id="lab">
+          <div class="lab-inputs">
+            <label>a <input type="number" id="lab-a" value="47"></label>
+            <label>b <input type="number" id="lab-b" value="38"></label>
+            <label>делений <input type="number" id="lab-m" value="5" min="2" max="99"></label>
+            <button type="button" class="btn small-btn" id="lab-rnd">Случайные</button>
+          </div>
+          <div class="lab-grid">
+            <div class="lab-col">
+              <p class="lab-h">В лоб</p>
+              <p class="mono" id="lab-sum1"></p>
+              <p class="mono" id="lab-prod1"></p>
+            </div>
+            <div class="lab-col">
+              <p class="lab-h">Через остатки</p>
+              <p class="mono" id="lab-rep"></p>
+              <p class="mono" id="lab-sum2"></p>
+              <p class="mono" id="lab-prod2"></p>
+            </div>
+          </div>
+          <p class="lab-verdict" id="lab-verdict"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-n">3</div>
+      <div>
+        <h3>Почему это честно</h3>
+        <p>Возьмём два числа на 5-циферблате: <span class="mono">a = 5q + r</span> и <span class="mono">b = 5p + s</span>. Перемножим их как площадь прямоугольника со сторонами <span class="mono">a</span> и <span class="mono">b</span>:</p>
+        <div class="area" aria-label="Прямоугольник a на b, разрезанный на четыре части">
+          <div class="area-top"><span class="seg seg-big">5q</span><span class="seg seg-small">r</span></div>
+          <div class="area-body">
+            <div class="area-left"><span class="seg seg-big">5p</span><span class="seg seg-small">s</span></div>
+            <div class="area-cells">
+              <div class="cell five">5q · 5p<small>есть 5</small></div>
+              <div class="cell five small-w">r · 5p<small>есть 5</small></div>
+              <div class="cell five small-h">5q · s<small>есть 5</small></div>
+              <div class="cell rest small-w small-h">r · s</div>
+            </div>
+          </div>
+        </div>
+        <p>Три куска из четырёх содержат множитель 5 — это полные круги, стрелка их не видит. Остаётся только маленький уголок <span class="mono">r · s</span>: произведение остатков. Со сложением ещё проще: <span class="mono">(5q + r) + (5p + s) = 5(q + p) + (r + s)</span>.</p>
+        <p class="note">Вычитать тоже можно: <span class="mono">a − b = 5(q − p) + (r − s)</span>. Если стрелка после <span class="mono">r − s</span> ушла в минус, просто докрути её на круг вперёд: на 5-циферблате −2 — это то же место, что 3.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 1 ============ -->
+  <section id="p1" class="chapter">
+    <h2 data-num="1">Остаток большого выражения</h2>
+    <div class="sheet"><span class="sheet-n">1.</span> Найдите остаток от деления числа 2021 · 2022 + 2023² на 5.</div>
+
+    <p>Можно честно перемножить четырёхзначные числа. А можно вспомнить правило 2: каждое число сначала заменяем остатком. Нажимай на числа — стрелка покажет, что от них останется на 5-циферблате.</p>
+
+    <div class="two-col">
+      <div class="dial-wrap sm"><svg id="p1-dial" aria-label="Циферблат на 5"></svg></div>
+      <div>
+        <p class="expr" id="p1-expr">
+          <button type="button" class="chip" data-n="2021">2021</button>
+          <span class="op">·</span>
+          <button type="button" class="chip" data-n="2022">2022</button>
+          <span class="op">+</span>
+          <button type="button" class="chip" data-n="2023">2023</button><sup class="sq">2</sup>
+        </p>
+        <p class="hint" id="p1-hint">Нажми на 2021, 2022 и 2023.</p>
+        <div id="p1-after" hidden>
+          <p class="formula">1 · 2 + 3 · 3 = 2 + 9 = 11</p>
+          <p>Осталось докрутить 11 на 5-циферблате: <button type="button" class="btn small-btn" id="p1-eleven">Крутить 11</button></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="try">
+      <label>Остаток: <input type="number" id="p1-in" min="0" max="4" inputmode="numeric"></label>
+      <button type="button" class="btn" id="p1-btn">Проверить</button>
+      <p class="fb" id="p1-fb"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Решение по шагам</summary>
+      <ol>
+        <li>2021 = 5 · 404 + <b>1</b>, 2022 = 5 · 404 + <b>2</b>, 2023 = 5 · 404 + <b>3</b>. Остатки смотрим по последней цифре: при делении на 5 важна только она.</li>
+        <li>Заменяем числа остатками: 2021 · 2022 + 2023² даёт на 5-циферблате то же, что 1 · 2 + 3² = 11.</li>
+        <li>11 = 5 · 2 + <b>1</b>. Ответ: <b>1</b>.</li>
+      </ol>
+      <p class="note">Проверка для недоверчивых: 2021 · 2022 + 2023² = 4 086 462 + 4 092 529 = 8 178 991. Последняя цифра 1, значит, остаток от деления на 5 равен 1.</p>
+    </details>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section id="p2" class="chapter">
+    <h2 data-num="2">Степень, которая ходит по кругу</h2>
+    <div class="sheet"><span class="sheet-n">2.</span>
+      <span class="sub">(а)</span> Найдите последнюю цифру числа 9<sup>100</sup>.<br>
+      <span class="sub">(б)</span> Найдите остаток от деления числа 9<sup>100</sup> на 8.<br>
+      <span class="sub">(в)</span> Найдите остаток от деления числа 9<sup>100</sup> на 7.
+    </div>
+
+    <p>У 9<sup>100</sup> девяносто шесть цифр, выписывать его не будем. Последняя цифра числа — это остаток от деления на 10. А 9<sup>100</sup> — это единица, умноженная на 9 сто раз. По правилу 2 после каждого умножения можно оставлять только остаток. Жми «× 9» и следи за стрелкой.</p>
+
+    <div class="two-col">
+      <div class="dial-wrap sm"><svg id="p2-dial" aria-label="Циферблат степеней"></svg></div>
+      <div>
+        <p class="field-label">Делений на циферблате</p>
+        <div class="mods" id="p2-mods">
+          <button type="button" class="mod on" data-m="10">10 — последняя цифра</button>
+          <button type="button" class="mod" data-m="8">8</button>
+          <button type="button" class="mod" data-m="7">7</button>
+        </div>
+        <div class="ladder-ctl">
+          <button type="button" class="btn big" id="p2-mul">× 9</button>
+          <button type="button" class="btn small-btn ghost" id="p2-reset">Сначала</button>
+        </div>
+        <div class="pills" id="p2-pills" aria-live="polite"></div>
+        <p class="ladder-msg" id="p2-msg">Стрелка на 1: это 9<sup>0</sup>. Умножай.</p>
+        <div id="p2-jump" hidden>
+          <button type="button" class="btn" id="p2-jump-btn">Перепрыгнуть к 9<sup>100</sup></button>
+          <p class="formula" id="p2-jump-out"></p>
+        </div>
+      </div>
+    </div>
+
+    <details class="peek">
+      <summary>А точно последние цифры так чередуются? Посмотри на настоящие степени</summary>
+      <table class="powers" id="p2-table"></table>
+      <p class="note">Каждая следующая степень получается умножением предыдущей на 9. Последняя цифра произведения зависит только от последних цифр множителей, поэтому дальше узор не сломается.</p>
+    </details>
+
+    <div class="try tri">
+      <label>(а) последняя цифра <input type="number" id="p2a-in" min="0" max="9"></label>
+      <label>(б) остаток на 8 <input type="number" id="p2b-in" min="0" max="7"></label>
+      <label>(в) остаток на 7 <input type="number" id="p2c-in" min="0" max="6"></label>
+      <button type="button" class="btn" id="p2-btn">Проверить</button>
+      <p class="fb" id="p2-fb"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Решение по шагам</summary>
+      <p><b>(а)</b> На 10-циферблате: 9¹ → 9, 9² = 81 → 1, 9³ → 9, 9⁴ → 1… Период 2: нечётные степени кончаются на 9, чётные на 1. 100 чётное, значит, 9<sup>100</sup> кончается на <b>1</b>.</p>
+      <p><b>(б)</b> На 8-циферблате 9 стоит там же, где 1 (9 = 8 + 1). А единицу сколько ни умножай на себя, будет 1. Остаток <b>1</b>.</p>
+      <p><b>(в)</b> На 7-циферблате 9 стоит там же, где 2. Степени двойки: 2, 4, 8 → 1, потом снова 2, 4, 1. Период 3. 100 = 3 · 33 + 1, то есть тридцать три полных цикла и ещё один шаг: 9<sup>100</sup> даёт тот же остаток, что 2¹. Ответ <b>2</b>.</p>
+      <p class="note">Короткая запись (в): 9<sup>100</sup> = 9<sup>99</sup> · 9 = (9³)<sup>33</sup> · 9 = 729<sup>33</sup> · 9, а 729 = 7 · 104 + 1. Получаем 1<sup>33</sup> · 9 = 9, остаток 2.</p>
+    </details>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section id="p3" class="chapter">
+    <h2 data-num="3">Поле Чудес</h2>
+    <div class="sheet"><span class="sheet-n">3.</span> На Поле Чудес растут деревья с золотыми монетами. Каждую ночь на каждом дереве вырастает по одной новой монете. 1 февраля на деревьях было всего 1000 монет. В один из следующих февральских дней Буратино посадил ещё одно дерево, и 1 марта на деревьях оказалось всего 2400 монет. В какой день Буратино посадил дерево?</div>
+
+    <div class="field-story">
+      <p>За февраль монет прибавилось <b>2400 − 1000 = 1400</b>. Откуда они взялись? Пусть на поле стояло <span class="mono">N</span> старых деревьев. Каждую ночь они дают <span class="mono">N</span> монет, а новое дерево Буратино добавляет по монете только с той ночи, когда его посадили. Значит:</p>
+      <p class="formula">1400 = N · (ночей в феврале) + (ночей, которые застало новое дерево)</p>
+      <p>Второе слагаемое меньше числа ночей. Это же <b>остаток</b>! Разделим 1400 на число ночей с остатком, и остаток скажет, сколько ночей прожило новое дерево.</p>
+    </div>
+
+    <div class="cal-ctl">
+      <span class="field-label">В феврале дней:</span>
+      <div class="mods" id="p3-mods">
+        <button type="button" class="mod on" data-d="28">28</button>
+        <button type="button" class="mod" data-d="29">29 (високосный)</button>
+      </div>
+      <button type="button" class="btn small-btn" id="p3-all">Проверить все дни</button>
+    </div>
+    <p class="hint">Нажми на день, когда Буратино мог посадить дерево.</p>
+    <div class="calendar" id="p3-cal" aria-label="Календарь февраля"></div>
+    <div class="cal-info" id="p3-info"><p>Выбери день в календаре.</p></div>
+
+    <div class="fingers">
+      <h3>На пальцах: почему 22, а не 21</h3>
+      <p>Мы выяснили: новое дерево застало <b>8 ночей</b>. Хочется вычесть: 29 − 8 = 21 и ответить «21 февраля». Но 21 — это <b>последний день без дерева</b>, а не день посадки. Дни и ночи чередуются, как столбы и пролёты забора: столбов всегда на один больше. Выбери день посадки и посчитай ночи вместе с луной.</p>
+      <div class="mods" id="p3-fing-mods">
+        <button type="button" class="mod" data-k="21">Посадили 21-го</button>
+        <button type="button" class="mod on" data-k="22">Посадили 22-го</button>
+        <button type="button" class="mod" data-k="23">Посадили 23-го</button>
+      </div>
+      <div class="timeline" id="p3-timeline" aria-label="Лента дней и ночей конца февраля"></div>
+      <p class="fing-msg" id="p3-fing-msg"></p>
+      <div class="fing-note">
+        <p><b>Как считать без ленты.</b> Дерево посадили <span class="mono">k</span>-го. Оно застаёт ночи после <span class="mono">k</span>-го, после <span class="mono">(k + 1)</span>-го, … и после 29-го. Это столько же ночей, сколько дней от <span class="mono">k</span> до 29 включительно: <span class="mono">29 − k + 1</span>. Для 8 ночей: <span class="mono">29 − k + 1 = 8</span>, откуда <span class="mono">k = 22</span>.</p>
+        <p><b>Ещё проще.</b> Ночь с 29 февраля на 1 марта — восьмая. Отсчитай восемь ночей назад: с 29-го, с 28-го, с 27-го, с 26-го, с 25-го, с 24-го, с 23-го, с 22-го. Первая ночь дерева — с 22-го на 23-е, значит, посадили 22-го.</p>
+      </div>
+    </div>
+
+    <div class="try">
+      <label>Буратино посадил дерево <input type="number" id="p3-in" min="1" max="29"> февраля</label>
+      <button type="button" class="btn" id="p3-btn">Проверить</button>
+      <p class="fb" id="p3-fb"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Решение по шагам</summary>
+      <ol>
+        <li>С 1 февраля по 1 марта проходит столько ночей, сколько дней в феврале: 28 или 29. Монет прибавилось 1400.</li>
+        <li>Старые деревья дают по <span class="mono">N</span> монет за ночь. Новое дерево сажают днём без монет, и с ближайшей ночи оно тоже даёт по монете. Последняя ночь, которую мы считаем, — с последнего дня февраля на 1 марта. Если дерево посадили <span class="mono">k</span> февраля, оно застало <span class="mono">D − k + 1</span> ночей, где <span class="mono">D</span> — число дней в феврале.</li>
+        <li>Получаем 1400 = N · D + (D − k + 1), причём 1 ≤ D − k + 1 ≤ D − 1 (посадили не 1 февраля). То есть <span class="mono">D − k + 1</span> — ненулевой остаток от деления 1400 на <span class="mono">D</span>.</li>
+        <li>Если D = 28: 1400 = 28 · 50, остаток 0. Не подходит: дерево пришлось бы сажать 1 февраля или вообще 1 марта. Значит, февраль високосный, D = 29.</li>
+        <li>1400 = 29 · 48 + <b>8</b>. Новое дерево застало 8 ночей: 29 − k + 1 = 8, откуда k = 22. Старых деревьев было 48. Ловушка: 29 − 8 = 21 — это последний день <em>без</em> дерева. Посаженное 21-го дерево застало бы 9 ночей (с 21-го на 22-е и далее до ночи на 1 марта), а это уже 9 монет вместо 8.</li>
+        <li>Проверка: 48 · 29 = 1392, плюс 8 монет с нового дерева: 1392 + 8 = 1400. Ответ: <b>22 февраля</b>.</li>
+      </ol>
+    </details>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section id="p4" class="chapter">
+    <h2 data-num="4">Шесть чисел и пять карманов</h2>
+    <div class="sheet"><span class="sheet-n">4.</span>
+      <span class="sub">(а)</span> Докажите, что среди любых шести разных целых чисел найдутся два, разность которых делится на 5.<br>
+      <span class="sub">(б)</span> Останется ли это утверждение верным, если вместо разности взять сумму?
+    </div>
+
+    <p>На 5-циферблате всего пять мест: 0, 1, 2, 3, 4. Это пять карманов. Кинем в карманы шесть чисел: каждое попадает в карман своего остатка. Карманов пять, чисел шесть, значит, в каком-то кармане окажутся двое. Попробуй подобрать шесть чисел так, чтобы в каждом кармане было не больше одного.</p>
+
+    <div class="pocket-inputs" id="p4-inputs">
+      <input type="number" value="12"><input type="number" value="37"><input type="number" value="4"><input type="number" value="-3"><input type="number" value="100"><input type="number" value="58">
+    </div>
+    <div class="pocket-ctl">
+      <button type="button" class="btn" id="p4-sort">Разложить по карманам</button>
+      <button type="button" class="btn small-btn ghost" id="p4-rnd">Случайные шесть</button>
+      <button type="button" class="btn small-btn ghost" id="p4-hint">Подсказка для (б)</button>
+    </div>
+    <div class="pockets" id="p4-pockets"></div>
+    <p class="pocket-msg" id="p4-msg"></p>
+
+    <div class="sum-check">
+      <h3>(б) А что с суммой?</h3>
+      <p>Сумма двух чисел делится на 5, когда их остатки дают вместе 0 или 5: пары карманов 0 + 0, 1 + 4, 2 + 3. Проверь свои шесть чисел:</p>
+      <button type="button" class="btn small-btn" id="p4-sums">Проверить все суммы</button>
+      <p class="pocket-msg" id="p4-sum-msg"></p>
+    </div>
+
+    <div class="try">
+      <span class="q">Для суммы утверждение верно?</span>
+      <button type="button" class="btn choice" id="p4-yes">Да</button>
+      <button type="button" class="btn choice" id="p4-no">Нет</button>
+      <p class="fb" id="p4-fb"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Решение по шагам</summary>
+      <p><b>(а)</b> При делении на 5 бывает только пять остатков: 0, 1, 2, 3, 4. Чисел шесть. По принципу Дирихле («кроликов больше, чем клеток») два числа дают одинаковый остаток: <span class="mono">a = 5q + r</span> и <span class="mono">b = 5p + r</span>. Тогда <span class="mono">a − b = 5(q − p)</span> делится на 5. Что и требовалось.</p>
+      <p><b>(б)</b> Нет. Контрпример: 1, 6, 11, 16, 21, 26. Все шесть лежат в кармане «1», поэтому любая сумма двух из них лежит в кармане 1 + 1 = 2 и на 5 не делится. Сумма делится на 5 только у чисел из «дружественных» карманов (0 и 0, 1 и 4, 2 и 3), а мы такие пары просто не взяли.</p>
+    </details>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section id="p5" class="chapter">
+    <h2 data-num="5">Шпионы и конфеты</h2>
+    <div class="sheet"><span class="sheet-n">5.</span> Шестеро шпионов, собираясь в 24-дневный рейд по тылам врага, взяли с собой огромный рюкзак конфет. Они распределили конфеты поровну на 24 дня и ещё 18 конфет осталось на случай возникновения непредвиденных обстоятельств. Не прошло и часа, как шпионам пришлось разделиться, и каждый пошёл своей дорогой. При этом конфеты были поделены поровну между шпионами. Джеймс распределил свои конфеты поровну на 24 дня, а остальные отложил для подкупа часовых. Какое количество конфет могло быть отложено?</div>
+
+    <p>Сколько конфет в рюкзаке, мы не знаем. Обозначим буквой <span class="mono">k</span>, сколько конфет отряд отложил на один день. <span class="mono">k</span> может быть любым: 1, 5, 100 или миллион. Поэтому доказательство должно работать для <b>любого</b> <span class="mono">k</span>. Следить будем не за числом, а за его <b>формой</b>: всего конфет <span class="mono">24k + 18</span>. Чтобы рисовать конфеты, возьмём маленькие <span class="mono">k</span>, а потом убедимся, что рассуждение не зависит от размера.</p>
+
+    <div class="candy-lab">
+      <label class="slider">Конфет на день у отряда: k = <b id="p5-k">3</b>
+        <input type="range" id="p5-range" min="1" max="12" value="3">
+      </label>
+      <div class="mods stages" id="p5-stages">
+        <button type="button" class="mod on" data-stage="1">1. Рюкзак</button>
+        <button type="button" class="mod" data-stage="2">2. Делим на шестерых</button>
+        <button type="button" class="mod" data-stage="3">3. Джеймс раскладывает</button>
+      </div>
+      <div class="stage-view" id="p5-view"></div>
+      <div class="stage-cap" id="p5-cap"></div>
+    </div>
+
+    <h3>Почему это работает для любого k, даже для миллиона</h3>
+    <div class="proof-steps">
+      <div class="ps"><span class="ps-n">1</span><p>Всего конфет <span class="mono">24k + 18</span>. Делим на шестерых: <span class="mono">24k = 6 · 4k</span> и <span class="mono">18 = 6 · 3</span>, поэтому каждому достаётся ровно <span class="mono">4k + 3</span>. Это <span class="mono">k</span> четвёрок и ещё 3 конфеты, каким бы ни было <span class="mono">k</span>.</p></div>
+      <div class="ps"><span class="ps-n">2</span><p>Один день Джеймса — 24 конфеты — это ровно <b>6 четвёрок</b>. Пусть <span class="mono">k = 6q + j</span>, где <span class="mono">j</span> — остаток от деления <span class="mono">k</span> на 6, то есть одно из чисел 0, 1, 2, 3, 4, 5. Тогда <span class="mono">q</span> дней Джеймс заполняет шестёрками четвёрок, и у него остаются <span class="mono">j</span> четвёрок и 3 конфеты: <span class="mono">4j + 3</span> штук.</p></div>
+      <div class="ps"><span class="ps-n">3</span><p>Получилось <span class="mono">4k + 3 = 24q + (4j + 3)</span>, причём <span class="mono">4j + 3</span> не меньше 3 и не больше <span class="mono">4 · 5 + 3 = 23</span>, а значит, меньше 24. По правилу 1 такое разложение единственно, поэтому <span class="mono">4j + 3</span> и есть остаток, как бы Джеймс ни раскладывал конфеты. Остаток обязан иметь вид «четвёрки плюс три»: <b>3, 7, 11, 15, 19 или 23</b>.</p></div>
+      <div class="ps"><span class="ps-n">4</span><p>Все шесть значений действительно бывают: при <span class="mono">k = 1, 2, 3, 4, 5, 6</span> остаток <span class="mono">j</span> равен 1, 2, 3, 4, 5, 0, и отложено 7, 11, 15, 19, 23, 3. Ниже можно проверить любое <span class="mono">k</span>.</p></div>
+    </div>
+
+    <div class="two-col">
+      <div class="dial-wrap sm"><svg id="p5-dial" aria-label="Циферблат на 24"></svg></div>
+      <div>
+        <label class="field-inline">Любое k: <input type="text" id="p5-bigk" inputmode="numeric" value="1000000" maxlength="15"></label>
+        <div class="mods" id="p5-presets">
+          <button type="button" class="mod" data-k="1">1</button>
+          <button type="button" class="mod" data-k="2">2</button>
+          <button type="button" class="mod" data-k="6">6</button>
+          <button type="button" class="mod" data-k="100">100</button>
+          <button type="button" class="mod" data-k="2024">2024</button>
+          <button type="button" class="mod on" data-k="1000000">1 000 000</button>
+        </div>
+        <div class="big-out mono" id="p5-bigout"></div>
+        <table class="jtable" id="p5-jtable">
+          <thead><tr><th>остаток k на 6</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+          <tbody><tr><th>отложено 4j + 3</th><td data-j="0">3</td><td data-j="1">7</td><td data-j="2">11</td><td data-j="3">15</td><td data-j="4">19</td><td data-j="5">23</td></tr></tbody>
+        </table>
+        <p class="field-label">Куда уже попадала стрелка</p>
+        <div class="pills" id="p5-lit"></div>
+      </div>
+    </div>
+
+    <div class="try">
+      <label>Отложить могли (перечисли через запятую) <input type="text" id="p5-in" placeholder="например: 1, 2, 3"></label>
+      <button type="button" class="btn" id="p5-btn">Проверить</button>
+      <p class="fb" id="p5-fb"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Решение по шагам</summary>
+      <ol>
+        <li>Пусть на день отряд отложил <span class="mono">k</span> конфет. Тогда всего конфет <span class="mono">24k + 18</span>. Число <span class="mono">k</span> нам неизвестно, поэтому рассуждаем для любого <span class="mono">k</span>.</li>
+        <li>Делим на шестерых: <span class="mono">(24k + 18) : 6 = 4k + 3</span>. Делится при любом <span class="mono">k</span>, значит, условие не противоречиво. У каждого <span class="mono">k</span> четвёрок и 3 конфеты.</li>
+        <li>Джеймс делит <span class="mono">4k + 3</span> на 24 дня. День — это 6 четвёрок. Разделим <span class="mono">k</span> на 6 с остатком: <span class="mono">k = 6q + j</span>, <span class="mono">0 ≤ j ≤ 5</span>. Тогда <span class="mono">4k + 3 = 24q + 4j + 3</span>.</li>
+        <li>Число <span class="mono">4j + 3</span> лежит между 3 и 23, то есть меньше 24. По единственности деления с остатком это и есть остаток: отложено <span class="mono">4j + 3</span> конфет.</li>
+        <li><span class="mono">j</span> принимает значения 0, 1, 2, 3, 4, 5, и все они встречаются (например, при <span class="mono">k = 6, 1, 2, 3, 4, 5</span>). Ответ: <b>3, 7, 11, 15, 19 или 23</b>.</li>
+      </ol>
+      <p class="note">Короче: <span class="mono">4k + 3</span> даёт остаток 3 при делении на 4, а 24 делится на 4. Значит, и остаток от деления на 24 даёт 3 при делении на 4. Среди чисел от 0 до 23 такие: 3, 7, 11, 15, 19, 23.</p>
+    </details>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section id="p6" class="chapter">
+    <h2 data-num="6">Шахматная доска</h2>
+    <div class="sheet"><span class="sheet-n">6.</span> Дано 64 числа: 1, 11, 21, 31, …, 601, 611, 621, 631 (каждое следующее больше предыдущего на 10). Можно ли расположить все эти числа в разных клетках шахматной доски так, чтобы сумма чисел в любых двух соседних по стороне клетках<br>
+      <span class="sub">(а)</span> делилась на 4?<br>
+      <span class="sub">(б)</span> не делилась на 4?
+    </div>
+
+    <p>Раз речь о делимости на 4, смотрим на числа через 4-циферблат. Нажми кнопку: каждое число покрасится в цвет своего остатка.</p>
+    <div class="board-ctl">
+      <button type="button" class="btn" id="p6-color">Покрасить по остатку на 4</button>
+      <button type="button" class="btn" id="p6-place" disabled>Расставить на доске</button>
+    </div>
+    <div class="numbers" id="p6-nums"></div>
+    <p class="board-msg" id="p6-nummsg"></p>
+
+    <div class="two-col board-row">
+      <div class="board" id="p6-board" aria-label="Шахматная доска"></div>
+      <div class="board-info" id="p6-info">
+        <p>После расстановки наведи курсор на клетку или нажми на неё: покажу суммы с соседями.</p>
+      </div>
+    </div>
+
+    <div class="flood">
+      <h3>(б) А если нужно, чтобы ни одна сумма не делилась на 4?</h3>
+      <p>Остатки у нас только 1 и 3. Сумма соседей <em>не</em> делится на 4, когда соседи одного цвета: 1 + 1 = 2 и 3 + 3 = 6. Поставь синее число в любую клетку и посмотри, чего это потребует от соседей.</p>
+      <div class="board mini" id="p6-mini" aria-label="Мини-доска для опыта"></div>
+      <p class="board-msg" id="p6-floodmsg">Нажми на любую клетку.</p>
+    </div>
+
+    <div class="try tri">
+      <span class="q">(а) можно?</span>
+      <button type="button" class="btn choice" data-q="a" data-v="yes">Да</button>
+      <button type="button" class="btn choice" data-q="a" data-v="no">Нет</button>
+      <span class="q">(б) можно?</span>
+      <button type="button" class="btn choice" data-q="b" data-v="yes">Да</button>
+      <button type="button" class="btn choice" data-q="b" data-v="no">Нет</button>
+      <p class="fb" id="p6-fb"></p>
+    </div>
+
+    <details class="solution">
+      <summary>Решение по шагам</summary>
+      <ol>
+        <li>Числа идут через 10, а 10 на 4-циферблате — это 2. Поэтому остатки чередуются: 1, 3, 1, 3, … Чисел с остатком 1 ровно 32 и с остатком 3 ровно 32.</li>
+        <li><b>(а)</b> Сумма делится на 4, когда соседи разных типов: 1 + 3 = 4. На шахматной доске соседние по стороне клетки всегда разного цвета, чёрных и белых по 32. Ставим числа с остатком 1 на чёрные клетки, с остатком 3 — на белые. Любые соседи дают 1 + 3. <b>Можно.</b></li>
+        <li><b>(б)</b> Сумма не делится на 4, когда соседи одного типа. Возьмём любую клетку: все её соседи того же типа, их соседи тоже, и так через всю доску. Все 64 числа должны быть одного типа, а у нас 32 и 32. <b>Нельзя.</b></li>
+      </ol>
+    </details>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section id="p7" class="chapter">
+    <h2 data-num="7">Признак делимости на 11</h2>
+    <div class="sheet"><span class="sheet-n">7.</span> Докажите признак делимости на 11.</div>
+
+    <p><b>Признак.</b> Число делится на 11 тогда и только тогда, когда делится на 11 его <em>знакопеременная сумма цифр</em>: цифры берём справа налево с чередующимися знаками «+», «−», «+», «−»… Введи любое число:</p>
+
+    <div class="alt">
+      <input type="text" id="p7-in" inputmode="numeric" pattern="[0-9]*" maxlength="12" value="2024" aria-label="Число для проверки">
+      <div class="digits" id="p7-digits"></div>
+      <p class="formula" id="p7-sum"></p>
+      <p class="alt-verdict" id="p7-verdict"></p>
+    </div>
+
+    <h3>Почему это работает: 10 — это шаг назад</h3>
+    <p>Поставим 11-циферблат. Десять делений вперёд от нуля — это на одно деление <em>назад</em> от нуля: 10 = 11 − 1. А сто делений — это десять раз по «шаг назад», то есть шаг вперёд: 100 = 99 + 1. Нажми на степени десятки и смотри, куда приходит стрелка.</p>
+    <div class="two-col">
+      <div class="dial-wrap sm"><svg id="p7-dial" aria-label="Циферблат на 11"></svg></div>
+      <div>
+        <div class="mods" id="p7-pow">
+          <button type="button" class="mod" data-n="1">1</button>
+          <button type="button" class="mod" data-n="10">10</button>
+          <button type="button" class="mod" data-n="100">100</button>
+          <button type="button" class="mod" data-n="1000">1000</button>
+          <button type="button" class="mod" data-n="10000">10 000</button>
+        </div>
+        <p class="ladder-msg" id="p7-powmsg">Единицы — на месте 1. Десятки, сотни, тысячи — посмотрим.</p>
+        <div class="tens mono" id="p7-tens"></div>
+      </div>
+    </div>
+
+    <h3>Разбираем твоё число</h3>
+    <div class="expand mono" id="p7-expand"></div>
+    <p>Разность между числом и его знакопеременной суммой состоит из кусков вида <span class="mono">цифра · 99</span>, <span class="mono">цифра · 1001</span>, <span class="mono">цифра · 11</span>: все они делятся на 11. Значит, число и знакопеременная сумма стоят на 11-циферблате в одном и том же месте. Делится одно — делится и другое. Признак доказан.</p>
+
+    <h3>Проверь себя без калькулятора</h3>
+    <div class="quiz" id="p7-quiz"></div>
+    <p class="fb" id="p7-fb"></p>
+
+    <details class="solution">
+      <summary>Строгое доказательство</summary>
+      <p>Пусть число записано цифрами <span class="mono">a<sub>n</sub> … a<sub>2</sub> a<sub>1</sub> a<sub>0</sub></span>, то есть равно <span class="mono">a<sub>0</sub> + a<sub>1</sub> · 10 + a<sub>2</sub> · 100 + a<sub>3</sub> · 1000 + …</span></p>
+      <p>На 11-циферблате 10 стоит там же, где −1. По правилу умножения остатков каждый новый множитель 10 умножает остаток на −1: 10 → −1, 100 = 10 · 10 → (−1) · (−1) = +1, 1000 → −1, 10 000 → +1, и так для любой степени: при нечётном показателе −1, при чётном +1. Правило умножения мы доказали в разделе «Почему это честно», поэтому никакого «и так далее» на веру тут нет. Для проверки на маленьких числах: 10 = 11 − 1, 100 = 99 + 1, 1000 = 1001 − 1, причём 99 = 11 · 9 и 1001 = 11 · 91.</p>
+      <p>Поэтому число = (a<sub>0</sub> − a<sub>1</sub> + a<sub>2</sub> − a<sub>3</sub> + …) + 11 · (что-то целое). Два числа, отличающиеся на кратное 11, делятся на 11 одновременно. Что и требовалось.</p>
+      <p class="note">Бонус: тот же способ доказывает признаки делимости на 3 и на 9. Там 10 = 9 + 1, поэтому каждая степень десятки стоит на 9-циферблате там же, где 1, и число равносильно обычной сумме цифр.</p>
+    </details>
+  </section>
+
+  <!-- ============ Шпаргалка ============ -->
+  <section id="cheat" class="chapter">
+    <h2 data-num="★">Шпаргалка</h2>
+    <div class="cheat">
+      <div class="cc">
+        <p class="cc-h">Деление с остатком</p>
+        <p class="formula">n = m · q + r, 0 ≤ r &lt; m</p>
+        <p>q — полные круги, r — где остановилась стрелка.</p>
+      </div>
+      <div class="cc">
+        <p class="cc-h">Замена остатками</p>
+        <p>В суммах, разностях и произведениях каждое число можно заменить его остатком. Ответ на циферблате не изменится.</p>
+        <p class="formula">2021 · 2022 + 2023² → 1 · 2 + 3² = 11 → 1</p>
+      </div>
+      <div class="cc">
+        <p class="cc-h">Степени ходят по кругу</p>
+        <p>Если степени дошли до остатка 1, дальше остатки идут по кругу с самого начала. Найди длину круга и раздели показатель на неё с остатком.</p>
+        <p class="formula">9 → 2 (на 7): 2, 4, 1, 2, 4, 1… круг из 3</p>
+        <p>Осторожно: у других чисел круг может начаться не сразу. Степени 2 на 8-циферблате: 2, 4, 0, 0, 0… Всегда выписывай первые шаги.</p>
+      </div>
+      <div class="cc">
+        <p class="cc-h">Карманы (принцип Дирихле)</p>
+        <p>Остатков при делении на m ровно m. Если чисел больше, двое попадут в один карман, и их разность делится на m.</p>
+      </div>
+      <div class="cc">
+        <p class="cc-h">10 на 11-циферблате — это −1</p>
+        <p>Поэтому число ≡ знакопеременной сумме цифр. На 9- и 3-циферблате 10 — это +1, поэтому число ≡ сумме цифр.</p>
+      </div>
+      <div class="cc">
+        <p class="cc-h">Остаток как неизвестное</p>
+        <p>Если равенство имеет вид n = m · q + r, где q целое, а r от 0 до m − 1, то r обязан быть остатком. 1400 = 29 · N + (ночи дерева), ночей от 1 до 28 → ночей 8, N = 48.</p>
+      </div>
+    </div>
+    <details class="peek">
+      <summary>Оригинальный листок с задачами</summary>
+      <div class="scans">
+        <img src="assets/sheet-1.jpeg" alt="Листок: задачи 1 и 2" loading="lazy">
+        <img src="assets/sheet-2.jpeg" alt="Листок: задачи 3–7" loading="lazy">
+      </div>
+    </details>
+  </section>
+
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>
