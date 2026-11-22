@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Геометрия, 7 класс. Задача про четырёхугольник ABCD с биссектрисой BD: разбор условия по фразам, живой чертёж и путь к решению с подсказками трёх уровней.">
+<title>Задача № 8: четырёхугольник с секретом</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;700&family=PT+Serif:ital,wght@1,400;1,700&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main>
+
+  <header class="hero">
+    <p class="crumbs"><a href="../../">← Все материалы</a></p>
+    <p class="kicker">Геометрия, 7 класс. Повторение: равные треугольники</p>
+    <h1>Четырёхугольник с&nbsp;секретом</h1>
+    <p class="lead">Задача № 8 с листка. Решать будешь ты, а эта страница поможет: сначала разберём условие по кусочкам, потом пойдём к ответу маленькими шагами. Застрял — оторви подсказку.</p>
+  </header>
+
+  <!-- 1. Условие по фразам -->
+  <section class="sheet" aria-labelledby="t-cond">
+    <h2 id="t-cond">Читаем условие медленно</h2>
+    <p class="note">Нажимай на подчёркнутые куски условия по порядку — чертёж будет расти, а внизу появится перевод на простой язык.</p>
+    <div class="cond">
+      <div class="cond-text">
+        <p class="statement" id="statement">
+          Про <button type="button" data-s="0">четырёхугольник <i>ABCD</i></button> известно, что
+          <button type="button" data-s="1"><i>AB</i> = <i>BD</i></button>,
+          <button type="button" data-s="2">∠<i>ABD</i> = ∠<i>DBC</i></button>,
+          <button type="button" data-s="3">∠<i>BCD</i> = 90°</button>.
+          <button type="button" data-s="4">На отрезке <i>BC</i> отмечена точка <i>E</i></button> такая, что
+          <button type="button" data-s="5"><i>AD</i> = <i>DE</i></button>.
+          <button type="button" data-s="7">Чему равна длина отрезка <i>BD</i></button>, если известно, что
+          <button type="button" data-s="6"><i>BE</i> = 7, <i>EC</i> = 5</button>?
+        </p>
+        <div class="explain" id="explain" aria-live="polite"></div>
+        <div class="row">
+          <button class="btn ghost" type="button" id="cond-prev">Назад</button>
+          <button class="btn" type="button" id="cond-next">Дальше</button>
+          <span class="count" id="cond-count"></span>
+        </div>
+      </div>
+      <svg class="fig" id="fig-cond" viewBox="0 30 420 490" role="img" aria-label="Чертёж к условию задачи"></svg>
+    </div>
+  </section>
+
+  <!-- 2. Чертёж — набросок -->
+  <section class="sheet" aria-labelledby="t-flex">
+    <h2 id="t-flex">Чертёж — это набросок</h2>
+    <div class="cond">
+      <div class="cond-text">
+        <p>Подвигай ползунок. Фигура меняется, но все условия со словами «равно» выполняются на каждом рисунке: <i>AB</i> = <i>BD</i>, углы при вершине <i>B</i> равны, угол <i>C</i> прямой, <i>AD</i> = <i>DE</i>.</p>
+        <label class="slider">
+          <span>Наклон диагонали <i>BD</i></span>
+          <input type="range" id="flex" min="28" max="44" step="0.5" value="38">
+        </label>
+        <p>Числа 7 и 5 выбирают из всех этих фигур ровно одну. Поэтому мерить линейкой бесполезно: ответ надо <b>вывести</b> из условий, а чертёж нужен, чтобы видеть, что с чем связано.</p>
+        <p class="note">Твой чертёж в тетради может быть «кривым» — это нормально. Главное, отметь на нём равные отрезки чёрточками, а равные углы дужками.</p>
+      </div>
+      <svg class="fig" id="fig-flex" viewBox="0 30 420 490" role="img" aria-label="Чертёж, который меняется вместе с ползунком"></svg>
+    </div>
+  </section>
+
+  <!-- 3. Проверка понимания -->
+  <section class="sheet" aria-labelledby="t-quiz">
+    <h2 id="t-quiz">Проверь, что условие понятно</h2>
+    <p class="note">Четыре быстрых вопроса. Если ошибся — вернись к разбору условия выше.</p>
+    <div id="quiz" class="quiz"></div>
+  </section>
+
+  <!-- 4. Путь к решению -->
+  <section class="sheet bench-sheet" aria-labelledby="t-path">
+    <h2 id="t-path">Путь к ответу</h2>
+    <p class="note">Сначала подумай сам. Подсказки идут от лёгкого намёка к почти готовому ответу — бери столько, сколько нужно.</p>
+    <div class="bench">
+      <div class="bench-fig">
+        <svg class="fig" id="fig-path" viewBox="0 30 420 490" role="img" aria-label="Чертёж, на котором появляются твои находки"></svg>
+        <div class="progress" id="progress" aria-hidden="true"></div>
+      </div>
+      <div class="bench-steps">
+        <ol class="done-list" id="done-list"></ol>
+        <div id="step"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Запись решения -->
+  <section class="sheet" aria-labelledby="t-write">
+    <h2 id="t-write">Как записать в тетради</h2>
+    <div id="write-locked">
+      <p>Образец записи откроется, когда дойдёшь до ответа. Так интереснее.</p>
+      <button class="btn ghost" type="button" id="give-up">Показать решение сейчас</button>
+    </div>
+    <div id="write" hidden>
+      <ol class="proof">
+        <li><i>BC</i> = <i>BE</i> + <i>EC</i> = 7 + 5 = 12.</li>
+        <li>Проведём <i>DH</i> ⊥ <i>AB</i>. Угол <i>ABD</i> острый (он равен острому углу <i>DBC</i> прямоугольного треугольника <i>BCD</i>), поэтому точка <i>H</i> лежит на луче <i>BA</i>.</li>
+        <li>△<i>BDH</i> = △<i>BDC</i> по гипотенузе и острому углу: <i>BD</i> — общая, ∠<i>HBD</i> = ∠<i>CBD</i> по условию. Значит, <i>BH</i> = <i>BC</i> = 12 и <i>DH</i> = <i>DC</i>.</li>
+        <li>△<i>DHA</i> = △<i>DCE</i> по гипотенузе и катету: <i>AD</i> = <i>DE</i> по условию, <i>DH</i> = <i>DC</i>. Значит, <i>AH</i> = <i>EC</i> = 5.</li>
+        <li><i>AB</i> = <i>BD</i> &gt; <i>BC</i> = <i>BH</i>, потому что гипотенуза <i>BD</i> длиннее катета <i>BC</i>. Значит, <i>H</i> лежит между <i>A</i> и <i>B</i>, и <i>AB</i> = <i>BH</i> + <i>HA</i> = 12 + 5 = 17.</li>
+        <li><i>BD</i> = <i>AB</i> = 17.</li>
+      </ol>
+      <p class="answer">Ответ: 17.</p>
+      <div class="twin">
+        <h3>Задача-близнец</h3>
+        <p>Те же условия, но <i>BE</i> = 6 и <i>EC</i> = 4. Чему равна <i>BD</i>? Реши в тетради без подсказок и проверь.</p>
+        <div id="twin"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>
