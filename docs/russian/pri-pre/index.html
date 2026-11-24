@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Русский язык, 6–7 класс. Приставки ПРИ- и ПРЕ-: комикс-учебник с правилами, парами-близнецами, словарными словами и тренажёром.">
+<title>ПРИ и ПРЕ: два героя одной приставки</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400&family=Rubik+Mono+One&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="s-magnet" viewBox="0 0 120 120">
+    <path d="M25 18v47a35 35 0 0 0 70 0V18H71v47a11 11 0 0 1-22 0V18z" fill="#e5383b" stroke="#14142b" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M25 18h24v18H25zM71 18h24v18H71z" fill="#fff" stroke="#14142b" stroke-width="4" stroke-linejoin="round"/>
+    <circle cx="46" cy="84" r="5.5" fill="#fff" stroke="#14142b" stroke-width="2.5"/>
+    <circle cx="74" cy="84" r="5.5" fill="#fff" stroke="#14142b" stroke-width="2.5"/>
+    <circle cx="47" cy="85" r="2.2" fill="#14142b"/><circle cx="75" cy="85" r="2.2" fill="#14142b"/>
+    <path d="M52 93q8 6 16 0" fill="none" stroke="#14142b" stroke-width="2.5" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="s-super" viewBox="0 0 120 120">
+    <path d="M36 46 12 112l48-16 48 16-24-66z" fill="#ffd23f" stroke="#14142b" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M38 58 18 40M82 58l20-18" stroke="#14142b" stroke-width="13" stroke-linecap="round"/>
+    <path d="M38 58 18 40M82 58l20-18" stroke="#2f6bff" stroke-width="7" stroke-linecap="round"/>
+    <rect x="38" y="46" width="44" height="52" rx="13" fill="#2f6bff" stroke="#14142b" stroke-width="4"/>
+    <text x="60" y="84" text-anchor="middle" font-family="Rubik Mono One, Arial Black, sans-serif" font-size="27" fill="#fff">Е</text>
+    <circle cx="60" cy="28" r="19" fill="#ffd9b3" stroke="#14142b" stroke-width="4"/>
+    <rect x="41" y="20" width="38" height="12" rx="6" fill="#14142b"/>
+    <circle cx="52" cy="26" r="3" fill="#fff"/><circle cx="68" cy="26" r="3" fill="#fff"/>
+    <path d="M53 37q7 5 14 0" fill="none" stroke="#14142b" stroke-width="2.5" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<main>
+
+  <header class="hero">
+    <p class="crumbs"><a href="../../">← Все материалы</a></p>
+    <p class="kicker">Русский язык, 6–7 класс</p>
+    <h1><span class="t-pri">При</span> и <span class="t-pre">пре</span></h1>
+    <p class="lead">Буква в приставке зависит от значения. У каждой приставки свой герой: у Магнита ПРИ четыре силы, у Супер-ПРЕ две. Отдай слово тому, чья сила в нём работает.</p>
+
+    <div class="arena" id="arena">
+      <button type="button" class="champ champ-pri" id="pick-pri" aria-label="Отдать слово Магниту ПРИ">
+        <span class="bubble" id="say-pri">Я притягиваю, прикрепляю, стою рядом и делаю чуть-чуть.</span>
+        <svg class="champ-svg"><use href="#s-magnet"/></svg>
+        <span class="champ-name">Магнит ПРИ</span>
+      </button>
+      <div class="ring">
+        <p class="ring-count" id="hero-count"></p>
+        <p class="ring-word" id="hero-word" aria-live="polite"></p>
+        <p class="ring-hint" id="hero-hint">Нажми на героя, которому подходит слово.</p>
+        <button type="button" class="btn" id="hero-again" hidden>Сыграть ещё раз</button>
+      </div>
+      <button type="button" class="champ champ-pre" id="pick-pre" aria-label="Отдать слово Супер-ПРЕ">
+        <span class="bubble" id="say-pre">Я значу «очень» или «пере-».</span>
+        <svg class="champ-svg"><use href="#s-super"/></svg>
+        <span class="champ-name">Супер-ПРЕ</span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Разделы">
+    <a href="#pri">Силы ПРИ</a>
+    <a href="#pre">Силы ПРЕ</a>
+    <a href="#algo">Как рассуждать</a>
+    <a href="#twins">Близнецы</a>
+    <a href="#dict">Словарные слова</a>
+    <a href="#train">Тренажёр</a>
+    <a href="#cheat">Шпаргалка</a>
+  </nav>
+
+  <!-- ПРИ -->
+  <section class="panel" id="pri">
+    <h2 class="cap cap-pri">Четыре силы Магнита ПРИ</h2>
+    <p class="intro">Пиши <b class="pri">при-</b>, если приставка означает одно из четырёх.</p>
+    <div class="powers">
+
+      <article class="power">
+        <h3>1. Приближение</h3>
+        <p>Кто-то или что-то движется сюда, ближе.</p>
+        <div class="scene scene-move" id="sc-move">
+          <span class="chip mover" id="mv-chip">бежал</span>
+          <svg class="scene-magnet"><use href="#s-magnet"/></svg>
+        </div>
+        <p class="scene-cap" id="mv-cap">Нажми кнопку, и Магнит притянет слово.</p>
+        <button type="button" class="btn small" id="mv-btn">Притянуть</button>
+        <p class="ex"><b class="pri">при</b>ехать, <b class="pri">при</b>лететь, <b class="pri">при</b>плыть, <b class="pri">при</b>нести, <b class="pri">при</b>землиться</p>
+      </article>
+
+      <article class="power">
+        <h3>2. Присоединение</h3>
+        <p>Одно прикрепляют или добавляют к другому.</p>
+        <div class="scene scene-join" id="sc-join">
+          <span class="chip j-left" id="jn-a">марка</span>
+          <span class="chip j-right" id="jn-b">конверт</span>
+        </div>
+        <p class="scene-cap" id="jn-cap">Нажми кнопку, и предметы соединятся.</p>
+        <button type="button" class="btn small" id="jn-btn">Соединить</button>
+        <p class="ex"><b class="pri">при</b>клеить, <b class="pri">при</b>шить, <b class="pri">при</b>бить, <b class="pri">при</b>вязать, <b class="pri">при</b>строить</p>
+      </article>
+
+      <article class="power">
+        <h3>3. Близость</h3>
+        <p>Что-то находится рядом, около. Проверка: слово превращается в «при чём-то».</p>
+        <div class="scene scene-near" id="sc-near">
+          <button type="button" class="chip flip" data-a="пришкольный участок" data-b="участок при школе"></button>
+          <button type="button" class="chip flip" data-a="приморский город" data-b="город при море"></button>
+          <button type="button" class="chip flip" data-a="привокзальная площадь" data-b="площадь при вокзале"></button>
+        </div>
+        <p class="scene-cap">Нажимай на слова, чтобы расшифровать их.</p>
+        <p class="ex"><b class="pri">при</b>брежный, <b class="pri">при</b>город, <b class="pri">при</b>дорожный, <b class="pri">при</b>усадебный</p>
+      </article>
+
+      <article class="power">
+        <h3>4. Неполное действие</h3>
+        <p>Действие сделали чуть-чуть, не до конца.</p>
+        <div class="scene scene-door">
+          <div class="doorway"><div class="door" id="door"><i></i></div></div>
+          <label class="door-ctl">Открой дверь
+            <input type="range" id="door-range" min="0" max="100" value="0">
+          </label>
+        </div>
+        <p class="scene-cap" id="door-cap">Дверь закрыта. Подвинь ползунок совсем немного.</p>
+        <p class="ex"><b class="pri">при</b>открыть, <b class="pri">при</b>сесть, <b class="pri">при</b>встать, <b class="pri">при</b>глушить, <b class="pri">при</b>тормозить</p>
+      </article>
+    </div>
+
+    <div class="aside">
+      <h3>У Магнита есть ещё три значения</h3>
+      <ul>
+        <li>действие довели до конца: <b class="pri">при</b>думать, <b class="pri">при</b>готовить, <b class="pri">при</b>учить;</li>
+        <li>сделали для себя: <b class="pri">при</b>беречь, <b class="pri">при</b>прятать, <b class="pri">при</b>своить;</li>
+        <li>действие идёт вместе с другим: <b class="pri">при</b>плясывать, <b class="pri">при</b>говаривать, <b class="pri">при</b>певать.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ПРЕ -->
+  <section class="panel" id="pre">
+    <h2 class="cap cap-pre">Две силы Супер-ПРЕ</h2>
+    <p class="intro">Пиши <b class="pre">пре-</b>, если приставку можно заменить словом «очень» или приставкой «пере-».</p>
+    <div class="powers two">
+
+      <article class="power">
+        <h3>1. Пре = очень</h3>
+        <p>Выбери слово и усиливай его.</p>
+        <div class="amp-words" id="amp-words"></div>
+        <div class="scene scene-amp"><span id="amp-out"></span></div>
+        <label class="door-ctl">Сила
+          <input type="range" id="amp-range" min="0" max="2" value="0">
+        </label>
+        <p class="scene-cap" id="amp-cap"></p>
+        <p class="ex"><b class="pre">пре</b>красный, <b class="pre">пре</b>мудрый, <b class="pre">пре</b>милый, <b class="pre">пре</b>спокойный, <b class="pre">пре</b>увеличить (слишком увеличить)</p>
+      </article>
+
+      <article class="power">
+        <h3>2. Пре = пере-</h3>
+        <p>Нажимай на слова: приставка меняется, смысл остаётся.</p>
+        <div class="scene scene-near" id="sc-pere">
+          <button type="button" class="chip flip blue" data-a="прервать разговор" data-b="перервать разговор"></button>
+          <button type="button" class="chip flip blue" data-a="преградить путь" data-b="перегородить путь"></button>
+          <button type="button" class="chip flip blue" data-a="преступить черту" data-b="переступить черту"></button>
+          <button type="button" class="chip flip blue" data-a="прекратить спор" data-b="перестать спорить"></button>
+          <button type="button" class="chip flip blue" data-a="преодолеть страх" data-b="пересилить страх"></button>
+        </div>
+        <p class="ex"><b class="pre">пре</b>образовать (переделать), <b class="pre">пре</b>вратить, <b class="pre">пре</b>дание (передаётся от старших), <b class="pre">пре</b>терпеть (пережить)</p>
+      </article>
+    </div>
+
+    <div class="aside">
+      <h3>Не перепутай с приставкой пред-</h3>
+      <p>В словах <b>пред</b>ложить, <b>пред</b>ставить, <b>пред</b>чувствие, <b>пред</b>седатель приставка другая: <b>пред-</b>. В ней всегда пишется Е, выбирать не нужно.</p>
+    </div>
+  </section>
+
+  <!-- Алгоритм -->
+  <section class="panel" id="algo">
+    <h2 class="cap">Как рассуждать: допрос слова</h2>
+    <p class="intro">Задавай слову три вопроса по порядку. Сначала проверяй Супер-ПРЕ: у него всего две силы, это быстрее.</p>
+    <ol class="steps">
+      <li>Можно заменить приставку словом <b>«очень»</b>? Да — пиши <b class="pre">пре-</b>.</li>
+      <li>Можно заменить приставку на <b>«пере-»</b>? Да — пиши <b class="pre">пре-</b>.</li>
+      <li>Есть приближение, присоединение, близость или «чуть-чуть»? Да — пиши <b class="pri">при-</b>.</li>
+      <li>Ничего не подошло? Слово словарное, его запоминают или смотрят в словаре.</li>
+    </ol>
+    <div class="quiz-box">
+      <p class="quiz-label">Допроси слово сам. Выбери подозреваемого:</p>
+      <div class="amp-words" id="algo-words"></div>
+      <p class="big-word" id="algo-word"></p>
+      <p class="algo-q" id="algo-q" aria-live="polite"></p>
+      <div class="row" id="algo-btns">
+        <button type="button" class="btn" data-ans="1">Да</button>
+        <button type="button" class="btn ghost" data-ans="0">Нет</button>
+      </div>
+      <p class="algo-msg" id="algo-msg" aria-live="polite"></p>
+    </div>
+    <p class="rhyme">Ближе, рядом, чуть-чуть, прибавил —<br>ПРИ пишу и не лукавлю.<br>Если «очень» или «пере-» —<br>в ПРЕ я полностью уверен.</p>
+  </section>
+
+  <!-- Близнецы -->
+  <section class="panel" id="twins">
+    <h2 class="cap">Слова-близнецы</h2>
+    <p class="intro">Эти слова звучат одинаково, а пишутся по-разному. Букву подсказывает только смысл, поэтому смотри на соседние слова в предложении.</p>
+    <div class="twins" id="twins-list"></div>
+  </section>
+
+  <!-- Словарные -->
+  <section class="panel" id="dict">
+    <h2 class="cap">Словарные слова</h2>
+    <p class="intro">В этих словах значение приставки уже не угадать, а во многих «при» и «пре» давно стали частью корня. Их нужно запомнить.</p>
+    <button type="button" class="btn small" id="dict-hide">Спрятать буквы и проверить себя</button>
+    <div class="walls">
+      <div class="wall wall-pri">
+        <h3>Пишем при</h3>
+        <div class="bricks" id="dict-pri"></div>
+        <p class="story">Запоминалка: <b class="pri">при</b>лежный ученик по <b class="pri">при</b>вычке сказал «<b class="pri">При</b>вет!», показал <b class="pri">при</b>мер и <b class="pri">при</b>бор, а потом ушёл на <b class="pri">при</b>роду искать <b class="pri">при</b>ключения.</p>
+        <p class="story">Иностранные гости: <b class="pri">при</b>митивный <b class="pri">при</b>ватный клуб требует <b class="pri">при</b>вилегий и <b class="pri">при</b>оритета.</p>
+      </div>
+      <div class="wall wall-pre">
+        <h3>Пишем пре</h3>
+        <div class="bricks" id="dict-pre"></div>
+        <p class="story">Запоминалка: <b class="pre">пре</b>подаватель без <b class="pre">пре</b>пятствий <b class="pre">пре</b>поднёс классу сюрприз — <b class="pre">пре</b>лесть! Никто не <b class="pre">пре</b>небрегал знаками <b class="pre">пре</b>пинания.</p>
+        <p class="story">Иностранные гости: <b class="pre">пре</b>зидент на <b class="pre">пре</b>мьере получил <b class="pre">пре</b>мию за <b class="pre">пре</b>зентацию <b class="pre">пре</b>парата.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Тренажёр -->
+  <section class="panel" id="train">
+    <h2 class="cap">Тренажёр</h2>
+    <div id="tr-menu">
+      <p class="intro">Выбери, что тренировать. Слово с ошибкой вернётся в конце, пока не ответишь верно. На клавиатуре: клавиши И и Е, дальше — Enter.</p>
+      <div class="modes" id="tr-modes"></div>
+      <label class="check"><input type="checkbox" id="tr-why" checked> После слов на правило спрашивать, какая сила сработала</label>
+    </div>
+    <div id="tr-game" hidden>
+      <div class="tr-top">
+        <span id="tr-mode-name"></span>
+        <span class="tr-bar"><i id="tr-bar"></i></span>
+        <span id="tr-count"></span>
+        <button type="button" class="link" id="tr-quit">Выйти</button>
+      </div>
+      <p class="big-word" id="tr-word" aria-live="polite"></p>
+      <div class="letters" id="tr-letters">
+        <button type="button" class="letter l-pri" data-l="и">и</button>
+        <button type="button" class="letter l-pre" data-l="е">е</button>
+      </div>
+      <div class="why" id="tr-whybox" hidden>
+        <p>Верно. А какая сила тут сработала?</p>
+        <div class="amp-words" id="tr-whys"></div>
+      </div>
+      <div class="fb" id="tr-fb" hidden aria-live="polite">
+        <p id="tr-fb-text"></p>
+        <button type="button" class="btn" id="tr-next">Дальше</button>
+      </div>
+    </div>
+    <div id="tr-result" hidden>
+      <p class="stars" id="tr-stars"></p>
+      <p class="res-line" id="tr-res-line"></p>
+      <div id="tr-res-miss"></div>
+      <div class="row">
+        <button type="button" class="btn" id="tr-again">Ещё раунд</button>
+        <button type="button" class="btn ghost" id="tr-menu-btn">Выбрать другой режим</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Шпаргалка -->
+  <section class="panel" id="cheat">
+    <h2 class="cap">Шпаргалка</h2>
+    <div class="cheat-grid">
+      <div class="cheat-col c-pri">
+        <h3>При-</h3>
+        <ul>
+          <li><b>приближение:</b> приехать, прилететь</li>
+          <li><b>присоединение:</b> приклеить, пришить</li>
+          <li><b>близость:</b> пришкольный, приморский</li>
+          <li><b>неполное действие:</b> приоткрыть, присесть</li>
+          <li><b>до конца, для себя, заодно:</b> придумать, приберечь, приплясывать</li>
+        </ul>
+      </div>
+      <div class="cheat-col c-pre">
+        <h3>Пре-</h3>
+        <ul>
+          <li><b>= очень:</b> прекрасный, предобрый, премудрый</li>
+          <li><b>= пере-:</b> прервать, преградить, преодолеть</li>
+        </ul>
+        <p>Приставка <b>пред-</b> — отдельная: предложить, представить.</p>
+      </div>
+    </div>
+    <table class="cheat-table">
+      <thead><tr><th>При-</th><th>Пре-</th></tr></thead>
+      <tbody id="cheat-twins"></tbody>
+    </table>
+    <p class="cheat-dict"><b>Запомни с при:</b> привет, природа, причина, присяга, прилежный, приключение, приказ, привычка, прибор, приличный, пример, приятный, пригласить, привередливый, причудливый, неприхотливый, неприступный, приоритет, привилегия, примитивный.</p>
+    <p class="cheat-dict"><b>Запомни с пре:</b> препятствие, преследовать, пренебрегать, преподаватель, прелесть, преимущество, презирать, престол, преподнести, пресловутый, пресмыкаться, превратный, знаки препинания, беспрекословно, камень преткновения, президент, премьера, презентация, препарат, премия, престиж, претензия.</p>
+    <button type="button" class="btn small no-print" id="print-btn">Напечатать шпаргалку</button>
+  </section>
+
+</main>
+<script src="app.js?v=1"></script>
+</body>
+</html>
